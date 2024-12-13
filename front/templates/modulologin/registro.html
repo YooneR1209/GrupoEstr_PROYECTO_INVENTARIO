@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e7f3ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .register-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 700px;
+        }
+        .register-container h2 {
+            color: #007bff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .text-center a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+        .password-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .password-container .form-control {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .password-container button {
+            border-radius: 50%;
+            padding: 5px 10px;
+        }
+        .links-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .links-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .links-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2><i class="bi bi-person-plus-fill"></i> Registro de Usuario</h2>
+        <form action="/registro" method="POST">
+            <div class="row">
+                <!-- Columna izquierda para Nombre y Apellido -->
+                <div class="col-md-6 mb-3">
+                    <label for="nombre" class="form-label"><i class="bi bi-person-fill"></i> Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="apellido" class="form-label"><i class="bi bi-person-fill"></i> Apellido</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Columna izquierda para Correo y Teléfono -->
+                <div class="col-md-6 mb-3">
+                    <label for="correo" class="form-label"><i class="bi bi-envelope-fill"></i> Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" name="correo" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="telefono" class="form-label"><i class="bi bi-telephone-fill"></i> Teléfono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" required>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Columna izquierda para DNI y Contraseña -->
+                <div class="col-md-6 mb-3">
+                    <label for="dni" class="form-label"><i class="bi bi-card-heading"></i> DNI</label>
+                    <input type="text" class="form-control" id="dni" name="dni" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="clave" class="form-label"><i class="bi bi-lock-fill"></i> Contraseña</label>
+                    <div class="password-container">
+                        <input type="password" class="form-control" id="clave" name="clave" required>
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Error -->
+            {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endif %}
+            <!-- Botón de Enviar -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            </div>
+        </form>
+        <!-- Enlace a Iniciar Sesión y Regresar -->
+        <div class="links-container">
+            <a href="/login"><i class="bi bi-box-arrow-in-right"></i> ¿Ya tienes una cuenta? Inicia sesión</a>
+            <a href="/home" class="btn btn-link"><i class="bi bi-arrow-left"></i> Regresar</a>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('clave');
+            const toggleIcon = document.getElementById('toggleIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+    </script>
+</body>
+</html>

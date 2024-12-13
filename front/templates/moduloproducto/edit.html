@@ -1,0 +1,110 @@
+{% extends "template.html" %}
+{% block content %}
+
+<style>
+    .main {
+        background-color: #f8f9fa;
+        padding: 20px 0;
+    }
+
+    .page-title {
+        padding: 20px 0;
+        text-align: center;
+        color: #007bff;
+        background-color: white;
+    }
+
+    .section {
+        margin-top: 20px;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    }
+
+    .btn {
+        border-radius: 5px;
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+
+    .btn-success {
+        background-color: green;
+        border: none;
+    }
+
+    .btn-success:hover {
+        background-color: #005c00;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #bd2130;
+    }
+</style>
+
+<main class="main">
+      <!-- Page Title -->
+      <div class="page-title">
+        <h1>MODIFICAR PRODUCTO</h1>
+    </div>
+    <!-- End Page Title -->
+
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <form class="row g-3 needs-validation" method="POST" action="/producto/update" novalidate>
+                <input type="hidden" name="id" value="{{producto.id}}">
+
+                <div class="col-md-6">
+                  <label for="nombre" class="form-label">Nombre de Producto</label>
+                  <input type="text" class="form-control" id="nombre" name="nom" required value="{{producto.nombre}}">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="tipoProducto" class="form-label">Tipo de Producto</label>
+                  <input type="text" class="form-control" id="tipoProducto" name="tipop" required value="{{producto.tipoProducto}}">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="marca" class="form-label">Marca</label>
+                  <input type="text" class="form-control" id="marca" name="marca" required value="{{producto.marca}}">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="descripcion" class="form-label">Descripción</label>
+                  <input type="text" class="form-control" id="descripcion" name="descripcion" required value="{{producto.descripcion}}">
+                </div>
+
+                <div class="col-12 text-center">
+                  <button class="btn btn-success" type="submit">MODIFICAR</button>
+                  <a href="/producto/list" class="btn btn-danger">CANCELAR</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e7f3ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .profile-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+        }
+        .profile-container h1 {
+            color: #007bff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .btn-secondary:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h1><i class="bi bi-pencil-square"></i> Editar Perfil</h1>
+        <p class="text-center">Actualiza la información de tu cuenta.</p>
+        <form action="/mipersona/actualizar" method="POST">
+            <input type="hidden" name="id" value="{{lista.idPersona}}">
+
+            <div class="mb-3">
+                <label for="nombre" class="form-label"><i class="bi bi-person-fill"></i> Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ lista.nombre }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="apellido" class="form-label"><i class="bi bi-person-fill"></i> Apellido</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" value="{{ lista.apellido }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="correo" class="form-label"><i class="bi bi-envelope-fill"></i> Correo</label>
+                <input type="email" class="form-control" id="correo" name="correo" value="{{ lista.correo }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label"><i class="bi bi-telephone-fill"></i> Teléfono</label>
+                <input type="text" class="form-control" id="telefono" name="telefono" value="{{ lista.telefono }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="dni" class="form-label"><i class="bi bi-card-heading"></i> Cédula</label>
+                <input type="text" class="form-control" id="dni" name="dni" value="{{ lista.dni }}" required>
+            </div>
+            <input type="hidden" name="clave" value="{{lista.clave}}">
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="/navegacion" class="btn btn-link btn-secondary"><i class="bi bi-arrow-left"></i> Regresar</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

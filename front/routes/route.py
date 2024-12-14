@@ -369,3 +369,67 @@ def view_buscar_lote(criterio, texto):
     else:
         return render_template ('modulolote/lote.html', lista_lote = [], message = 'No existe el elemento')
     
+    #OrdenVenta
+@router.route('/ordenVenta/list')
+def list_Venta(msg=''):
+    r_OrdenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
+    data_Venta = r_OrdenVenta.json()
+    print(data_Venta)
+    return render_template('moduloVenta/OrdenVenta.html', lista_Venta=data_Venta["data"])
+@router.route('/ordenVenta/register')
+def view_register_ordenVenta():
+    r_ordenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
+    data_ordenVenta = r_ordenVenta.json()
+    return render_template('moduloVenta/registroVenta.html',lista_producto=data_ordenVenta["data"])
+@router.route('/ordenVenta/save', methods=['POST'])
+def save_OrdenVenta():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    detalle= form["txtdetalle"][:-1]
+    lista = detalle.split(":")
+    details=[]
+    for item in lista:
+        lista_aux = item.split(",")
+        details.append({"service":lista_aux[0], "cant":lista_aux[1],"precioUnitario":lista_aux[2],"totalVenta":(float(lista_aux[1])*float(lista_aux[2]))})
+    dataF ={ "n_ordenVenta": form["n_ord"], "iva":form["iva"][1:], "subtotalVenta": form["sub"][1:], "totalVenta":form["total"][1:],"details":details}
+    print(dataF)
+    
+    r_ordenVenta = requests.post("http://localhost:8080/myapp/ordenVenta/save", data=json.dumps(dataF), headers=headers)     # Hacer la petición para guardar la producto
+    
+    dat=r_ordenVenta.json()
+    if r_ordenVenta.status_code == 200:
+        flash("Registro guardado correctamente", category='info')
+        return redirect('/ordenVenta/list')
+    else:
+        flash(r_ordenVenta.json().get("data", "Error al guardar la orden de venta"), category='error')
+        return redirect('/ordenVenta/list')
+#DetalleOrdenVenta
+@router.route('/detalleVenta/list')
+def list_DetalleVenta(msg=''):
+    r_DetalleVenta = requests.get("http://localhost:8080/myapp/detalleVenta/list")
+    data_DetalleVenta = r_DetalleVenta.json()
+    print(data_DetalleVenta)
+    return render_template('moduloVenta/DetalleOrdenVenta.html', lista_DetalleVenta=data_DetalleVenta["data"])
+@router.route('/detalleVenta/register')
+def view_register_detalleVenta():
+    r_detalleVenta = requests.get("http://localhost:8080/myapp/detalleVenta/list")
+    data_detalleVenta = r_detalleVenta.json()
+    return render_template('moduloVenta/registroDetalleVenta.html',lista_detalle=data_detalleVenta["data"])
+@router.route('/detalleVenta/save', methods=['POST'])
+def save_DetalleVenta():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+    data_detalleVenta = { 
+        "cantidadProducto": form["cant"],
+        "precioUnitario": form["prec"],
+        "precioTotal": form["total"],
+        "producto": form["pro"],
+    }
+    r_detalleVenta = requests.post("http://localhost:8080/myapp/detalleVenta/save", data=json.dumps(data_detalleVenta), headers=headers)     # Hacer la petición para guardar la producto
+    
+    if r_detalleVenta.status_code == 200:
+        flash("Registro guardado correctamente", category='info')
+        return redirect('/detalleVenta/list')
+    else:
+        flash(r_detalleVenta.json().get("data", "Error al guardar la orden de venta"), category='error')
+        return redirect('/detalleVenta/list')

@@ -369,6 +369,19 @@ def view_buscar_lote(criterio, texto):
     else:
         return render_template ('modulolote/lote.html', lista_lote = [], message = 'No existe el elemento')
     
+@router.route('/producto/list/lote/<int:producto_id>')
+def list_lote_producto(producto_id, msg=''):
+        r_lote = requests.get(f"http://localhost:8080/myapp/producto/list/search/id/lote/{producto_id}")
+        
+        if r_lote.status_code == 200:
+            data_lote = r_lote.json()  # Parsear el JSON recibido
+            print(data_lote)  # Para depuración, puedes imprimir los datos obtenidos
+            return render_template('modulolote/lotes_producto.html', 
+                data_lote=data_lote['data'],
+                lista_lote=data_lote['data']['lotes'])
+
+
+
     #OrdenVenta
 @router.route('/ordenVenta/list')
 def list_Venta(msg=''):

@@ -149,4 +149,19 @@ public class LoteDao extends AdapterDao<Lote> {
 
     }
 
+    public LinkedList<Lote> search_By_Producto(Integer id) {
+        LinkedList<Lote> lista = new LinkedList<>();
+        LinkedList<Lote> listita = listAll();
+        if (!listita.isEmpty()) {
+            Lote[] aux = listita.toArray();
+            for (int i = 0; i < aux.length; i++) {
+                if (aux[i].getId_Producto().intValue() == id.intValue()) {
+                    System.out.println("***" + aux[i].getId());
+                    lista.add(aux[i]);
+                }
+            }
+        }
+        return lista;
+    }
+
 }

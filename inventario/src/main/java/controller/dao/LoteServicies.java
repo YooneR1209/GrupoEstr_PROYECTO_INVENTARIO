@@ -30,9 +30,11 @@ public class LoteServicies {
             return respuesta;
         }
         return new Object[]{};
-
-        
     } 
+
+    public LinkedList<Lote> search_By_Producto(Integer id) {
+        return obj.search_By_Producto(id);
+    }
 
     public LoteServicies() { // Constructor de la clase
         obj = new LoteDao(); // Instancia un objeto de la clase LoteDao

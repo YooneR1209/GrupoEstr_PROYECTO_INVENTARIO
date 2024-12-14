@@ -83,4 +83,19 @@ public class ProductoDao extends AdapterDao<Producto> {
         return null;
     }
 
+    public Producto buscar_IdProducto (int id) {
+        this.listAll = listAll();
+        Producto p = new Producto();
+        Producto [] lista = listAll.toArray();
+        if (!listAll.isEmpty()) {
+            for (int i = 0; i < lista.length; i++) {
+                if (lista[i].getId().intValue() == id) {
+                    p = lista[i];
+                    break;
+                }
+            }
+        }
+        return p;
+    }
+
 }

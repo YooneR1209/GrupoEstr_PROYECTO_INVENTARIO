@@ -1,0 +1,65 @@
+{% extends "template.html" %}
+{% block content %}
+<div class="pagetitle text-center mb-4">
+</div>
+
+<!-- Bloque para mostrar mensajes de flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="alert alert-warning">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<section class="section">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <h1>{{ data_lote.nombre }}</h1>
+                    <p>Descripción: {{ data_lote.descripcion }}</p>
+                    <p>Marca: {{ data_lote.marca }}</p>
+                    <p>Tipo de Producto: {{ data_lote.tipoProducto }}</p>
+
+                    <h3>Detalles de Lotes:</h3>
+                    {% for lote in data_lote.lotes %}
+                    <table class="table table-bordered table-sm">
+                        <tbody>
+                            <tr>
+                                <th class="w-25">Código de Lote</th>
+                                <td>{{ lote.codigoLote }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Cantidad</th>
+                                <td>{{ lote.cantidad }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Precio Compra</th>
+                                <td>{{ lote.precioCompra }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Precio Venta</th>
+                                <td>{{ lote.precioVenta }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Fecha de Vencimiento</th>
+                                <td>{{ lote.fechaVencimiento }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Descripción del Lote</th>
+                                <td>{{ lote.descripcionLote }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr> <!-- Separador entre lotes -->
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,117 +1,139 @@
-{% extends "template.html" %}
-{% block content %}
-
-<style>
-    body {
-        background-color: #e7f3ff;
-    }
-    .page-title {
-        padding: 20px 0;
-        text-align: center;
-        color: #007bff;
-        background-color: white;
-    }
-    .main {
-        background-color: #f8f9fa;
-        padding: 20px 0;
-    }
-    .section {
-        margin-top: 20px;
-    }
-    .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .form-label {
-        font-weight: bold;
-    }
-    .form-control {
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-    }
-    .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
-    }
-    .btn {
-        border-radius: 5px;
-        font-size: 1rem;
-        padding: 10px 20px;
-    }
-    .btn-success {
-        background-color: green;
-        border: none;
-    }
-    .btn-success:hover {
-        background-color: #005c00;
-    }
-    .btn-danger {
-        background-color: #dc3545;
-        border: none;
-    }
-    .btn-danger:hover {
-        background-color: #bd2130;
-    }
-</style>
+{% extends "template.html" %} {% block content %}
 
 <main class="main">
-    <section class="section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <h1 class="page-title"><i class="bi bi-pencil-square"></i> MODIFICAR LOTE</h1>
-                            <h5 class="card-title text-center">Datos del Lote</h5>
-                            <form class="row g-3 needs-validation" method="POST" action="/lote/update" novalidate>
-                                <input type="hidden" name="id" value="{{lote.id}}">
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <h1 class="page-title">
+                <i class="bi bi-pencil-square"></i> MODIFICAR LOTE
+              </h1>
+              <h5 class="card-title text-center">Datos del Lote</h5>
+              <form
+                class="row g-3 needs-validation"
+                method="POST"
+                action="/lote/update"
+                novalidate
+              >
+                <input type="hidden" name="id" value="{{lote.id}}" />
 
-                                <div class="col-md-6">
-                                    <label for="codigoLote" class="form-label"><i class="bi bi-upc-scan"></i> Codigo Lote</label>
-                                    <input type="text" class="form-control" id="codigoLote" name="codigol" required value="{{lote.codigoLote}}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="cantidad" class="form-label"><i class="bi bi-stack"></i> Unidades</label>
-                                    <input type="text" class="form-control" id="cantidad" name="cant" required value="{{lote.cantidad}}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="precioCompra" class="form-label"><i class="bi bi-cash"></i> Precio Compra</label>
-                                    <input type="number" class="form-control" id="precioCompra" name="precioc" required value="{{lote.precioCompra}}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="precioVenta" class="form-label"><i class="bi bi-currency-dollar"></i> Precio Venta</label>
-                                    <input type="number" class="form-control" id="precioVenta" name="preciov" required value="{{lote.precioVenta}}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="fechaCreacion" class="form-label"><i class="bi bi-calendar-check"></i> Fecha de Elaboración</label>
-                                    <input type="date" class="form-control" id="fechaCreacion" name="fechac" required value="{{lote.fechaCreacion}}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="fechaVencimiento" class="form-label"><i class="bi bi-calendar-x"></i> Fecha de Vencimiento</label>
-                                    <input type="date" class="form-control" id="fechaVencimiento" name="fechav" required value="{{lote.fechaVencimiento}}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="descripcionLote" class="form-label"><i class="bi bi-card-text"></i> Descripción Lote</label>
-                                    <input type="text" class="form-control" id="descripcionLote" name="descripcionl" required value="{{lote.descripcionLote}}">
-                                </div>
-
-                                <div class="col-12 text-center">
-                                    <button class="btn btn-success" type="submit"><i class="bi bi-check-circle"></i> REGISTRAR</button>
-                                    <a href="/lote/list" class="btn btn-danger"><i class="bi bi-x-circle"></i> CANCELAR</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div class="col-md-6">
+                  <label for="codigoLote" class="form-label"
+                    ><i class="bi bi-upc-scan"></i> Codigo Lote</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="codigoLote"
+                    name="codigol"
+                    required
+                    value="{{lote.codigoLote}}"
+                  />
                 </div>
+
+                <div class="col-md-6">
+                  <label for="cantidad" class="form-label"
+                    ><i class="bi bi-stack"></i> Unidades</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="cantidad"
+                    name="cant"
+                    required
+                    value="{{lote.cantidad}}"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="precioCompra" class="form-label"
+                    ><i class="bi bi-cash"></i> Precio Compra</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="precioCompra"
+                    name="precioc"
+                    required
+                    value="{{lote.precioCompra}}"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="precioVenta" class="form-label"
+                    ><i class="bi bi-currency-dollar"></i> Precio Venta</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="precioVenta"
+                    name="preciov"
+                    required
+                    value="{{lote.precioVenta}}"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fechaCreacion" class="form-label"
+                    ><i class="bi bi-calendar-check"></i> Fecha de
+                    Elaboración</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="fechaCreacion"
+                    name="fechac"
+                    required
+                    value="{{lote.fechaCreacion}}"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fechaVencimiento" class="form-label"
+                    ><i class="bi bi-calendar-x"></i> Fecha de
+                    Vencimiento</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="fechaVencimiento"
+                    name="fechav"
+                    required
+                    value="{{lote.fechaVencimiento}}"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="descripcionLote" class="form-label"
+                    ><i class="bi bi-card-text"></i> Descripción Lote</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="descripcionLote"
+                    name="descripcionl"
+                    required
+                    value="{{lote.descripcionLote}}"
+                  />
+                </div>
+
+                <div class="col-12 text-center">
+                  <button class="btn btn-success" type="submit">
+                    <i class="bi bi-check-circle"></i> REGISTRAR
+                  </button>
+                  <a href="/lote/list" class="btn btn-danger"
+                    ><i class="bi bi-x-circle"></i> CANCELAR</a
+                  >
+                </div>
+              </form>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </main>
 
 {% endblock %}

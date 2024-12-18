@@ -1,5 +1,5 @@
 import json
-from flask import Flask, Blueprint, flash, render_template, request, redirect, url_for, session
+from flask import Flask, Blueprint, flash, render_template, request, redirect, url_for, session, get_flashed_messages
 import requests
 
 router = Blueprint('router', __name__)
@@ -52,7 +52,14 @@ def procesar_login():
 def dashboard():
     if 'token' not in session:
         return redirect(url_for('router.login'))  # Redirige al login si no hay token
-    return render_template('modulologin/datos.html', usuario=session.get('usuario'), idPersona=session.get('idPersona'))
+    
+    # Obtener los mensajes flash
+    success_message = get_flashed_messages(category_filter='success')
+    
+    return render_template('modulologin/datos.html', 
+                           usuario=session.get('usuario'), 
+                           idPersona=session.get('idPersona'),
+                           success_message=success_message)  # Pasar el mensaje de éxito a la plantilla
 
 # Ruta para logout y eliminar la sesión
 @router.route('/logout')
@@ -60,11 +67,13 @@ def logout():
     session.clear()  # Elimina todos los datos de la sesión
     return redirect(url_for('router.login'))  # Redirige al login
 
-@router.route('/registro' , methods=['POST'])
-def registro():
-    hearders = {'Content-Type': 'application/json'}
-    form = request.form
+
     
+@router.route('/registro', methods=['POST'])
+def registro():
+    headers = {'Content-Type': 'application/json'}
+    form = request.form
+
     datar = {
         "nombre": form["nombre"],
         "apellido": form["apellido"],
@@ -74,19 +83,27 @@ def registro():
         "clave": form["clave"]	
     }
 
-    r = requests.post("http://localhost:8080/myapp/persona/save", headers=hearders, data=json.dumps(datar))
+    r = requests.post("http://localhost:8080/myapp/persona/save", headers=headers, data=json.dumps(datar))
     dat = r.json()
+
     if r.status_code == 200:
         if "token" in dat:
             session['token'] = dat["token"]
             session['usuario'] = datar["correo"]
+            flash("¡Registro exitoso! Ahora puedes iniciar sesión.", category='success')  # Mensaje de éxito
             return redirect(url_for('router.dashboard'))
         else:
-            error = dat.get("message", "No se recibió el token en la respuesta del servidor")
-            return render_template('modulologin/registro.html', error=error)
+            return render_template(
+                'modulologin/registro.html', 
+                error_message=dat.get("message", "No se recibió el token en la respuesta del servidor")
+            )
     else:
-        error = dat.get("message", "Error al registrar")
-        return render_template('modulologin/registro.html', error=error)
+        return render_template(
+            'modulologin/registro.html', 
+            error_message=dat.get("message", "Error al registrar")
+        )
+
+
 
 
 @router.route('/mipersona/<id>')

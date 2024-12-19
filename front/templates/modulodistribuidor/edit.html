@@ -1,0 +1,54 @@
+{% extends "template.html" %}
+{% block content %}
+<title>Modifique un Distribuidor</title>
+
+<main class="main">
+  <!-- Page Title -->
+  <div class="page-title">
+    <h1>MODIFICAR DISTRIBUIDOR</h1>
+  </div>
+  <!-- End Page Title -->
+
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <form class="row g-3 needs-validation" method="POST" action="/distribuidor/update">
+                <input type="hidden" name="id" value="{{distribuidor.id}}">
+
+                <div class="col-md-6">
+                  <label for="nombre" class="form-label">Nombre de Distribuidor</label>
+                  <input type="text" class="form-control" id="nombre" name="nom" required
+                    value="{{distribuidor.nombre}}" minlength="3" maxlength="150">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="cedula" class="form-label">Cedula</label>
+                  <input type="text" class="form-control" id="cedula" name="ced" required
+                    value="{{distribuidor.cedula}}" minlength="3" maxlength="150">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="celular" class="form-label">Celular</label>
+                  <input type="text" class="form-control" id="celular" name="cel" value="{{distribuidor.celular}}"
+                    required minlength="3" maxlength="150">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="descripcion" class="form-label">Descripción</label>
+                  <input type="text" class="form-control" id="descripcion" name="descripcion" required
+                    value="{{distribuidor.descripcion}}" minlength="3" maxlength="150">
+                </div>
+
+                <div class="col-12 text-center">
+                  <button class="btn btn-success" type="submit">MODIFICAR</button>
+                  <a href="/distribuidor/list" class="btn btn-danger">CANCELAR</a>
+                </div>
+            </div>
+          </div>
+  </section>
+</main>
+
+{% endblock %}

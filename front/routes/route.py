@@ -365,7 +365,7 @@ def save_producto():
             r_producto.json().get("data", "Error al guardar el producto"),
             category="error",
         )
-        return redirect("lote/list")
+        return redirect("/producto/list")
 
 
 @router.route("/producto/delete/<int:id>", methods=["POST"])
@@ -375,9 +375,7 @@ def delete_producto(id):
 
     return redirect(
         "/producto/list",
-        usuario=session.get("usuario"),
-        idPersona=session.get("idPersona"),
-    )  # Redirigimos al usuario a la lista de productos
+    )
 
 
 @router.route("/producto/edit/<id>", methods=["GET"])
@@ -587,3 +585,136 @@ def save_DetalleVenta():
             category="error",
         )
         return redirect("/detalleVenta/list")
+
+
+# DISTRIBUIDOR
+
+
+@router.route("/distribuidor/list")
+def list_distribuidor(msg=""):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+    r_distribuidor = requests.get("http://localhost:8080/myapp/distribuidor/list")
+    data_distribuidor = r_distribuidor.json()
+
+    print(data_distribuidor)
+
+    return render_template(
+        "modulodistribuidor/distribuidor.html",
+        lista_distribuidor=data_distribuidor["data"],
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+    )
+
+
+@router.route("/distribuidor/register")
+def view_register_distribuidor():
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+    r_distribuidor = requests.get("http://localhost:8080/myapp/distribuidor/list")
+    data_distribuidor = r_distribuidor.json()
+
+    return render_template(
+        "modulodistribuidor/registro.html",
+        lista_distribuidor=data_distribuidor["data"],
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+    )
+
+
+@router.route("/distribuidor/save", methods=["POST"])
+def save_distribuidor():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+
+    data_distribuidor = {
+        "nombre": form["nom"],
+        "cedula": form["ced"],
+        "celular": form["cel"],
+        "descripcion": form["descripcion"],
+    }
+
+    r_distribuidor = requests.post(
+        "http://localhost:8080/myapp/distribuidor/save",
+        data=json.dumps(data_distribuidor),
+        headers=headers,
+    )  # Hacer la petición para guardar la distribuidor
+
+    if r_distribuidor.status_code == 200:
+
+        flash("Registro guardado correctamente", category="info")
+        return redirect("/distribuidor/list")
+    else:
+        flash(
+            r_distribuidor.json().get("data", "Error al guardar el distribuidor"),
+            category="error",
+        )
+        return redirect("/distribuidor/list")
+
+
+@router.route("/distribuidor/delete/<int:id>", methods=["POST"])
+def delete_distribuidor(id):
+
+    requests.post(f"http://localhost:8080/myapp/distribuidor/delete/{id}")
+
+    return redirect(
+        "/distribuidor/list",
+    )
+
+
+@router.route("/distribuidor/edit/<id>", methods=["GET"])
+def view_edit_distribuidor(id):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r = requests.get("http://localhost:8080/myapp/distribuidor/listType")
+    lista_tipos = r.json()  # Guardamos la respuesta JSON
+
+    r1 = requests.get(
+        f"http://localhost:8080/myapp/distribuidor/get/{id}"
+    )  # Obtenemos los datos de la distribuidor por ID
+
+    if r1.status_code == 200:
+        data_distribuidor = r1.json()
+        distribuidor = data_distribuidor["data"]
+
+        return render_template(
+            "modulodistribuidor/edit.html",
+            lista=lista_tipos["data"],
+            distribuidor=distribuidor,
+        )
+
+    else:
+        flash("Error al obtener la distribuidor", category="error")
+        return redirect("/admin/distribuidor/list")
+
+
+@router.route("/distribuidor/update", methods=["POST"])
+def update_distribuidor():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+
+    data_distribuidor = {
+        "id": form["id"],
+        "nombre": form["nom"],
+        "cedula": form["ced"],
+        "celular": form["cel"],
+        "descripcion": form["descripcion"],
+    }
+
+    r_distribuidor = requests.post(
+        "http://localhost:8080/myapp/distribuidor/update",
+        data=json.dumps(data_distribuidor),
+        headers=headers,
+    )
+
+    if r_distribuidor.status_code == 200:
+
+        flash("Registro guardado correctamente", category="info")
+        return redirect("/distribuidor/list")
+    else:
+        flash(
+            r_distribuidor.json().get("data", "Error al guardar la distribuidor"),
+            category="error",
+        )
+        return redirect("/distribuidor/list")

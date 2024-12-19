@@ -1,33 +1,33 @@
 package controller.dao;
 
-import models.Lote;
-import models.Producto;
+import models.OrdenCompra;
 
 import com.google.gson.Gson;
 
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
 
-public class ProductoDao extends AdapterDao<Producto> {
-    private Producto producto = new Producto();
-    private LinkedList<Producto> listAll;
+public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
+    private OrdenCompra ordenCompra = new OrdenCompra();
+    private LinkedList<OrdenCompra> listAll;
 
-    public ProductoDao() {
-        super(Producto.class);
+    public OrdenCompraDao() {
+        super(OrdenCompra.class);
     }
 
-    public Producto getProducto() { // Obtiene la producto
-        if (producto == null) {
-            producto = new Producto(); // En caso de que la producto sea nula, crea una nueva instancia de Producto
+    public OrdenCompra getOrdenCompra() { // Obtiene la ordenCompra
+        if (ordenCompra == null) {
+            ordenCompra = new OrdenCompra(); // En caso de que la ordenCompra sea nula, crea una nueva instancia de
+                                             // OrdenCompra
         }
-        return this.producto; // Devuelve la producto
+        return this.ordenCompra; // Devuelve la ordenCompra
     }
 
-    public void setProducto(Producto producto) { // Establece la producto con un objeto Producto
-        this.producto = producto; // Asigna el objeto Producto a la variable producto
+    public void setOrdenCompra(OrdenCompra ordenCompra) { // Establece la ordenCompra con un objeto OrdenCompra
+        this.ordenCompra = ordenCompra; // Asigna el objeto OrdenCompra a la variable ordenCompra
     }
 
-    public LinkedList<Producto> getlistAll() { // Obtiene la lista de objetos
+    public LinkedList<OrdenCompra> getlistAll() { // Obtiene la lista de objetos
         if (listAll == null) { // Si la lista es nula
             this.listAll = listAll(); // Invoca el método listAll() para obtener la lista de objetos
         }
@@ -39,16 +39,17 @@ public class ProductoDao extends AdapterDao<Producto> {
         if (!getlistAll().isEmpty()) {
             id = getlistAll().getLast().getId(); // Obtiene el tamaño de la lista y le suma 1 para asignar un nuevo id
         }
-        producto.setId(id + 1); // Asigna el id a producto
-        this.persist(this.producto); // Guarda la lote en la lista de objetos LinkedList y en el archivo JSON
+        ordenCompra.setId(id + 1); // Asigna el id a ordenCompra
+        this.persist(this.ordenCompra); // Guarda la lote en la lista de objetos LinkedList y en el archivo JSON
         this.listAll = listAll(); // Actualiza la lista de objetos
         return true; // Retorna verdadero si se guardó correctamente
     }
 
     public Boolean update() throws Exception { // Actualiza el nodo Lote en la lista de objetos
         this.getlistAll();
-        this.mergeA(getProducto(), recuperoIndex(producto.getId())); // Envia la producto a actualizar con su index
-        System.out.println("valor" + recuperoIndex(producto.getId()));
+        this.mergeA(getOrdenCompra(), recuperoIndex(ordenCompra.getId())); // Envia la ordenCompra a actualizar con su
+                                                                           // index
+        System.out.println("valor" + recuperoIndex(ordenCompra.getId()));
         this.listAll = listAll(); // Actualiza la lista de objetos
         System.out.println("listaaa = " + listAll.toString());
         ;
@@ -68,7 +69,7 @@ public class ProductoDao extends AdapterDao<Producto> {
     }
 
     public Integer recuperoIndex(Integer id) {
-        Producto[] lista = listAll.toArray();
+        OrdenCompra[] lista = listAll.toArray();
         Integer count = 0;
         System.out.println("Entramos acá " + id);
         try {
@@ -85,10 +86,10 @@ public class ProductoDao extends AdapterDao<Producto> {
         return null;
     }
 
-    public Producto buscar_IdProducto(int id) {
+    public OrdenCompra buscar_IdOrdenCompra(int id) {
         this.listAll = listAll();
-        Producto p = new Producto();
-        Producto[] lista = listAll.toArray();
+        OrdenCompra p = new OrdenCompra();
+        OrdenCompra[] lista = listAll.toArray();
         if (!listAll.isEmpty()) {
             for (int i = 0; i < lista.length; i++) {
                 if (lista[i].getId().intValue() == id) {

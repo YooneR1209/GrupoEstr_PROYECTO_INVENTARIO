@@ -1,4 +1,5 @@
 {% extends "template.html" %} {% block content %}
+<title>Modifique un lote</title>
 
 <main class="main">
   <section class="section">
@@ -11,121 +12,59 @@
                 <i class="bi bi-pencil-square"></i> MODIFICAR LOTE
               </h1>
               <h5 class="card-title text-center">Datos del Lote</h5>
-              <form
-                class="row g-3 needs-validation"
-                method="POST"
-                action="/lote/update"
-                novalidate
-              >
+              <form class="row g-3 needs-validation" method="POST" action="/lote/update">
                 <input type="hidden" name="id" value="{{lote.id}}" />
 
                 <div class="col-md-6">
-                  <label for="codigoLote" class="form-label"
-                    ><i class="bi bi-upc-scan"></i> Codigo Lote</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="codigoLote"
-                    name="codigol"
-                    required
-                    value="{{lote.codigoLote}}"
-                  />
+                  <label for="codigoLote" class="form-label"><i class="bi bi-upc-scan"></i> Codigo Lote</label>
+                  <input type="text" class="form-control" id="codigoLote" name="codigol" required
+                    value="{{lote.codigoLote}}" minlength="3" maxlength="150" />
                 </div>
 
                 <div class="col-md-6">
-                  <label for="cantidad" class="form-label"
-                    ><i class="bi bi-stack"></i> Unidades</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="cantidad"
-                    name="cant"
-                    required
-                    value="{{lote.cantidad}}"
-                  />
+                  <label for="cantidad" class="form-label"><i class="bi bi-stack"></i> Unidades</label>
+                  <input type="text" class="form-control" id="cantidad" name="cant" required value="{{lote.cantidad}}"
+                    min="0" max="10000" />
                 </div>
 
                 <div class="col-md-6">
-                  <label for="precioCompra" class="form-label"
-                    ><i class="bi bi-cash"></i> Precio Compra</label
-                  >
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="precioCompra"
-                    name="precioc"
-                    required
-                    value="{{lote.precioCompra}}"
-                  />
+                  <label for="precioCompra" class="form-label"><i class="bi bi-cash"></i> Precio Compra</label>
+                  <input type="Float" class="form-control" id="precioCompra" name="precioc" required
+                    value="{{lote.precioCompra}}" min="0" max="100000" />
                 </div>
 
                 <div class="col-md-6">
-                  <label for="precioVenta" class="form-label"
-                    ><i class="bi bi-currency-dollar"></i> Precio Venta</label
-                  >
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="precioVenta"
-                    name="preciov"
-                    required
-                    value="{{lote.precioVenta}}"
-                  />
+                  <label for="precioVenta" class="form-label"><i class="bi bi-currency-dollar"></i> Precio Venta</label>
+                  <input type="Float" class="form-control" id="precioVenta" name="preciov" required
+                    value="{{lote.precioVenta}}" min="0" max="100000" />
                 </div>
 
                 <div class="col-md-6">
-                  <label for="fechaCreacion" class="form-label"
-                    ><i class="bi bi-calendar-check"></i> Fecha de
-                    Elaboración</label
-                  >
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="fechaCreacion"
-                    name="fechac"
-                    required
-                    value="{{lote.fechaCreacion}}"
-                  />
+                  <label for="fechaCreacion" class="form-label"><i class="bi bi-calendar-check"></i> Fecha de
+                    Elaboración</label>
+                  <input type="date" class="form-control" id="fechaCreacion" name="fechac" required
+                    value="{{lote.fechaCreacion}}" />
                 </div>
 
                 <div class="col-md-6">
-                  <label for="fechaVencimiento" class="form-label"
-                    ><i class="bi bi-calendar-x"></i> Fecha de
-                    Vencimiento</label
-                  >
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="fechaVencimiento"
-                    name="fechav"
-                    required
-                    value="{{lote.fechaVencimiento}}"
-                  />
+                  <label for="fechaVencimiento" class="form-label"><i class="bi bi-calendar-x"></i> Fecha de
+                    Vencimiento</label>
+                  <input type="date" class="form-control" id="fechaVencimiento" name="fechav" required
+                    value="{{lote.fechaVencimiento}}" />
                 </div>
 
                 <div class="col-md-6">
-                  <label for="descripcionLote" class="form-label"
-                    ><i class="bi bi-card-text"></i> Descripción Lote</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="descripcionLote"
-                    name="descripcionl"
-                    required
-                    value="{{lote.descripcionLote}}"
-                  />
+                  <label for="descripcionLote" class="form-label"><i class="bi bi-card-text"></i> Descripción
+                    Lote</label>
+                  <input type="text" class="form-control" id="descripcionLote" name="descripcionl" required
+                    value="{{lote.descripcionLote}}" minlength="3" maxlength="150" />
                 </div>
 
                 <div class="col-12 text-center">
                   <button class="btn btn-success" type="submit">
                     <i class="bi bi-check-circle"></i> REGISTRAR
                   </button>
-                  <a href="/lote/list" class="btn btn-danger"
-                    ><i class="bi bi-x-circle"></i> CANCELAR</a
-                  >
+                  <a href="/lote/list" class="btn btn-danger"><i class="bi bi-x-circle"></i> CANCELAR</a>
                 </div>
               </form>
             </div>

@@ -718,3 +718,63 @@ def update_distribuidor():
             category="error",
         )
         return redirect("/distribuidor/list")
+
+
+# COMPRAS
+
+
+@router.route("/compras/register")
+def list_compras(msg=""):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r_distribuidor = requests.get("http://localhost:8080/myapp/distribuidor/list")
+    data_distribuidor = r_distribuidor.json()
+
+    r_producto = requests.get("http://localhost:8080/myapp/producto/list")
+    data_producto = r_producto.json()
+
+    print(data_distribuidor)
+
+    return render_template(
+        "modulocompra/registro.html",
+        lista_distribuidor=data_distribuidor["data"],
+        lista_producto=data_producto["data"],
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+    )
+
+
+@router.route("/compra/save", methods=["POST"])
+def save_compra():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+
+    data_ordenCompra = {
+        "nro_OrdenCompra": form.get("nro_Oc"),
+        "fechaCompra": form.get("fechaCom", None),
+        "cedula_Distribuidor": form.get("cedula_dis"),
+        "loteList": form.get("loteList"),
+        "totalCompra": form.get("totalC"),
+    }
+
+    print(data_ordenCompra)  # Imprime todo el diccionario recibido
+
+    return "Se agregooo", 200
+
+    # r_ordenCompra = requests.post(
+    #     "http://localhost:8080/myapp/ordenCompra/save",
+    #     data=json.dumps(data_ordenCompra),
+    #     headers=headers,
+    # )  # Hacer la petición para guardar la ordenCompra
+
+    # if r_ordenCompra.status_code == 200:
+
+    #     flash("Registro guardado correctamente", category="info")
+    #     return redirect("/ordenCompra/list")
+    # else:
+    #     flash(
+    #         r_ordenCompra.json().get("data", "Error al guardar la ordenCompra"),
+    #         category="error",
+    #     )
+    #     return redirect("/ordenCompra/list")

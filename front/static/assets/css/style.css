@@ -176,7 +176,6 @@ footer {
 }
 
 .page-title {
-  padding: 20px 0;
   text-align: center;
   color: #007bff;
   background-color: white;
@@ -188,8 +187,8 @@ footer {
 }
 
 .card {
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 50%; /* Reducir el tamaño del card al 80% */
+  margin: 0 auto; /* Centrar el card */
 }
 
 .card-title {
@@ -209,4 +208,101 @@ footer {
 .form-control:focus {
   border-color: #80bdff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.formulario-lote {
+  border-radius: 10px;
+  width: 90%; /* Ocupa el 90% del ancho del contenedor padre */
+  margin: 0 auto; /* Centra horizontalmente */
+}
+
+.lista-producto {
+  position: relative;
+  width: 40%;
+}
+
+#productoSelect {
+  margin-top: 10px;
+  height: 150px; /* Altura del área visible */
+  overflow-y: auto; /* Habilita el desplazamiento vertical */
+}
+
+.hidden {
+  display: none; /* Oculta completamente el elemento */
+}
+
+/* Estilos personalizados para el botón */
+.custom-btn {
+  padding: 10px 15px; /* Espaciado alrededor del texto */
+  border: none; /* Sin borde */
+  background-color: #007bff; /* Elige tu color aquí, ejemplo: azul */
+  color: white; /* Color del texto */
+  font-size: 16px; /* Tamaño de la fuente */
+  cursor: pointer; /* Cursor en forma de mano */
+  border-radius: 5px; /* Bordes redondeados */
+  transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+/* Cambio de color al pasar el ratón sobre el botón */
+.custom-btn:hover {
+  background-color: #0056b3; /* Color cuando el ratón pasa sobre el botón */
+  color: white; /* Mantener el color del texto blanco */
+}
+
+/* Centra el formulario */
+.div-compra {
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
+  height: 100%;
+}
+
+.form-compra {
+  width: 100%; /* Que ocupe todo el ancho del contenedor */
+  max-width: 600px; /* Opcional: limita el tamaño máximo */
+  padding: 30px; /* Espaciado interno para que los elementos no queden pegados al borde */
+  border: 1px solid #ddd; /* Opcional: agrega un borde para visualización */
+  background-color: #fff; /* Fondo blanco para destacar el formulario */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+.div-botones-compra {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.boton {
+  margin: 20px;
+}
+
+.div-distribuidor {
+  margin-top: 20px;
+}
+
+.boton-lote {
+  background-color: #daa520; /* Color dorado */
+  color: #252525; /* Texto blanco */
+  border: none; /* Sin bordes */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de la fuente */
+  font-weight: bold; /* Texto en negrita */
+  border-radius: 8px; /* Bordes redondeados */
+  cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
+  transition: all 0.3s ease; /* Transición suave */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+/* Efecto hover */
+button:hover {
+  background-color: #ffc107; /* Más claro al pasar el mouse */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Sombra más intensa */
+}
+
+/* Efecto al hacer clic */
+button:active {
+  background-color: #b8860b; /* Color más oscuro */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra reducida */
+  transform: translateY(2px); /* Simular presión */
 }

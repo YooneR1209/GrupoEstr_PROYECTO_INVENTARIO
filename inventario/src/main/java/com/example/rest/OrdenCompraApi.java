@@ -1,10 +1,12 @@
 package com.example.rest;
 
 import controller.dao.OrdenCompraServicies;
+import models.OrdenCompra;
 
 import java.util.HashMap;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -59,7 +61,7 @@ public class OrdenCompraApi {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response save(HashMap map) {
+    public Response save(OrdenCompra ordenCompra) {
         // todo
         // Validation
 
@@ -68,13 +70,7 @@ public class OrdenCompraApi {
         try {
 
             OrdenCompraServicies ocs = new OrdenCompraServicies();
-            ocs.getOrdenCompra().setNro_OrdenCompra(map.get("nro_OrdenCompra").toString());
-            ocs.getOrdenCompra().setFechaCompra(map.get("fechaCompra").toString());
-            ocs.getOrdenCompra().setCedula_Distribuidor(map.get("cedula_Distribuidor").toString());
-            ocs.getOrdenCompra().setLoteList(map.get("loteList").toString());
-            ocs.getOrdenCompra().setTotalCompra(Float.parseFloat(map.get("totalCompra").toString()));
-
-            ocs.save();
+            ocs.save(ordenCompra);
 
             res.put("msg", "Ok");
             res.put("data", "Guardado correctamente");
@@ -87,36 +83,36 @@ public class OrdenCompraApi {
         }
     }
 
-    @Path("/update")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(HashMap map) {
+    // @Path("/update")
+    // @POST
+    // @Consumes(MediaType.APPLICATION_JSON)
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public Response update(HashMap map) {
 
-        HashMap res = new HashMap<>();
+    // HashMap res = new HashMap<>();
 
-        try {
+    // try {
 
-            OrdenCompraServicies ocs = new OrdenCompraServicies();
-            ocs.setOrdenCompra(ocs.get(Integer.parseInt(map.get("id").toString())));
-            ocs.getOrdenCompra().setNro_OrdenCompra(map.get("nro_OrdenCompra").toString());
-            ocs.getOrdenCompra().setFechaCompra(map.get("fechaCompra").toString());
-            ocs.getOrdenCompra().setCedula_Distribuidor(map.get("cedula_Distribuidor").toString());
-            ocs.getOrdenCompra().setLoteList(map.get("loteList").toString());
-            ocs.getOrdenCompra().setTotalCompra(Float.parseFloat(map.get("totalCompra").toString()));
+    // OrdenCompraServicies ocs = new OrdenCompraServicies();
+    // ocs.setOrdenCompra(ocs.get(Integer.parseInt(map.get("id").toString())));
+    // ocs.getOrdenCompra().setNro_OrdenCompra(map.get("nro_OrdenCompra").toString());
+    // ocs.getOrdenCompra().setFechaCompra(map.get("fechaCompra").toString());
+    // ocs.getOrdenCompra().setCedula_Distribuidor(map.get("cedula_Distribuidor").toString());
+    // ocs.getOrdenCompra().setLoteList(map.get("loteList").toString());
+    // ocs.getOrdenCompra().setTotalCompra(Float.parseFloat(map.get("totalCompra").toString()));
 
-            ocs.update();
+    // ocs.update();
 
-            res.put("msg", "Ok");
-            res.put("data", "Guardado correctamente");
-            return Response.ok(res).build();
+    // res.put("msg", "Ok");
+    // res.put("data", "Guardado correctamente");
+    // return Response.ok(res).build();
 
-        } catch (Exception e) {
-            res.put("msg", "Error");
-            res.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-        }
-    }
+    // } catch (Exception e) {
+    // res.put("msg", "Error");
+    // res.put("data", e.toString());
+    // return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
+    // }
+    // }
 
     @Path("/listType")
 
@@ -204,5 +200,11 @@ public class OrdenCompraApi {
     // }
     // return Response.ok(map).header("Access-Control-Allow-Origin", "*").build();
     // }
+
+    @Path("/save")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response handleOptions() {
+        return Response.ok().build();
+    }
 
 }

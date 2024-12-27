@@ -97,8 +97,9 @@ public class Lote {
     public void setId_Producto(Integer id_Producto) {
         this.id_Producto = id_Producto;
     }
-   
-    public String toString() {
-        return "Producto{id='"+ id + "', codigoLote='" + codigoLote + "', id_Producto='" + id_Producto +"}";
-    }
+
+    // public String toString() {
+    // return "Producto{id='"+ id + "', codigoLote='" + codigoLote + "',
+    // id_Producto='" + id_Producto +"}";
+    // }
 }

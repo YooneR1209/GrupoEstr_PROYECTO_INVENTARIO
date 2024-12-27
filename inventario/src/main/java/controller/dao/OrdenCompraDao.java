@@ -34,7 +34,8 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
         return listAll; // Devuelve la lista de objetos de la variable listAll
     }
 
-    public Boolean save() throws Exception { // Guarda la variable lote en la lista de objetos
+    public Boolean save(OrdenCompra ordenFront) throws Exception { // Guarda la variable lote en la lista de objetos
+        this.ordenCompra = ordenFront;
         Integer id = 0;
         if (!getlistAll().isEmpty()) {
             id = getlistAll().getLast().getId(); // Obtiene el tamaño de la lista y le suma 1 para asignar un nuevo id

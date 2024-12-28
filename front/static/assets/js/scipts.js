@@ -91,8 +91,6 @@ document.addEventListener('click', function (event) {
                 <input type="text" name="descripcionLote"><br>
                 <label>ID1:</label>
                 <input type="number" name="id_Producto"><br>
-                <label>ID2:</label>
-                <input type="number" name="id"><br>
                 <label>Cantidad:</label>
                 <input type="number" name="cantidad"><br>
                 <label>Precio de Venta:</label>

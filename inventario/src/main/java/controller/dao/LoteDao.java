@@ -6,7 +6,6 @@ import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
 import com.google.gson.Gson;
 
-
 public class LoteDao extends AdapterDao<Lote> {
     private Lote lote = new Lote();
     private LinkedList<Lote> listAll;
@@ -46,33 +45,34 @@ public class LoteDao extends AdapterDao<Lote> {
 
     public Boolean update() throws Exception { // Actualiza el nodo Lote en la lista de objetos
         this.getlistAll();
-        this.mergeA(getLote(), recuperoIndex(lote.getId()) ); // Envia la lote a actualizar con su index
+        this.mergeA(getLote(), recuperoIndex(lote.getId())); // Envia el lote a actualizar con su index
         System.out.println("valor" + recuperoIndex(lote.getId()));
         this.listAll = listAll(); // Actualiza la lista de objetos
-        System.out.println("listaaa = " + listAll.toString());;
+        System.out.println("listaaa = " + listAll.toString());
         return true;
     }
 
     public Boolean delete(int index) throws Exception { // Elimina un objeto Lote por su índice
         Gson g = new Gson();
-        System.out.println("intentamos eliminar el elemento con id " +index);
+        System.out.println("intentamos eliminar el elemento con id " + index);
         this.listAll = listAll();
-        System.out.println("lista:" + this.listAll.toString());;
+        System.out.println("lista:" + this.listAll.toString());
+        ;
         this.listAll.remove(recuperoIndex(index));
-        String info = g.toJson(this.listAll.toArray()); //Convierte la lista en un String JSON
+        String info = g.toJson(this.listAll.toArray()); // Convierte la lista en un String JSON
         super.saveFile(info);
         return true; // Retorna verdadero si se eliminó correctamente
     }
 
-    public Integer recuperoIndex (Integer id) {
+    public Integer recuperoIndex(Integer id) {
         Lote[] lista = listAll.toArray();
         Integer count = 0;
-        System.out.println("Entramos acá " +id);
+        System.out.println("Entramos acá " + id);
         try {
             for (int i = 0; i < lista.length; i++) {
                 if (lista[i].getId() != id) {
-                count++;
-                }else if (lista[i].getId() == id) {
+                    count++;
+                } else if (lista[i].getId() == id) {
                     return count;
                 }
             }
@@ -83,15 +83,15 @@ public class LoteDao extends AdapterDao<Lote> {
     }
 
     // public Integer searchIndex (Integer id) {
-    //     Integer index = 0;
-    //     getlistAll();
-    //     Lote [] lista = listAll.toArray();
-    //     for (int i = 0; i < lista.length; i++) {
-    //         if (lista[i].getId() != id) {
-                
-    //         }
-    //     }
-    //     return index;
+    // Integer index = 0;
+    // getlistAll();
+    // Lote [] lista = listAll.toArray();
+    // for (int i = 0; i < lista.length; i++) {
+    // if (lista[i].getId() != id) {
+
+    // }
+    // }
+    // return index;
     // }
 
     public LinkedList<Lote> buscar_CodigoLote(String texto) {
@@ -114,7 +114,7 @@ public class LoteDao extends AdapterDao<Lote> {
                     String codigoLote = midLote.getCodigoLote().toLowerCase();
 
                     if (codigoLote.startsWith(texto.toLowerCase())) { // Añadimos elementos que coincidan hacia
-                                                                           // ambos lados
+                                                                      // ambos lados
                         int izqL = mid;
                         int derL = mid;
                         while (izqL >= 0

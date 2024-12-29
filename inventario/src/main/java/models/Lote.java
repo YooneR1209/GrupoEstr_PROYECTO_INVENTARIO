@@ -99,7 +99,7 @@ public class Lote {
     }
 
     // public String toString() {
-    // return "Producto{id='"+ id + "', codigoLote='" + codigoLote + "',
-    // id_Producto='" + id_Producto +"}";
+    // return "Producto{id='" + id + "', codigoLote='" + codigoLote + "',
+    // id_Producto='" + id_Producto + "}";
     // }
 }

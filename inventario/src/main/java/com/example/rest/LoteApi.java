@@ -11,13 +11,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 @Path("lote")
-public class LoteApi {  
+public class LoteApi {
 
     @Path("/list")
     @GET
@@ -31,12 +30,12 @@ public class LoteApi {
         try {
             map.put("data", ls.listShowAll());
             if (ls.listAll().isEmpty()) {
-                map.put("data", new Object[]{});
-               
+                map.put("data", new Object[] {});
+
             }
             return Response.ok(map).build();
         } catch (Exception e) {
-            map.put("data", new Object[]{});
+            map.put("data", new Object[] {});
 
             // TODO: handle exception
         }
@@ -53,26 +52,25 @@ public class LoteApi {
         try {
             ls.setLote(ls.get(id));
         } catch (Exception e) {
-            System.out.println("Error "+e);        
+            System.out.println("Error " + e);
         }
         map.put("msg", "Ok");
         map.put("data", ls.getLote());
         if (ls.getLote().getId() == null) {
             map.put("data", "No existe la Lote con ese identificador");
-           return Response.status(Status.BAD_REQUEST).entity(map).build();
+            return Response.status(Status.BAD_REQUEST).entity(map).build();
         }
-
 
         return Response.ok(map).build();
     }
-    
+
     @Path("/save")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response save(HashMap map) {
-        //todo
-        //Validation
+        // todo
+        // Validation
 
         HashMap res = new HashMap<>();
 
@@ -94,7 +92,7 @@ public class LoteApi {
             res.put("msg", "Ok");
             res.put("data", "Guardado correctamente");
             return Response.ok(res).build();
-           
+
         } catch (Exception e) {
             res.put("msg", "Error");
             res.put("data", e.toString());
@@ -122,20 +120,20 @@ public class LoteApi {
             ls.getLote().setFechaVencimiento(map.get("fechaVencimiento").toString());
             ls.getLote().setFechaCreacion(map.get("fechaCreacion").toString());
             ls.getLote().setDescripcionLote(map.get("descripcionLote").toString());
-    
+
             ls.update();
 
             res.put("msg", "Ok");
             res.put("data", "Guardado correctamente");
             return Response.ok(res).build();
-           
+
         } catch (Exception e) {
             res.put("msg", "Error");
             res.put("data", e.toString());
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
         }
     }
-    
+
     @Path("/listType")
 
     @GET
@@ -155,31 +153,32 @@ public class LoteApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteLote(@PathParam("id") int id) {
         HashMap<String, Object> res = new HashMap<>();
-    
+
         try {
             LoteServicies fs = new LoteServicies();
-            
-            boolean LoteDeleted = fs.delete(id);       // Intentamos eliminar el Lote
+
+            boolean LoteDeleted = fs.delete(id); // Intentamos eliminar el Lote
 
             if (!LoteDeleted) {
 
-                res.put("message", "Lote no encontrada o no eliminada");     // Si no se eliminó, enviar un error 404
+                res.put("message", "Lote no encontrada o no eliminada"); // Si no se eliminó, enviar un error 404
                 return Response.status(Response.Status.NOT_FOUND).entity(res).build();
 
             } else {
-            
+
                 res.put("message", "Lote eliminados exitosamente");
                 return Response.ok(res).build();
 
             }
         } catch (Exception e) {
-            
-            res.put("message", "Error al intentar eliminar la Lote"); // En caso de error, devolver una respuesta de error interno
+
+            res.put("message", "Error al intentar eliminar la Lote"); // En caso de error, devolver una respuesta de
+                                                                      // error interno
             res.put("error", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
         }
     }
-    
+
     @Path("/list/search/codigoLote/{texto}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -190,9 +189,8 @@ public class LoteApi {
         map.put("msg", "Ok");
         map.put("data", fs.buscar_CodigoLote(texto).toArray());
         if (fs.buscar_CodigoLote(texto).isEmpty()) {
-            map.put("data", new Object[]{});
+            map.put("data", new Object[] {});
         }
-
 
         return Response.ok(map).build();
     }

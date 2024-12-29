@@ -1,13 +1,7 @@
 package controller.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import controller.tda.list.LinkedList;
-import models.Lote;
 import models.OrdenCompra;
-import com.google.gson.Gson;
 
 public class OrdenCompraServicies {
     private OrdenCompraDao obj;
@@ -16,13 +10,14 @@ public class OrdenCompraServicies {
         obj = new OrdenCompraDao(); // Instancia un objeto de la clase OrdenCompraDao
     }
 
-    public Boolean update() throws Exception { // Guarda la variable OrdenCompra en la lista de objetos
-        return obj.update(); // Invoca el método save() de la clase OrdenCompraDao
-    }
-
     public Boolean save(OrdenCompra ordenFront) throws Exception {
 
         return obj.save(ordenFront);
+    }
+
+    public Boolean updateLotes(OrdenCompra ordenCompra) throws Exception {
+
+        return obj.updateLotes(ordenCompra);
     }
 
     public LinkedList<OrdenCompra> listAll() { // Obtiene la lista de objetos LinkedList<T>
@@ -42,10 +37,6 @@ public class OrdenCompraServicies {
 
     public OrdenCompra get(Integer id) throws Exception { // Obtiene un objeto OrdenCompra por su id
         return obj.get(id); // Invoca el método get() de la clase OrdenCompraDao y envía el id
-    }
-
-    public Boolean delete(int index) throws Exception { // Elimina un objeto OrdenCompra por su índice
-        return obj.delete(index); // Invoca el método delete() de la clase OrdenCompraDao y envía el índice
     }
 
 }

@@ -2,10 +2,10 @@ package controller.dao;
 
 import models.OrdenCompra;
 
-import com.google.gson.Gson;
-
+import controller.dao.implement.AdapterDao;
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import models.Lote;
 
 public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
     private OrdenCompra ordenCompra = new OrdenCompra();
@@ -46,31 +46,36 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
         return true; // Retorna verdadero si se guardó correctamente
     }
 
-    public Boolean update() throws Exception { // Actualiza el nodo Lote en la lista de objetos
-        this.getlistAll();
-        this.mergeA(getOrdenCompra(), recuperoIndex(ordenCompra.getId())); // Envia la ordenCompra a actualizar con su
-                                                                           // index
-        System.out.println("valor" + recuperoIndex(ordenCompra.getId()));
-        this.listAll = listAll(); // Actualiza la lista de objetos
-        System.out.println("listaaa = " + listAll.toString());
-        ;
+    public Boolean updateLotes(OrdenCompra ordenCompra) throws Exception {
+        Lote[] lotelist = ordenCompra.getLoteList();
+        LoteDao ld = new LoteDao();
+
+        try {
+            for (Lote lote : lotelist) {
+                int cantidad = lote.getCantidad();
+                String codigo = lote.getCodigoLote();
+                System.out.println("Lote: " + codigo + " Cantidad:" + cantidad);
+                Lote lotesito = this.buscarCodigoLote(codigo);
+                if (lotesito.getCodigoLote() != null) {
+                    lotesito.setCantidad(lotesito.getCantidad() + cantidad);
+                    ld.setLote(lotesito);
+                    ld.update();
+                } else {
+                    System.out.println("El lote " + lote.getCodigoLote() + " No existe");
+                    ld.setLote(lote);
+                    ld.save();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR updteLotes: " + e);
+        }
+
         return true;
     }
 
-    public Boolean delete(int index) throws Exception { // Elimina un objeto Lote por su índice
-        Gson g = new Gson();
-        System.out.println("intentamos eliminar el elemento con id " + index);
-        this.listAll = listAll();
-        System.out.println("lista:" + this.listAll.toString());
-        ;
-        this.listAll.remove(recuperoIndex(index));
-        String info = g.toJson(this.listAll.toArray()); // Convierte la lista en un String JSON
-        super.saveFile(info);
-        return true; // Retorna verdadero si se eliminó correctamente
-    }
-
     public Integer recuperoIndex(Integer id) {
-        OrdenCompra[] lista = listAll.toArray();
+        LoteDao ld = new LoteDao();
+        Lote[] lista = ld.listAll().toArray();
         Integer count = 0;
         System.out.println("Entramos acá " + id);
         try {
@@ -87,19 +92,19 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
         return null;
     }
 
-    public OrdenCompra buscar_IdOrdenCompra(int id) {
-        this.listAll = listAll();
-        OrdenCompra p = new OrdenCompra();
-        OrdenCompra[] lista = listAll.toArray();
-        if (!listAll.isEmpty()) {
+    public Lote buscarCodigoLote(String codigo) {
+        Lote l = new Lote();
+        LoteDao ld = new LoteDao();
+        Lote[] lista = ld.listAll().toArray();
+        if (lista != null) {
             for (int i = 0; i < lista.length; i++) {
-                if (lista[i].getId().intValue() == id) {
-                    p = lista[i];
+                if (lista[i].getCodigoLote().equals(codigo)) {
+                    l = lista[i];
                     break;
                 }
             }
         }
-        return p;
+        return l;
     }
 
 }

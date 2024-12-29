@@ -6,7 +6,6 @@ import models.OrdenCompra;
 import java.util.HashMap;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -70,7 +69,9 @@ public class OrdenCompraApi {
         try {
 
             OrdenCompraServicies ocs = new OrdenCompraServicies();
-            ocs.save(ordenCompra);
+            // ocs.save(ordenCompra); // Guardamos la factura
+
+            ocs.updateLotes(ordenCompra);
 
             res.put("msg", "Ok");
             res.put("data", "Guardado correctamente");
@@ -83,37 +84,6 @@ public class OrdenCompraApi {
         }
     }
 
-    // @Path("/update")
-    // @POST
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response update(HashMap map) {
-
-    // HashMap res = new HashMap<>();
-
-    // try {
-
-    // OrdenCompraServicies ocs = new OrdenCompraServicies();
-    // ocs.setOrdenCompra(ocs.get(Integer.parseInt(map.get("id").toString())));
-    // ocs.getOrdenCompra().setNro_OrdenCompra(map.get("nro_OrdenCompra").toString());
-    // ocs.getOrdenCompra().setFechaCompra(map.get("fechaCompra").toString());
-    // ocs.getOrdenCompra().setCedula_Distribuidor(map.get("cedula_Distribuidor").toString());
-    // ocs.getOrdenCompra().setLoteList(map.get("loteList").toString());
-    // ocs.getOrdenCompra().setTotalCompra(Float.parseFloat(map.get("totalCompra").toString()));
-
-    // ocs.update();
-
-    // res.put("msg", "Ok");
-    // res.put("data", "Guardado correctamente");
-    // return Response.ok(res).build();
-
-    // } catch (Exception e) {
-    // res.put("msg", "Error");
-    // res.put("data", e.toString());
-    // return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-    // }
-    // }
-
     @Path("/listType")
 
     @GET
@@ -125,37 +95,6 @@ public class OrdenCompraApi {
         map.put("msg", "Ok");
         map.put("data", ocs.getOrdenCompra());
         return Response.ok(map).build();
-    }
-
-    @Path("/delete/{id}")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteOrdenCompra(@PathParam("id") int id) {
-        HashMap<String, Object> res = new HashMap<>();
-
-        try {
-            OrdenCompraServicies fs = new OrdenCompraServicies();
-
-            boolean OrdenCompraDeleted = fs.delete(id); // Intentamos eliminar el OrdenCompra
-
-            if (OrdenCompraDeleted) {
-                res.put("message", "OrdenCompra y Generador eliminados exitosamente");
-                return Response.ok(res).build();
-
-            } else {
-
-                res.put("message", "OrdenCompra no encontrada o no eliminada"); // Si no se eliminó, enviar un error 404
-                return Response.status(Response.Status.NOT_FOUND).entity(res).build();
-
-            }
-        } catch (Exception e) {
-
-            res.put("message", "Error al intentar eliminar la OrdenCompra"); // En caso de error, devolver una respuesta
-                                                                             // de
-                                                                             // error interno
-            res.put("error", e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
-        }
     }
 
     // @Path("/list/order/{attribute}/{type}/{metodo}")

@@ -1,1 +1,35 @@
-[{"id":1,"codigoLote":"4000-hu-32","cantidad":10,"precioCompra":10.0,"precioVenta":2.0,"fechaVencimiento":"2025-02-27","fechaCreacion":"2024-09-25","descripcionLote":"Lote traído el dia lunes","id_Producto":1},{"id":2,"codigoLote":"11133","cantidad":23,"precioCompra":10.0,"precioVenta":13.0,"fechaVencimiento":"2025-01-31","fechaCreacion":"2024-12-11","descripcionLote":"Lote Estandar","id_Producto":1}]
+[
+  {
+    "id": 1,
+    "codigoLote": "4000-hu-32",
+    "cantidad": 35,
+    "precioCompra": 10.0,
+    "precioVenta": 2.0,
+    "fechaVencimiento": "2025-02-27",
+    "fechaCreacion": "2024-09-25",
+    "descripcionLote": "Lote traído el dia lunes",
+    "id_Producto": 1
+  },
+  {
+    "id": 2,
+    "codigoLote": "11133",
+    "cantidad": 10,
+    "precioCompra": 10.0,
+    "precioVenta": 13.0,
+    "fechaVencimiento": "2025-01-31",
+    "fechaCreacion": "2024-12-11",
+    "descripcionLote": "Lote Estandar",
+    "id_Producto": 1
+  },
+  {
+    "id": 3,
+    "codigoLote": "64e64e",
+    "cantidad": 25,
+    "precioCompra": 23.0,
+    "precioVenta": 70.0,
+    "fechaVencimiento": "2024-12-04",
+    "fechaCreacion": "2024-12-25",
+    "descripcionLote": "hola",
+    "id_Producto": 2
+  }
+]

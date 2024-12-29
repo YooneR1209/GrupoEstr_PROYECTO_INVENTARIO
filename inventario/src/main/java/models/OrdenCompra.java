@@ -5,8 +5,7 @@ public class OrdenCompra {
     private String nro_OrdenCompra;
     private String fechaCompra;
     private String cedula_Distribuidor;
-    private String loteList;
-    private Float totalCompra;
+    private Lote[] loteList;
 
     public Integer getId() {
         return id;
@@ -40,20 +39,20 @@ public class OrdenCompra {
         this.cedula_Distribuidor = cedula_Distribuidor;
     }
 
-    public String getLoteList() {
+    public Lote[] getLoteList() {
         return loteList;
     }
 
-    public void setLoteList(String loteList) {
+    public void setLoteList(Lote[] loteList) {
         this.loteList = loteList;
     }
 
-    public Float getTotalCompra() {
-        return totalCompra;
-    }
+    // public Float getTotalCompra() {
+    // return totalCompra;
+    // }
 
-    public void setTotalCompra(Float totalCompra) {
-        this.totalCompra = totalCompra;
-    }
+    // public void setTotalCompra(Float totalCompra) {
+    // this.totalCompra = totalCompra;
+    // }
 
 }

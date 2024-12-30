@@ -56,12 +56,6 @@ public class PersonaApi {
     public Response savePersona(HashMap<String , Object> map){
         HashMap<String, Object> res = new HashMap<>();
         PersonaServices ps = new PersonaServices();
-
-        if (map.get("nombre") == null || map.get("apellido") == null || map.get("telefono") == null || map.get("correo") == null || map.get("dni") == null || map.get("clave") == null) {
-            res.put("message", "Faltan datos");
-            return Response.status(Response.Status.BAD_REQUEST).entity(res).build(); 
-        }
-
         try {
             ps.getPersona().setNombre(map.get("nombre").toString());
             ps.getPersona().setApellido(map.get("apellido").toString());

@@ -5,6 +5,7 @@ import models.OrdenCompra;
 import controller.dao.implement.AdapterDao;
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import models.Distribuidor;
 import models.Lote;
 
 public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
@@ -105,6 +106,21 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
             }
         }
         return l;
+    }
+
+    public OrdenCompra buscar_IdOrdenCompra(int id) {
+        this.listAll = listAll();
+        OrdenCompra p = new OrdenCompra();
+        OrdenCompra[] lista = listAll.toArray();
+        if (!listAll.isEmpty()) {
+            for (int i = 0; i < lista.length; i++) {
+                if (lista[i].getId().intValue() == id) {
+                    p = lista[i];
+                    break;
+                }
+            }
+        }
+        return p;
     }
 
 }

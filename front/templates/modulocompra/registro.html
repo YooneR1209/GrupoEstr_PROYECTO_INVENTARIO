@@ -55,24 +55,28 @@
           </div>
         </div>
 
-        <label for="loteContainer" class="form-label">
-          <i class="bi bi-box "></i> Productos </label>
-        <div id="loteContainer">
+        <form id="ordenCompraForm">
           <!-- Campos para lotes dinámicos -->
-        </div>
+          <label for="loteContainer" class="form-label">
+            <i class="bi bi-box"></i> Productos
+          </label>
+          <div id="loteContainer"></div>
 
-        <button class="boton-lote" type="button" onclick="addLote()">Añadir Lote</button><br><br>
+          <button class="boton-lote" type="button" onclick="addLote()">Añadir Lote</button><br><br>
 
-        <!-- Buttons -->
-        <div class="div-botones-compra">
-          <button class="btn btn-success boton" type="submit">
-            <i class="bi bi-check-circle"></i> Registrar
-          </button>
-          <a href="/producto/list" class="btn btn-danger boton">
-            <i class="bi bi-x-circle"></i> Cancelar
-          </a>
-        </div>
+          <!-- El monto total aparecerá aquí -->
+          <input type="hidden" name="totalC" id="totalC">
 
+          <!-- Buttons -->
+          <div class="div-botones-compra">
+            <button class="btn btn-success boton" type="submit">
+              <i class="bi bi-check-circle"></i> Registrar
+            </button>
+            <a href="/producto/list" class="btn btn-danger boton">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+          </div>
+        </form>
 
       </form>
     </div>

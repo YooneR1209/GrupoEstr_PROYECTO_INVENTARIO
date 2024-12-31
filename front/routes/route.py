@@ -699,7 +699,7 @@ def update_distribuidor():
         "nombre": form["nom"],
         "cedula": form["ced"],
         "celular": form["cel"],
-        "descripcion": form["descripcion"],
+        "totalCompra": totalCompra,
     }
 
     r_distribuidor = requests.post(
@@ -721,6 +721,22 @@ def update_distribuidor():
 
 
 # COMPRAS
+
+
+@router.route("/compras/list")
+def list_ordenCompra(msg=""):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r_ordenCompra = requests.get("http://localhost:8080/myapp/ordenCompra/list")
+    data_ordenCompra = r_ordenCompra.json()
+
+    print(data_ordenCompra)
+
+    return render_template(
+        "modulocompra/compras.html",
+        lista_ordenCompra=data_ordenCompra["data"],
+    )
 
 
 @router.route("/compras/register")
@@ -755,7 +771,7 @@ def save_compra():
         "fechaCompra": form.get("fechaCom", None),
         "cedula_Distribuidor": form.get("cedula_dis"),
         "loteList": form.get("loteList"),
-        "totalCompra": form.get("totalC"),
+        "totalCompra": "30",
     }
 
     print(data_ordenCompra)  # Imprime todo el diccionario recibido
@@ -778,3 +794,30 @@ def save_compra():
     #         category="error",
     #     )
     #     return redirect("/ordenCompra/list")
+
+
+@router.route("/ordenCompra/imprimir/<id>", methods=["GET"])
+def view_edit_ordenCompra(id):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r = requests.get("http://localhost:8080/myapp/ordenCompra/listType")
+    lista_tipos = r.json()  # Guardamos la respuesta JSON
+
+    r1 = requests.get(
+        f"http://localhost:8080/myapp/ordenCompra/get/{id}"
+    )  # Obtenemos los datos de la ordenCompra por ID
+
+    if r1.status_code == 200:
+        data_ordenCompra = r1.json()
+        ordenCompra = data_ordenCompra["data"]
+
+        return render_template(
+            "modulocompra/imprimir.html",
+            lista=lista_tipos["data"],
+            ordenCompra=ordenCompra,
+        )
+
+    else:
+        flash("Error al obtener la ordenCompra", category="error")
+        return redirect("/admin/ordenCompra/list")

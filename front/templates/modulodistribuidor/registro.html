@@ -1,4 +1,5 @@
-{% extends "template.html" %} {% block content %}
+{% extends "template.html" %}
+{% block content %}
 
 <title>Registro de distribuidor</title>
 
@@ -10,43 +11,54 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <i class="bi bi-pencil-square"></i> REGISTRE UN DISTRIBUIDOR
+                                <i class="bi bi-person-plus"></i> REGISTRE UN DISTRIBUIDOR
                             </h5>
 
                             <form class="row g-3 needs-validation" method="POST" action="/distribuidor/save">
+                                <!-- Nombre del distribuidor -->
                                 <div class="col-md-6">
-                                    <label for="nombre" class="form-label"><i class="bi bi-box"></i> Nombre
-                                        Distribuidor</label>
+                                    <label for="nombre" class="form-label">
+                                        <i class="bi bi-person-fill"></i> Nombre Distribuidor
+                                    </label>
                                     <input type="text" class="form-control" id="nombre" name="nom" required
                                         minlength="3" maxlength="150" />
                                 </div>
 
+                                <!-- Cédula -->
                                 <div class="col-md-6">
-                                    <label for="cedula" class="form-label"><i class="bi bi-tag"></i> Cedula </label>
+                                    <label for="cedula" class="form-label">
+                                        <i class="bi bi-credit-card"></i> Cédula
+                                    </label>
                                     <input type="number" class="form-control" id="cedula" name="ced" required
                                         min="0000000000" max="9999999999" />
                                 </div>
 
+                                <!-- Celular de contacto -->
                                 <div class="col-md-6">
-                                    <label for="celular" class="form-label"><i class="bi bi-shop"></i> Celular de
-                                        contacto</label>
+                                    <label for="celular" class="form-label">
+                                        <i class="bi bi-phone"></i> Celular de Contacto
+                                    </label>
                                     <input type="number" class="form-control" id="celular" name="cel" required
                                         min="0000000000" max="9999999999" />
                                 </div>
 
+                                <!-- Descripción -->
                                 <div class="col-md-6">
-                                    <label for="descripcion" class="form-label"><i class="bi bi-card-text"></i>
-                                        Descripción</label>
+                                    <label for="descripcion" class="form-label">
+                                        <i class="bi bi-info-circle"></i> Descripción
+                                    </label>
                                     <input type="text" class="form-control" id="descripcion" name="descripcion" required
                                         minlength="3" maxlength="150" />
                                 </div>
 
+                                <!-- Botones -->
                                 <div class="col-12 text-center">
                                     <button class="btn btn-success" type="submit">
                                         <i class="bi bi-check-circle"></i> REGISTRAR
                                     </button>
-                                    <a href="/distribuidor/list" class="btn btn-danger"><i class="bi bi-x-circle"></i>
-                                        CANCELAR</a>
+                                    <a href="/distribuidor/list" class="btn btn-danger">
+                                        <i class="bi bi-x-circle"></i> CANCELAR
+                                    </a>
                                 </div>
                             </form>
                         </div>

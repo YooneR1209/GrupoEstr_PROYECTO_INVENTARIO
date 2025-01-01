@@ -28,55 +28,57 @@
 <section class="section">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <div class="">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Marca</th>
-                                        <th>Código de Lote</th>
-                                        <th>Unidades</th>
-                                        <th>Precio Compra</th>
-                                        <th>Precio Venta</th>
-                                        <th>Fecha de Elaboración</th>
-                                        <th>Fecha de Vencimiento</th>
-                                        <th>Descripción de Lote</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in lista_lote %}
-                                    <tr>
-                                        <td>{{ item.producto.nombre }}</td>
-                                        <td>{{ item.producto.marca }}</td>
-                                        <td>{{ item.codigoLote }}</td>
-                                        <td>{{ item.cantidad }}</td>
-                                        <td>{{ item.precioCompra }}</td>
-                                        <td>{{ item.precioVenta }}</td>
-                                        <td>{{ item.fechaCreacion }}</td>
-                                        <td>{{ item.fechaVencimiento }}</td>
-                                        <td>{{ item.descripcionLote }}</td>
-                                        <td>
-                                            <a href="/lote/edit/{{ item.id }}" class="btn btn-info d-flex align-items-center mb-1">
-                                                <i class="bi bi-pencil-square me-1"></i> Modificar
-                                            </a>
-                                            <form action="/lote/delete/{{ item.id }}" method="post" style="display:inline;">
-                                                <button type="submit" class="btn btn-danger d-flex align-items-center" onclick="return confirm('¿Estás seguro de que deseas eliminar este lote?');">
-                                                    <i class="bi bi-trash-fill me-1"></i> Eliminar
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Marca</th>
+                                    <th>Código de Lote</th>
+                                    <th>Unidades</th>
+                                    <th>Precio Compra</th>
+                                    <th>Precio Venta</th>
+                                    <th>Fecha de Elaboración</th>
+                                    <th>Fecha de Vencimiento</th>
+                                    <th>Descripción de Lote</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in lista_lote %}
+                                <tr>
+                                    <td>{{ item.producto.nombre }}</td>
+                                    <td>{{ item.producto.marca }}</td>
+                                    <td>{{ item.codigoLote }}</td>
+                                    <td>{{ item.cantidad }}</td>
+                                    <td>{{ item.precioCompra }}</td>
+                                    <td>{{ item.precioVenta }}</td>
+                                    <td>{{ item.fechaCreacion }}</td>
+                                    <td>{{ item.fechaVencimiento }}</td>
+                                    <td>{{ item.descripcionLote }}</td>
+                                    <td>
+                                        <a href="/lote/edit/{{ item.id }}"
+                                            class="btn btn-info d-flex align-items-center mb-1">
+                                            <i class="bi bi-pencil-square me-1"></i> Modificar
+                                        </a>
+                                        <form action="/lote/delete/{{ item.id }}" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger d-flex align-items-center"
+                                                onclick="return confirm('¿Estás seguro de que deseas eliminar este lote?');">
+                                                <i class="bi bi-trash-fill me-1"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 {% endblock %}

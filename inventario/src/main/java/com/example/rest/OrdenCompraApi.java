@@ -69,7 +69,7 @@ public class OrdenCompraApi {
         try {
 
             OrdenCompraServicies ocs = new OrdenCompraServicies();
-            // ocs.save(ordenCompra); // Guardamos la factura
+            ocs.save(ordenCompra); // Guardamos la factura
 
             ocs.updateLotes(ordenCompra);
 

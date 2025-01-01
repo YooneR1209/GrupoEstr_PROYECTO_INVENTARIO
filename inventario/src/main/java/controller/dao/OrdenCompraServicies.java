@@ -36,7 +36,7 @@ public class OrdenCompraServicies {
     }
 
     public OrdenCompra get(Integer id) throws Exception { // Obtiene un objeto OrdenCompra por su id
-        return obj.get(id); // Invoca el método get() de la clase OrdenCompraDao y envía el id
+        return obj.buscar_IdOrdenCompra(id); // Invoca el método get() de la clase OrdenCompraDao y envía el id
     }
 
 }

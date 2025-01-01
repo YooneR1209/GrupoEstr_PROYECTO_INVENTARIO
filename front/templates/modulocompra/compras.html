@@ -3,13 +3,10 @@
 <title>Lotes</title>
 
 <div class="pagetitle text-center mb-4">
-    <h1>INGRESE UNA COMPRA</h1>
+    <h1>LISTA DE COMPRAS</h1>
     <div class="mt-3">
-        <a href="/lote/register" class="btn btn-success me-2 d-inline-flex align-items-center">
+        <a href="/compras/register" class="btn btn-success me-2 d-inline-flex align-items-center">
             <i class="bi bi-plus-circle me-1"></i> REGISTRAR
-        </a>
-        <a href="/producto/list" class="btn btn-info d-inline-flex align-items-center">
-            <i class="bi bi-box-seam me-1"></i> PRODUCTOS
         </a>
     </div>
 </div>
@@ -27,7 +24,7 @@
 
 <section class="section">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-5">
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="">
@@ -37,7 +34,6 @@
                                     <th>nro_OrdenCompra</th>
                                     <th>Fecha Factura</th>
                                     <th>Cedula Distribuidor</th>
-                                    <th>Lote List</th>
                                     <th>Total Compra</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -48,15 +44,15 @@
                                     <td>{{ item.nro_OrdenCompra }}</td>
                                     <td>{{ item.fechaCompra }}</td>
                                     <td>{{ item.cedula_Distribuidor }}</td>
-                                    <td>{{ item.loteList }}</td>
                                     <td>{{ item.totalCompra }}</td>
                                     <td>
                                         <a href="/ordenCompra/imprimir/{{ item.id }}"
-                                            class="btn btn-info d-flex align-items-center mb-1">
-                                            <i class="bi bi-pencil-square me-1"></i> Imprimir
+                                            class="btn btn-info d-flex justify-content-center align-items-center mb-1">
+                                            <i class="bi bi-printer me-1"></i> Imprimir
                                         </a>
                                     </td>
                                 </tr>
+
                                 {% endfor %}
                             </tbody>
                         </table>

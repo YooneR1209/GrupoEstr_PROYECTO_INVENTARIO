@@ -132,7 +132,9 @@
         <div class="dashboard-buttons">
             <a href="/producto/list"><i class="bi bi-box-seam"></i> Productos</a>
             <a href="/ventas"><i class="bi bi-cart-fill"></i> Ventas</a>
-            <a href="/compras/register"><i class="bi bi-bag-fill"></i> Compras</a>
+            <a href="/compras/list"><i class="bi bi-bag-fill"></i> Compras</a>
+            <a href="/distribuidor/list"><i class="bi bi-truck"></i> Distribuidores</a>
+
         </div>
     </div>
 
@@ -140,22 +142,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (succesMessage){
+            if (succesMessage) {
                 Swal.fire({
-            title: '¡Éxito!',
-            text: "{{ success_message[0] }}",
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-        });
-            }
-            if (errorMessage){
-                Swal.fire({
-            title: '¡Error!',
-            text: "{{ error_message[0] }}",
-            icon: 'error',
-            confirmButtonText: 'Aceptar'
+                    title: '¡Éxito!',
+                    text: "{{ success_message[0] }}",
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
                 });
-            }
+            };
         });
     </script>
 

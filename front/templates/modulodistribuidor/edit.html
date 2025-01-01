@@ -5,7 +5,9 @@
 <main class="main">
   <!-- Page Title -->
   <div class="page-title">
-    <h1>MODIFICAR DISTRIBUIDOR</h1>
+    <h1>
+      <i class="bi bi-pencil-square"></i> MODIFICAR DISTRIBUIDOR
+    </h1>
   </div>
   <!-- End Page Title -->
 
@@ -19,32 +21,44 @@
                 <input type="hidden" name="id" value="{{distribuidor.id}}">
 
                 <div class="col-md-6">
-                  <label for="nombre" class="form-label">Nombre de Distribuidor</label>
+                  <label for="nombre" class="form-label">
+                    <i class="bi bi-person-fill"></i> Nombre de Distribuidor
+                  </label>
                   <input type="text" class="form-control" id="nombre" name="nom" required
                     value="{{distribuidor.nombre}}" minlength="3" maxlength="150">
                 </div>
 
                 <div class="col-md-6">
-                  <label for="cedula" class="form-label">Cedula</label>
+                  <label for="cedula" class="form-label">
+                    <i class="bi bi-credit-card"></i> Cedula
+                  </label>
                   <input type="text" class="form-control" id="cedula" name="ced" required
                     value="{{distribuidor.cedula}}" minlength="3" maxlength="150">
                 </div>
 
                 <div class="col-md-6">
-                  <label for="celular" class="form-label">Celular</label>
+                  <label for="celular" class="form-label">
+                    <i class="bi bi-phone"></i> Celular
+                  </label>
                   <input type="text" class="form-control" id="celular" name="cel" value="{{distribuidor.celular}}"
                     required minlength="3" maxlength="150">
                 </div>
 
                 <div class="col-md-6">
-                  <label for="descripcion" class="form-label">Descripción</label>
+                  <label for="descripcion" class="form-label">
+                    <i class="bi bi-info-circle"></i> Descripción
+                  </label>
                   <input type="text" class="form-control" id="descripcion" name="descripcion" required
                     value="{{distribuidor.descripcion}}" minlength="3" maxlength="150">
                 </div>
 
                 <div class="col-12 text-center">
-                  <button class="btn btn-success" type="submit">MODIFICAR</button>
-                  <a href="/distribuidor/list" class="btn btn-danger">CANCELAR</a>
+                  <button class="btn btn-success" type="submit">
+                    <i class="bi bi-check-circle"></i> MODIFICAR
+                  </button>
+                  <a href="/distribuidor/list" class="btn btn-danger">
+                    <i class="bi bi-x-circle"></i> CANCELAR
+                  </a>
                 </div>
             </div>
           </div>

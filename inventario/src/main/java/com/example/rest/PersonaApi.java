@@ -184,4 +184,54 @@ public class PersonaApi {
         }
     }
 
+    @Path("/recuperar_clave")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response recuperarClave(HashMap<String, Object> map){
+        HashMap<String, Object> res = new HashMap<>();
+        PersonaServices ps = new PersonaServices();
+        String correo = map.get("correo").toString();
+        String nuevaClave = map.get("nuevaClave").toString();                        ;
+        try {
+            if (ps.recuperarClave(correo, nuevaClave)) {
+                res.put("msg", "Clave recuperada");
+                res.put("clave", ps.getPersona().getClave());
+                return Response.ok(res).build();  
+            } else {
+                res.put("msg", "Correo no encontrado");
+                return Response.status(Response.Status.NOT_FOUND).entity(res).build();  
+            }
+        } catch (Exception e) {
+            res.put("msg", "Error al recuperar clave");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
+        }
+    }
+
+    
+    @Path("/correoexiste")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response correoexiste(HashMap<String, Object> map){
+        HashMap<String, Object> res = new HashMap<>();
+        PersonaServices ps = new PersonaServices();
+        String correo = map.get("correo").toString();
+        try {
+            if (ps.existeCorreo(correo)) {
+                res.put("msg", "Correo encontrado");
+                res.put("persona", ps.getPersona());	
+                return Response.ok(res).build();  
+            } else {
+                res.put("msg", "Correo no encontrado");
+                return Response.status(Response.Status.NOT_FOUND).entity(res).build();  
+            }
+        } catch (Exception e) {
+            res.put("msg", "Error al buscar correo");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
+        }
+    }
+
 }

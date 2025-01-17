@@ -163,6 +163,47 @@ def formularegistro():
 
     return render_template("modulologin/registro.html")
 
+from flask import Flask, render_template, request, redirect, url_for, flash
+import requests
+import json
+
+app = Flask(__name__)
+app.secret_key = "clave_secreta_para_flash"  # Necesario para usar mensajes flash
+
+@router.route("/formulorecuperar")
+def formuloregistre():
+    return render_template("modulologin/correo.html")
+
+@router.route("/verificarcorreo", methods=["POST"])
+def ingresa_correo():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+    data = {"correo": form["correo"]}
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/correoexiste", headers=headers, data=json.dumps(data)
+    )
+    if r.status_code == 200:
+        return render_template("modulologin/recuperar.html", correo=data["correo"])
+    else:
+        flash("El correo ingresado no existe. Por favor verifica e intenta nuevamente.", "error")
+        return redirect(url_for("router.formuloregistre"))
+
+@router.route("/recuperarclave", methods=["POST"])
+def recuperar_clave():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+    data = {"correo": form["correo"], "nuevaClave": form["nuevaClave"]}
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/recuperar_clave", headers=headers, data=json.dumps(data)
+    )
+    if r.status_code == 200:
+        flash("Contraseña actualizada exitosamente. Por favor, inicia sesión.", "success")
+        return redirect(url_for("router.login"))
+    else:
+        flash("No se pudo actualizar la contraseña. Inténtalo nuevamente.", "error")
+        return redirect(url_for("router.ingresa_correo"))
+
+
 
 # INICIO PRODUCTO
 

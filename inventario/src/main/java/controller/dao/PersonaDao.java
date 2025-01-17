@@ -67,15 +67,21 @@ public class PersonaDao extends AdapterDao<Persona> {
         if (!isUnique(getPersona().getCorreo(), getPersona().getDni())) {
             throw new Exception("Correo o DNI ya existen.");
         }
-        Integer id = getListAll().getSize() + 1;
-        getPersona().setIdPersona(id);
-        String encryclave = getPersona().getClave();
-        getPersona().setClave(encryclave(encryclave));
-        String token = TokenUtil.generateToken(getPersona().getIdPersona(), getPersona().getCorreo());
-        getPersona().setToken(token);
-        persist(getPersona());
-        return true;
-    }
+        try {
+            Integer id = getListAll().getSize() + 1;
+            getPersona().setIdPersona(id);
+            String encryclave = getPersona().getClave();
+            getPersona().setClave(encryclave(encryclave));
+            String token = TokenUtil.generateToken(getPersona().getIdPersona(), getPersona().getCorreo());
+            getPersona().setToken(token);
+            persist(getPersona());
+            System.out.println("Persona guardada exitosamente.");
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error al guardar la persona: " + e.getMessage());
+                return false;
+            }
+        }
 
     /**
      * Actualiza la información de la instancia actual de Persona en la json.
@@ -158,4 +164,56 @@ public class PersonaDao extends AdapterDao<Persona> {
 
         return true;  
     }
+
+    //recuperar la contraseña 
+    public Boolean recuperarClave(String correo, String nuevaClave) throws ListEmptyException {
+        LinkedList<Persona> list = listAll(); // Obtén la lista de todas las personas.
+        Persona[] personas = list.toArray(); // Convierte la lista en un array para iterar.
+    
+        for (int i = 0; i < personas.length; i++) {
+            Persona persona = personas[i];
+    
+            if (persona.getCorreo().equals(correo)) {
+                // Generar un nuevo token y cifrar la nueva clave.
+                String token = TokenUtil.generateToken(persona.getIdPersona(), persona.getCorreo());
+                persona.setToken(token);
+    
+                String encryclave = encryclave(nuevaClave); // Cifra la nueva clave.
+                persona.setClave(encryclave); // Actualiza la clave cifrada.
+    
+                // Actualizar la lista con la nueva información.
+                list.update(persona, i); // Actualiza el objeto Persona en la lista.
+    
+                // Persistir los cambios directamente con el método `merge`.
+                try {
+                    merge(persona, i); // `merge` sobrescribe el archivo JSON en la posición correspondiente.
+                } catch (Exception e) {
+                    System.err.println("Error al persistir la nueva contraseña: " + e.getMessage());
+                    return false;
+                }
+                setPersona(persona);
+                return true; // Retorna true si todo fue exitoso.
+            }
+        }
+    
+        return false; // Retorna false si el correo no se encuentra.
+    }
+
+    public Boolean existeCorreo(String correo) throws ListEmptyException {
+        LinkedList<Persona> list = listAll();
+        for (Persona persona : list.toArray()) {
+            if (persona.getCorreo().equals(correo)) {
+                setPersona(persona);
+                return true;
+
+                    
+
+            }
+        }
+        return null;
+
+    }
+    
+    
+    
 }

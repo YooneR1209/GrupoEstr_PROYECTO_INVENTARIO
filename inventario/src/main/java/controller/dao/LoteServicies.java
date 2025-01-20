@@ -7,13 +7,14 @@ import models.Lote;
 import models.Producto;
 
 public class LoteServicies {
+
     private LoteDao obj;
-    
+
     public Object[] listShowAll() throws Exception {
         if (!obj.getlistAll().isEmpty()) {
             Lote[] lista = (Lote[]) obj.getlistAll().toArray();
-            Object[] respuesta = new Object [lista.length];
-            for(int i = 0; i< lista.length; i++) {
+            Object[] respuesta = new Object[lista.length];
+            for (int i = 0; i < lista.length; i++) {
                 Producto p = new ProductoServicies().get(lista[i].getId_Producto());
                 HashMap mapa = new HashMap<>();
                 mapa.put("id", lista[i].getId());
@@ -30,7 +31,7 @@ public class LoteServicies {
             return respuesta;
         }
         return new Object[]{};
-    } 
+    }
 
     public LinkedList<Lote> search_By_Producto(Integer id) {
         return obj.search_By_Producto(id);
@@ -59,7 +60,7 @@ public class LoteServicies {
 
     public void setLote(Lote Lote) { // Recibe un objeto Lote
         obj.setLote(Lote); // Invoca el método setLote() de la clase LoteDao y envía el objeto
-                                 // Lote
+        // Lote
     }
 
     public Lote get(Integer id) throws Exception { // Obtiene un objeto Lote por su id
@@ -70,8 +71,29 @@ public class LoteServicies {
         return obj.delete(index); // Invoca el método delete() de la clase LoteDao y envía el índice
     }
 
+    public LinkedList<Lote> search_By_Producto(int id) {
+        return obj.search_By_Producto(id);
+    }
+
     public LinkedList<Lote> buscar_CodigoLote(String texto) {
         return obj.buscar_CodigoLote(texto);
     }
-    
+
+    public Lote lote_codigo(String code) {
+        LinkedList<Lote> lista = obj.listAll();
+        Lote lote = null;
+        if (lista.isEmpty()) {
+            return lote;
+        } else {
+            Lote[] lotes = lista.toArray();
+            for (int i = 0; i < lotes.length; i++) {
+                if (lotes[i].getCodigoLote().equals(code)) {
+                    lote = lotes[i];
+                    break;
+                }
+            }
+        }
+        return lote;
+    }
+
 }

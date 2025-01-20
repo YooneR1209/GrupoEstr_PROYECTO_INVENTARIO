@@ -1,6 +1,9 @@
 import json
-from flask import Flask, Blueprint, flash, render_template, request, redirect, url_for, session
+import os
+from flask import Flask, Blueprint, flash, jsonify, render_template, request, redirect, url_for, session, send_file, make_response
 import requests
+from fpdf import FPDF
+from weasyprint import HTML
 
 router = Blueprint('router', __name__)
 
@@ -387,62 +390,153 @@ def list_lote_producto(producto_id, msg=''):
 def list_Venta(msg=''):
     r_OrdenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
     data_Venta = r_OrdenVenta.json()
-    print(data_Venta)
-    return render_template('moduloVenta/OrdenVenta.html', lista_Venta=data_Venta["data"])
+    
+    # Asegurar que "data" sea una lista
+    lista_Venta = data_Venta.get("data", [])
+
+    # Validar cada item en la lista
+    for item in lista_Venta:
+        if not isinstance(item, dict):
+            continue  # Si no es un diccionario, ignóralo
+        if "detalle" not in item or not isinstance(item["detalle"], dict):
+            item["detalle"] = {"detalle": [], "total": 0}  # Estructura predeterminada
+
+    print(lista_Venta)  # Para depuración
+
+    return render_template('moduloVenta/ventasLista.html', lista_Venta=lista_Venta)
+
+
 @router.route('/ordenVenta/register')
 def view_register_ordenVenta():
-    r_ordenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
+    r_ordenVenta = requests.get("http://localhost:8080/myapp/detalle/list")
     data_ordenVenta = r_ordenVenta.json()
-    return render_template('moduloVenta/registroVenta.html',lista_producto=data_ordenVenta["data"])
-@router.route('/ordenVenta/save', methods=['POST'])
-def save_OrdenVenta():
-    headers = {'Content-Type': 'application/json'}
-    form = request.form
-    detalle= form["txtdetalle"][:-1]
-    lista = detalle.split(":")
-    details=[]
-    for item in lista:
-        lista_aux = item.split(",")
-        details.append({"service":lista_aux[0], "cant":lista_aux[1],"precioUnitario":lista_aux[2],"totalVenta":(float(lista_aux[1])*float(lista_aux[2]))})
-    dataF ={ "n_ordenVenta": form["n_ord"], "iva":form["iva"][1:], "subtotalVenta": form["sub"][1:], "totalVenta":form["total"][1:],"details":details}
-    print(dataF)
-    
-    r_ordenVenta = requests.post("http://localhost:8080/myapp/ordenVenta/save", data=json.dumps(dataF), headers=headers)     # Hacer la petición para guardar la producto
-    
-    dat=r_ordenVenta.json()
-    if r_ordenVenta.status_code == 200:
-        flash("Registro guardado correctamente", category='info')
-        return redirect('/ordenVenta/list')
+    return render_template('moduloVenta/registrarVenta.html',lista_producto=data_ordenVenta["data"])
+
+"""MEJORAR ESTO """
+
+
+
+
+@router.route('/detalle/save', methods=['POST'])
+def guardar_orden_venta():
+
+    ARCHIVO_JSON = "data/DetalleVenta.json"  # Ruta donde se guardará el archivo JSON
+    try:
+        # Obtener los datos enviados desde el frontend
+        datos_orden = request.json
+
+        # Obtener los detalles de productos desde el objeto JSON
+        detalle_productos = datos_orden.get('detalle')
+        if not detalle_productos:
+            return jsonify({"msg": "Error: No se encontraron detalles de productos"}), 400
+        
+        # Leer el archivo JSON para obtener el último ID
+        if os.path.exists(ARCHIVO_JSON):
+            with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
+                ordenes = json.load(archivo)
+        else:
+            ordenes = []
+
+
+        # Procesar los datos
+        subtotal = datos_orden.get('subtotal', 0)
+        iva = datos_orden.get('iva', 0)
+        total = datos_orden.get('total', 0)
+
+        
+
+        nueva_orden = {
+            
+            "subtotal": subtotal,
+            "iva": iva,
+            "total": total,
+            "detalle": detalle_productos
+        }
+
+        
+        # Agregar la nueva orden a la lista
+        ordenes.append(nueva_orden)
+
+        # Guardar las órdenes actualizadas en el archivo
+        os.makedirs(os.path.dirname(ARCHIVO_JSON), exist_ok=True)  # Crear directorio si no existe
+        with open(ARCHIVO_JSON, "w", encoding="utf-8") as archivo:
+            json.dump(ordenes, archivo, indent=4, ensure_ascii=False)
+
+        # Enviar los datos al backend Java
+        url_backend_java = "http://localhost:8080/myapp/detalle/upload"  # Asegúrate de que esta URL sea correcta
+        headers = {"Content-Type": "application/json"}
+        response_java = requests.post(url_backend_java, json=nueva_orden, headers=headers)
+
+        # Verificar la respuesta del backend Java
+        if response_java.status_code == 200:
+            print("Orden enviada al backend Java correctamente.")
+        else:
+            print(f"Error al enviar la orden al backend Java: {response_java.status_code}")
+
+        # Responder al cliente
+        return jsonify({"msg": "Orden de venta guardada exitosamente"}), 200
+
+    except Exception as e:
+        print("Error al procesar la orden de venta:", str(e))
+        return jsonify({"msg": "Error interno del servidor"}), 500
+
+
+
+@router.route('/detalle_venta/<string:n_OrdenVenta>')
+def detalle_venta(n_OrdenVenta):
+    # Realiza la solicitud al servicio REST para obtener la venta específica
+    url = f"http://localhost:8080/myapp/ordenVenta/get/{n_OrdenVenta}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        venta = response.json().get("data")
     else:
-        flash(r_ordenVenta.json().get("data", "Error al guardar la orden de venta"), category='error')
-        return redirect('/ordenVenta/list')
-#DetalleOrdenVenta
-@router.route('/detalleVenta/list')
-def list_DetalleVenta(msg=''):
-    r_DetalleVenta = requests.get("http://localhost:8080/myapp/detalleVenta/list")
-    data_DetalleVenta = r_DetalleVenta.json()
-    print(data_DetalleVenta)
-    return render_template('moduloVenta/DetalleOrdenVenta.html', lista_DetalleVenta=data_DetalleVenta["data"])
-@router.route('/detalleVenta/register')
-def view_register_detalleVenta():
-    r_detalleVenta = requests.get("http://localhost:8080/myapp/detalleVenta/list")
-    data_detalleVenta = r_detalleVenta.json()
-    return render_template('moduloVenta/registroDetalleVenta.html',lista_detalle=data_detalleVenta["data"])
-@router.route('/detalleVenta/save', methods=['POST'])
-def save_DetalleVenta():
-    headers = {'Content-Type': 'application/json'}
-    form = request.form
-    data_detalleVenta = { 
-        "cantidadProducto": form["cant"],
-        "precioUnitario": form["prec"],
-        "precioTotal": form["total"],
-        "producto": form["pro"],
-    }
-    r_detalleVenta = requests.post("http://localhost:8080/myapp/detalleVenta/save", data=json.dumps(data_detalleVenta), headers=headers)     # Hacer la petición para guardar la producto
+        return f"Error: {response.json().get('data', 'No se pudo obtener la venta.')}", response.status_code
+
+    # Renderiza la plantilla con los detalles de la venta
+    return render_template('moduloVenta/factura.html', venta=venta)
+
+
+def generar_pdf(request, venta_id):
+
+    # Renderiza el contenido HTML
+    html_string = render_to_string('factura_template.html', {'venta': venta})
+
+    # Genera el PDF
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Prepara la respuesta HTTP con el PDF
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Factura_{venta["n_OrdenVenta"]}.pdf"'
     
-    if r_detalleVenta.status_code == 200:
-        flash("Registro guardado correctamente", category='info')
-        return redirect('/detalleVenta/list')
-    else:
-        flash(r_detalleVenta.json().get("data", "Error al guardar la orden de venta"), category='error')
-        return redirect('/detalleVenta/list')
+    return response
+
+
+@router.route('/generar_pdf/<string:n_OrdenVenta>')
+def generar_pdf(n_OrdenVenta):
+    try:
+        # Solicita los datos al servicio REST
+        url = f"http://localhost:8080/myapp/ordenVenta/get/{n_OrdenVenta}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            return f"Error: No se pudo obtener la venta.", response.status_code
+
+        venta = response.json().get("data")
+
+        # Renderiza la plantilla con los datos de la venta
+        html_content = render_template('moduloVenta/factura.html', venta=venta)
+
+        # Genera el PDF
+        pdf = HTML(string=html_content).write_pdf()
+
+        # Responde con el PDF como archivo adjunto
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename="Factura_{n_OrdenVenta}.pdf"'
+
+        return response
+
+    except Exception as e:
+        print(f"Error al generar el PDF: {e}")
+        return f"Error interno del servidor al generar el PDF.", 500

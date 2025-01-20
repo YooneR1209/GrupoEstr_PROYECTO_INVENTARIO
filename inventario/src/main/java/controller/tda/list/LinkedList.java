@@ -2,9 +2,8 @@ package controller.tda.list;
 
 import java.lang.reflect.Method;
 
-import controller.tda.list.LinkedList;
-
 public class LinkedList<E> {
+
     private Node<E> header; // Nodo cabecera (el primer nodo de la lista)
     private Node<E> last; // Nodo último (el último nodo de la lista)
     private Integer size; // Tamaño de la lista (cuenta el número de nodos en la lista)
@@ -78,18 +77,18 @@ public class LinkedList<E> {
     }
 
     public void update(E data, Integer post) throws ListEmptyException {
-        if(isEmpty()) {
+        if (isEmpty()) {
             throw new ListEmptyException("Error, la lista esta vacia");
-        } else if(post < 0 || post >= size) {
+        } else if (post < 0 || post >= size) {
             throw new IndexOutOfBoundsException("Error, fuera de rango");
-        } else if(post == 0) {
+        } else if (post == 0) {
             header.setInfo(data);
-        } else if(post == (this.size - 1)) {
+        } else if (post == (this.size - 1)) {
             last.setInfo(data);
         } else {
             Node<E> search = getNode(post);
             Integer cont = 0;
-            while(cont < post) {
+            while (cont < post) {
                 cont++;
                 search = search.getNext();
             }
@@ -109,9 +108,8 @@ public class LinkedList<E> {
 
         // Obtener el nodo en la posición dada
         Node<E> help = getNode(index);
-        help.setInfo(info); 
+        help.setInfo(info);
     }
-    
 
     //borrar la cabezera
     public E deleteFirst() throws ListEmptyException {
@@ -119,7 +117,7 @@ public class LinkedList<E> {
             throw new ListEmptyException("Error, lista vacia");
         } else {
             E element = header.getInfo();
-            Node<E>  aux = header.getNext();
+            Node<E> aux = header.getNext();
             header = aux;
             if (size.intValue() == 1) {
                 last = null;
@@ -135,9 +133,9 @@ public class LinkedList<E> {
         } else {
             E element = last.getInfo();
             Node<E> aux = getNode(size - 2);
-            if(aux == null) {
+            if (aux == null) {
                 last = null;
-                if(size == 2) {
+                if (size == 2) {
                     last = header;
                 } else {
                     header = null;
@@ -153,7 +151,7 @@ public class LinkedList<E> {
     }
 
     public E delete(Integer post) throws ListEmptyException {
-        if(isEmpty()) {
+        if (isEmpty()) {
             throw new ListEmptyException("Error, lista vacia");
         } else if (post < 0 || post >= size) {
             throw new IndexOutOfBoundsException("Error, fuera de rango");
@@ -221,13 +219,14 @@ public class LinkedList<E> {
         }
     }
 
-    /*** END BYPOSITION */
+    /**
+     * * END BYPOSITION
+     */
     public void reset() {
         this.header = null;
         this.last = null;
         this.size = 0;
     }
-    
 
     public String toString() {
         StringBuilder sb = new StringBuilder("List data");
@@ -276,7 +275,6 @@ public class LinkedList<E> {
     }
 
     //REMOVE
-
     protected void removeLast() throws ListEmptyException {
         if (isEmpty()) {
             throw new ListEmptyException("Error, no puede eliminar datos de una lista vacia.");
@@ -308,16 +306,15 @@ public class LinkedList<E> {
             removeFirst();
         } else if (index == (this.size - 1)) {
             removeLast();
-        } else{
-                Node <E> nodoDeath = getNode(index);
-                Node <E> previousNode = getNode(index - 1);
-                previousNode.setNext(nodoDeath.getNext());
-                this.size --;
+        } else {
+            Node<E> nodoDeath = getNode(index);
+            Node<E> previousNode = getNode(index - 1);
+            previousNode.setNext(nodoDeath.getNext());
+            this.size--;
         }
 
-        
     }
-    
+
     public LinkedList<E> mergeSort(String attribute, Integer type) throws Exception {
         if (!isEmpty()) {
             E[] lista = this.toArray();

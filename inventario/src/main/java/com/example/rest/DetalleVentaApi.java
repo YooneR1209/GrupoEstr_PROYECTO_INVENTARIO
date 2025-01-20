@@ -1,185 +1,183 @@
-// package com.example.rest;
+package com.example.rest;
 
-// import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
 
-// import javax.ws.rs.Consumes;
-// import javax.ws.rs.DELETE;
-// import javax.ws.rs.GET;
-// import javax.ws.rs.POST;
-// import javax.ws.rs.Path;
-// import javax.ws.rs.PathParam;
-// import javax.ws.rs.Produces;
-// import javax.ws.rs.core.MediaType;
-// import javax.ws.rs.core.Response;
-// import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-// import controller.dao.DetalleVentaServices;
-// import controller.dao.ProductoServicies;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
-// @Path("detalleVenta")
-// public class DetalleVentaApi {
+import models.OrdenVenta;
 
-//     @Path("/list")
-//     @GET
-//     @Produces(MediaType.APPLICATION_JSON)
-//     public Response getAllDetalleVenta() {
+@Path("detalle")
+public class DetalleVentaApi {
 
-//         HashMap map = new HashMap<>();
-//         DetalleVentaServices ls = new DetalleVentaServices();
-//         map.put("msg", "Ok");
+    @Path("/list")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllPersons() {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            // Ruta del archivo donde se guardan los detalles de venta
+            String rutaBase = System.getProperty("user.dir"); // Directorio actual
+            String rutaArchivo = rutaBase + "/data/DetalleVenta.json"; // Ruta completa del archivo
 
-//         try {
-//             map.put("data", ls.listShowAll());
-//             if (ls.listAll().isEmpty()) {
-//                 map.put("data", new Object[]{});
+            File archivo = new File(rutaArchivo);
 
-//             }
-//             return Response.ok(map).build();
-//         } catch (Exception e) {
-//             map.put("data", new Object[]{});
+            // Si el archivo existe, leer los datos
+            if (archivo.exists()) {
+                StringBuilder contenido = new StringBuilder();
+                try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+                    String linea;
+                    while ((linea = br.readLine()) != null) {
+                        contenido.append(linea);
+                    }
+                }
 
-//             // TODO: handle exception
-//         }
-//         return Response.ok(map).build();
+                // Procesar el contenido JSON
+                ObjectMapper mapper = new ObjectMapper();
+                ArrayNode arrayExistente = (ArrayNode) mapper.readTree(contenido.toString());
 
-//     }
+                // Preparar la respuesta
+                map.put("msg", "Ok");
+                map.put("data", arrayExistente);  // Aquí, en lugar de convertirlo a un String, usamos directamente el ArrayNode
 
-//     @Path("/get/{id}")
-//     @GET
-//     @Produces(MediaType.APPLICATION_JSON)
-//     public Response getDetalleVenta(@PathParam("id") Integer id) {
-//         HashMap map = new HashMap<>();
-//         DetalleVentaServices ls = new DetalleVentaServices();
-//         try {
-//             ls.setDetalleVenta(ls.get(id));
-//         } catch (Exception e) {
-//             System.out.println("Error " + e);
-//         }
-//         map.put("msg", "Ok");
-//         map.put("data", ls.getDetalleVenta());
-//         if (ls.getDetalleVenta().getIdDetalleVenta() == null) {
-//             map.put("data", "No existe la Lote con ese identificador");
-//             return Response.status(Status.BAD_REQUEST).entity(map).build();
-//         }
+                // Si no hay datos, devolver un array vacío
+                if (arrayExistente.isEmpty()) {
+                    map.put("data", new Object[]{});
+                }
 
-//         return Response.ok(map).build();
-//     }
+            } else {
+                map.put("msg", "Error");
+                map.put("data", "No se encontró el archivo de detalles de venta.");
+            }
 
-//     @Path("/save")
-//     @POST
-//     @Consumes(MediaType.APPLICATION_JSON)
-//     @Produces(MediaType.APPLICATION_JSON)
-//     public Response save(HashMap map) {
-//         //todo
-//         //Validation
+        } catch (Exception e) {
+            map.put("msg", "Error al obtener los datos.");
+            map.put("data", e.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
 
-//         HashMap res = new HashMap<>();
+        return Response.ok(map).build();
+    }
 
-//         try {
+    // Método para obtener el próximo idVenta incremental
+    private int getNextIdVenta() {
+        int idVenta = 0; // Valor predeterminado
 
-//             DetalleVentaServices ls = new DetalleVentaServices();
-//             ProductoServicies productoServicies = new ProductoServicies();
-//             productoServicies.setProducto(productoServicies.get(Integer.parseInt(map.get("producto").toString())));
-//             ls.getDetalleVenta().setCantidadProductos(Integer.parseInt(map.get("cantidadProducto").toString()));
-//             ls.getDetalleVenta().setPrecioUnitario(Float.parseFloat(map.get("precioUnitario").toString()));
-//             ls.getDetalleVenta().setPrecioTotal(Float.parseFloat(map.get("precioTotal").toString()));
-//             ls.getDetalleVenta().setId_Producto(productoServicies.getProducto().getId());
+        // Ruta del archivo donde se guarda el último idVenta usado
+        String rutaBase = System.getProperty("user.dir");
+        String rutaArchivoIdVenta = rutaBase + "/data/lastIdVenta.txt";
 
-//             ls.save();
+        // Intentamos leer el último idVenta desde el archivo
+        try {
+            File archivo = new File(rutaArchivoIdVenta);
 
-//             res.put("msg", "Ok");
-//             res.put("data", "Guardado correctamente");
-//             return Response.ok(res).build();
+            // Si el archivo existe, leer el último idVenta
+            if (archivo.exists()) {
+                BufferedReader reader = new BufferedReader(new FileReader(archivo));
+                String lastId = reader.readLine();
+                reader.close();
+                if (lastId != null) {
+                    idVenta = Integer.parseInt(lastId);
+                }
+            }
 
-//         } catch (Exception e) {
-//             res.put("msg", "Error");
-//             res.put("data", e.toString());
-//             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-//         }
-//     }
+            // Incrementar el idVenta
+            idVenta++;
 
-//     @Path("/update")
-//     @POST
-//     @Consumes(MediaType.APPLICATION_JSON)
-//     @Produces(MediaType.APPLICATION_JSON)
-//     public Response update(HashMap map) {
+            // Guardar el nuevo idVenta en el archivo
+            BufferedWriter writer = new BufferedWriter(new FileWriter(archivo));
+            writer.write(String.valueOf(idVenta));
+            writer.close();
 
-//         HashMap res = new HashMap<>();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-//         try {
+        return idVenta;
+    }
 
-//             DetalleVentaServices ls = new DetalleVentaServices();
-//             ls.getDetalleVenta().setCantidadProductos(Integer.parseInt(map.get("cantidadProductos").toString()));
-//             ls.getDetalleVenta().setPrecioUnitario(Float.parseFloat(map.get("precioLote").toString()));
-//             ls.getDetalleVenta().setPrecioTotal(Float.parseFloat(map.get("precioCompra").toString()));
+    @POST
+    @Path("/upload")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addDetalleVenta(HashMap<String, Object> detalleVenta) {
+        HashMap<String, Object> res = new HashMap<>();
+        try {
+            System.out.println("Detalle recibido: " + detalleVenta);
 
-//             ls.update();
+            // Formateador de fecha
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-//             res.put("msg", "Ok");
-//             res.put("data", "Guardado correctamente");
-//             return Response.ok(res).build();
+            // Rutas de archivos
+            String rutaBase = System.getProperty("user.dir");
+            String rutaOrdenes = rutaBase + "/data/OrdenVenta.json";
+            String rutaDetalles = rutaBase + "/data/DetalleVenta.json";
 
-//         } catch (Exception e) {
-//             res.put("msg", "Error");
-//             res.put("data", e.toString());
-//             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-//         }
-//     }
+            File archivoOrdenes = new File(rutaOrdenes);
+            File archivoDetalles = new File(rutaDetalles);
 
-//     @Path("/listType")
+            ObjectMapper mapper = new ObjectMapper();
 
-//     @GET
-//     @Produces(MediaType.APPLICATION_JSON)
-//     public Response getType() {
-//         HashMap map = new HashMap<>();
-//         DetalleVentaServices ls = new DetalleVentaServices();
+            // Cargar detalles de venta existentes
+            ArrayNode listaDetalles;
+            if (archivoDetalles.exists()) {
+                String contenido = new String(Files.readAllBytes(archivoDetalles.toPath()), StandardCharsets.UTF_8);
+                listaDetalles = (ArrayNode) mapper.readTree(contenido);
+            } else {
+                listaDetalles = mapper.createArrayNode();
+            }
 
-//         map.put("msg", "Ok");
-//         map.put("data", ls.getDetalleVenta());
-//         return Response.ok(map).build();
-//     }
+            // Agregar nuevo detalle a DetalleVenta.json
+            listaDetalles.add(mapper.valueToTree(detalleVenta));
+            Files.write(archivoDetalles.toPath(), mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(listaDetalles));
 
-//     @Path("/delete/{id}")
-//     @DELETE
-//     @Produces(MediaType.APPLICATION_JSON)
-//     public Response deleteLote(@PathParam("id") int id) {
-//         HashMap<String, Object> res = new HashMap<>();
+            // Cargar órdenes de venta existentes
+            ArrayNode listaOrdenes;
+            if (archivoOrdenes.exists()) {
+                String contenido = new String(Files.readAllBytes(archivoOrdenes.toPath()), StandardCharsets.UTF_8);
+                listaOrdenes = (ArrayNode) mapper.readTree(contenido);
+            } else {
+                listaOrdenes = mapper.createArrayNode();
+            }
 
-//         try {
-//             DetalleVentaServices fs = new DetalleVentaServices();
+            // Crear nueva orden de venta
+            OrdenVenta ordenVenta = new OrdenVenta();
+            ordenVenta.setN_OrdenVenta(UUID.randomUUID().toString()); // ID único para la orden
+            ordenVenta.setFechaVenta(sdf.format(new Date())); // Fecha en formato personalizado
+            ordenVenta.setDetalle(detalleVenta); // Asignar detalle de venta
 
-//             boolean LoteDeleted = fs.delete(id - 1);       // Intentamos eliminar el Lote
+            // Guardar en OrdenVenta.json
+            JsonNode nuevaOrdenJson = mapper.valueToTree(ordenVenta);
+            listaOrdenes.add(nuevaOrdenJson);
+            Files.write(archivoOrdenes.toPath(), mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(listaOrdenes));
 
-//             if (LoteDeleted) {
-//                 res.put("message", "Lote y Generador eliminados exitosamente");
-//                 return Response.ok(res).build();
-
-//             } else {
-
-//                 res.put("message", "Lote no encontrada o no eliminada");     // Si no se eliminó, enviar un error 404
-//                 return Response.status(Response.Status.NOT_FOUND).entity(res).build();
-
-//             }
-//         } catch (Exception e) {
-
-//             res.put("message", "Error al intentar eliminar la Lote"); // En caso de error, devolver una respuesta de error interno
-//             res.put("error", e.getMessage());
-//             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
-//         }
-//     }
-
-//     // @Path("/list/order/{attribute}/{type}/{metodo}")
-//     // @GET
-//     // @Produces(MediaType.APPLICATION_JSON)
-//     // public Response getOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type, @PathParam("metodo") Integer metodo) {
-//     //     HashMap map = new HashMap<>();
-//     //     DetalleVentaServices ls = new DetalleVentaServices();
-//     //     map.put("msg", "Ok");
-//     //     map.put("data", ls.order(attribute, type, metodo).toArray());
-//     //     if (ls.order(attribute, type, metodo).isEmpty()) {
-//     //         map.put("data", new Object[]{});
-//     //        return Response.status(Status.BAD_REQUEST).entity(map).build();
-//     //     }
-//     //     return Response.ok(map).build();
-//     // }
-// }
+            res.put("msg", "Orden de venta y detalle guardados correctamente.");
+            res.put("id", ordenVenta.getN_OrdenVenta());
+            return Response.ok(res).build();
+        } catch (Exception e) {
+            res.put("msg", "Error al guardar la orden y detalle.");
+            res.put("data", e.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
+        }
+    }
+}

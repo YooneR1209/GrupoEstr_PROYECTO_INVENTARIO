@@ -1,0 +1,164 @@
+
+
+<style>
+@media print {
+    .btn {
+        display: none; /* Oculta los botones al imprimir */
+    }
+    .table {
+        width: 100%; /* Asegura que la tabla ocupe todo el ancho */
+    }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.pagetitle {
+    margin-bottom: 20px;
+    color: #0056b3;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.table-right {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.table-right td {
+    padding: 8px;
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>
+
+<div class="pagetitle text-center">
+    <h1>Factura</h1>
+    <p>Número de Venta: <strong>{{ venta.n_OrdenVenta }}</strong></p>
+</div>
+
+<section class="section">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Detalles de la Venta</h5>
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Número de Orden:</strong></td>
+                                <td>{{ venta.n_OrdenVenta }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fecha de Venta:</strong></td>
+                                <td>{{ venta.fechaVenta }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Productos</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Producto</th>
+                                <th>Descripción</th>
+                                <th>Cantidad</th>
+                                <th>V. Unit</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detalle in venta.detalle.detalle %}
+                            <tr>
+                                <td>{{ detalle.codigoLote }}</td>
+                                <td>{{ detalle.nombre }}</td>
+                                <td>{{ detalle.descripcion }}</td>
+                                <td>{{ detalle.cant }}</td>
+                                <td>{{ detalle.precioVenta }}$</td>
+                                <td>{{ detalle.totalPrecio }}$</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <table class="table table-right">
+                        <tbody>
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td>{{ venta.detalle.subtotal }}$</td>
+                            </tr>
+                            <tr>
+                                <td>IVA:</td>
+                                <td>{{ venta.detalle.iva }}$</td>
+                            </tr>
+                            <tr>
+                                <td>Total a Pagar:</td>
+                                <td><strong>{{ venta.detalle.total }}$</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center mt-4">
+                        <a href="/generar_pdf/{{ venta.n_OrdenVenta }}" target="_blank" class="btn btn-primary">
+                            Descargar PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

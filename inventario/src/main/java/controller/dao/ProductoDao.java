@@ -1,14 +1,13 @@
 package controller.dao;
 
-import models.Lote;
-import models.Producto;
-
 import com.google.gson.Gson;
 
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import models.Producto;
 
 public class ProductoDao extends AdapterDao<Producto> {
+
     private Producto producto = new Producto();
     private LinkedList<Producto> listAll;
 
@@ -47,7 +46,7 @@ public class ProductoDao extends AdapterDao<Producto> {
 
     public Boolean update() throws Exception { // Actualiza el nodo Lote en la lista de objetos
         this.getlistAll();
-        this.mergeA(getProducto(), recuperoIndex(producto.getId()) ); // Envia la producto a actualizar con su index
+        this.mergeA(getProducto(), recuperoIndex(producto.getId())); // Envia la producto a actualizar con su index
         System.out.println("valor" + recuperoIndex(producto.getId()));
         this.listAll = listAll(); // Actualiza la lista de objetos
         System.out.println("listaaa = " + listAll.toString());;
@@ -56,7 +55,7 @@ public class ProductoDao extends AdapterDao<Producto> {
 
     public Boolean delete(int index) throws Exception { // Elimina un objeto Lote por su índice
         Gson g = new Gson();
-        System.out.println("intentamos eliminar el elemento con id " +index);
+        System.out.println("intentamos eliminar el elemento con id " + index);
         this.listAll = listAll();
         System.out.println("lista:" + this.listAll.toString());;
         this.listAll.remove(recuperoIndex(index));
@@ -65,15 +64,15 @@ public class ProductoDao extends AdapterDao<Producto> {
         return true; // Retorna verdadero si se eliminó correctamente
     }
 
-    public Integer recuperoIndex (Integer id) {
+    public Integer recuperoIndex(Integer id) {
         Producto[] lista = listAll.toArray();
         Integer count = 0;
-        System.out.println("Entramos acá " +id);
+        System.out.println("Entramos acá " + id);
         try {
             for (int i = 0; i < lista.length; i++) {
                 if (lista[i].getId() != id) {
-                count++;
-                }else if (lista[i].getId() == id) {
+                    count++;
+                } else if (lista[i].getId() == id) {
                     return count;
                 }
             }
@@ -83,10 +82,10 @@ public class ProductoDao extends AdapterDao<Producto> {
         return null;
     }
 
-    public Producto buscar_IdProducto (int id) {
+    public Producto buscar_IdProducto(int id) {
         this.listAll = listAll();
         Producto p = new Producto();
-        Producto [] lista = listAll.toArray();
+        Producto[] lista = listAll.toArray();
         if (!listAll.isEmpty()) {
             for (int i = 0; i < lista.length; i++) {
                 if (lista[i].getId().intValue() == id) {

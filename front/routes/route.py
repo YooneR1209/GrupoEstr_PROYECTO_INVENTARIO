@@ -3,6 +3,7 @@ import json
 from flask import Flask, Blueprint, flash, render_template, request, redirect, url_for, session, get_flashed_messages
 
 import requests
+from flask import make_response
 
 router = Blueprint("router", __name__)
 
@@ -23,15 +24,23 @@ def homeo():
     return render_template("inicio.html")  # Página de inicio o bienvenida
 
 
-@router.route("/inventario")
-def inventario():
-    return render_template("fragmento/inventario.html")  # Ruta de inventario
+@router.route("/login")
+def login():
+    if 'token' in session:
+        return redirect(url_for("router.dashboard"))  # Si ya está autenticado, redirige al dashboard
+    
+    response = make_response(render_template("modulologin/iniciosesion.html"))
+    response.headers['Cache-Control'] = 'no-store'  # Evitar caché
+    return response
+ # Ruta de inventario
 
 
 # Ruta para mostrar el formulario de login
-@router.route("/login")
-def login():
-    return render_template("modulologin/iniciosesion.html")
+@router.route("/logout")
+def logout():
+    session.clear()  # Elimina todos los datos de la sesión
+    return redirect(url_for("router.login"))  # Redirige al login
+ # Redirige al login
 
 
 # Ruta para manejar el envío del formulario de login
@@ -50,11 +59,11 @@ def procesar_login():
         session["token"] = dat["token"]
         session["usuario"] = form["correo"]
         session["idPersona"] = dat["idPersona"]
-        return redirect(
-            url_for("router.dashboard")
-        )  # Redirige al dashboard si login exitoso
+        flash("Inicio de sesión exitoso", category="success")
+        return redirect(url_for("router.dashboard"))
+    
     else:
-        error = r.json().get("error", "Error al iniciar sesión")
+        error = r.json().get("error", "Correo o clave incorrectos")
         return render_template("modulologin/iniciosesion.html", error=error)
 
 
@@ -65,19 +74,16 @@ def dashboard():
         return redirect(url_for('router.login'))  # Redirige al login si no hay token
     
     # Obtener los mensajes flash
-    success_message = get_flashed_messages(category_filter='success')
     
-    return render_template('modulologin/datos.html', 
-                           usuario=session.get('usuario'), 
-                           idPersona=session.get('idPersona'),
-                           success_message=success_message)  # Pasar el mensaje de éxito a la plantilla
-
+    response = make_response(render_template('modulologin/datos.html', 
+                                             usuario=session.get('usuario'), 
+                                             idPersona=session.get('idPersona')))
+    response.headers['Cache-Control'] = 'no-store'  # Evitar caché
+    return response
 
 # Ruta para logout y eliminar la sesión
-@router.route("/logout")
-def logout():
-    session.clear()  # Elimina todos los datos de la sesión
-    return redirect(url_for("router.login"))  # Redirige al login
+# Elimina uno de estos dos bloques
+
 
   
     
@@ -151,10 +157,12 @@ def actualizar():
     )
     dat = r.json()
     if r.status_code == 200:
+        flash("Registro guardado correctamente", category="success")
         return redirect(
             url_for("router.mipersona", id=dataF["idPersona"], lista=dat["data"])
         )
     else:
+        flash("Hubo un error al guardar el registro", category="danger")
         return render_template("modulologin/perfil.html", lista=dat["data"])
 
 
@@ -163,12 +171,6 @@ def formularegistro():
 
     return render_template("modulologin/registro.html")
 
-from flask import Flask, render_template, request, redirect, url_for, flash
-import requests
-import json
-
-app = Flask(__name__)
-app.secret_key = "clave_secreta_para_flash"  # Necesario para usar mensajes flash
 
 @router.route("/formulorecuperar")
 def formuloregistre():

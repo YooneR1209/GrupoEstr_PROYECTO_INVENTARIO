@@ -68,10 +68,17 @@ public class ProductoApi {
         try {
 
             ProductoServicies ps = new ProductoServicies();
+
             ps.getProducto().setNombre(map.get("nombre").toString());
             ps.getProducto().setTipoProducto(map.get("tipoProducto").toString());
             ps.getProducto().setMarca(map.get("marca").toString());
             ps.getProducto().setDescripcion(map.get("descripcion").toString());
+
+            if (!ps.isUnique(ps.getProducto().getNombre(), ps.getProducto().getMarca())) {
+                res.put("msg", "Error");
+                res.put("data", "Ya existe un producto registrado con éste nombre y marca.");
+                return Response.status(Status.BAD_REQUEST).entity(res).build();
+            }
 
             ps.save();
 

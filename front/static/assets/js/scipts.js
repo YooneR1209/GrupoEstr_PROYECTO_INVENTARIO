@@ -50,32 +50,39 @@ async function addLote() {
 
     // Crear opciones para el select
     const opcionesProductos = productos.map(producto => `
-        <option value="${producto.id}">${producto.nombre}</option>
-    `).join("");
+        <option value="${producto.id}">${producto.nombre} ${producto.marca} </option>
+    `).join("");    
 
     // Crear el HTML del lote con el select de productos
     const loteHtml = `
         <div id="lote_${loteId}" class="lote">
             <h3>Lote ${loteId}</h3>
-            <label>Producto:</label>
-            <select name="id_Producto">
-                <option value="">Seleccione un producto</option>
-                ${opcionesProductos}
-            </select><br>
-            <label>Fecha de Vencimiento:</label>
-            <input type="date" name="fechaVencimiento"><br>
-            <label>Fecha de Creación:</label>
-            <input type="date" name="fechaCreacion"><br>
-            <label>Código del Lote:</label>
-            <input type="text" name="codigoLote"><br>
-            <label>Precio de Compra:</label>
-            <input type="number" name="precioCompra" step="0.01"><br>
-            <label>Precio de Venta:</label>
-            <input type="number" name="precioVenta" step="0.01"><br>
-            <label>Cantidad:</label>
-            <input type="number" name="cantidad"><br>
-            <label>Descripción:</label>
-            <input type="text" name="descripcionLote"><br>
+        <label>Producto:</label>
+        <select name="id_Producto" required>
+            <option value="">Seleccione un producto</option>
+            ${opcionesProductos}
+        </select><br>
+
+        <label>Fecha de Vencimiento:</label>
+        <input type="date" name="fechaVencimiento"><br>
+
+        <label>Fecha de Creación:</label>
+        <input type="date" name="fechaCreacion"><br>
+
+        <label>Código del Lote:</label>
+        <input type="text" name="codigoLote" required minlength="3" maxlength="15"><br>
+
+        <label>Precio de Compra:</label>
+        <input type="number" name="precioCompra" step="0.01" required min="0" max="10000"><br>
+
+        <label>Precio de Venta:</label>
+        <input type="number" name="precioVenta" step="0.01" required min="0" max="10000"><br>
+
+        <label>Cantidad:</label>
+        <input type="number" name="cantidad" required min="0" max="100000"><br>
+
+        <label>Descripción:</label>
+        <input type="text" name="descripcionLote" requiredminlength="3" maxlength="75"><br>
             <button type="button" onclick="removeLote(${loteId})">Eliminar Lote</button><br><br>
         </div>
     `;
@@ -165,11 +172,35 @@ document.getElementById("ordenCompraForm").addEventListener("submit", function (
         },
         body: jsonData, // Enviar el JSON como cuerpo de la solicitud
     })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                // Si la respuesta no es exitosa, lanzar un error con el mensaje del backend
+                return response.json().then((errorData) => {
+                    throw new Error(errorData.data || "Error desconocido");
+                });
+            }
+            return response.json(); // Si la respuesta es exitosa, devolver los datos JSON
+        })
         .then((result) => {
             console.log("Éxito:", result);
+            // Mostrar mensaje de éxito en la interfaz
+            mostrarMensaje("Orden de compra guardada correctamente.", "success");
         })
         .catch((error) => {
             console.error("Error:", error);
+            // Mostrar mensaje de error en la interfaz
+            mostrarMensaje(error.message, "error");
         });
 });
+
+function mostrarMensaje(mensaje, tipo) {
+    const mensajeElement = document.getElementById("mensaje");
+    mensajeElement.textContent = mensaje;
+    mensajeElement.className = tipo; // Aplicar la clase de estilo (success o error)
+    mensajeElement.style.display = "block"; // Mostrar el mensaje
+  
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+      mensajeElement.style.display = "none";
+    }, 5000);
+  }

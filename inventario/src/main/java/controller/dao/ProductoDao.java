@@ -1,12 +1,14 @@
 package controller.dao;
 
 import models.Lote;
+import models.OrdenCompra;
 import models.Producto;
 
 import com.google.gson.Gson;
 
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import controller.tda.list.ListEmptyException;
 
 public class ProductoDao extends AdapterDao<Producto> {
     private Producto producto = new Producto();
@@ -98,6 +100,26 @@ public class ProductoDao extends AdapterDao<Producto> {
             }
         }
         return p;
+    }
+
+    public Boolean isUnique(String nombre, String marca) throws ListEmptyException {
+        LinkedList<Producto> list = listAll();
+
+        if (list.isEmpty()) {
+            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+        }
+
+        Producto[] producto = list.toArray();
+
+        // Recorrer el array de órdenes de compra
+        for (Producto prod : producto) {
+            // Comparar el número de prod de compra
+            if (prod.getNombre().equals(nombre) && prod.getMarca().equals(marca)) {
+                return false; // Si encuentra una coincidencia, retorna false
+            }
+        }
+
+        return true; // Si no encuentra coincidencias, retorna true
     }
 
 }

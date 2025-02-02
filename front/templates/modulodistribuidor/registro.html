@@ -3,8 +3,34 @@
 
 <title>Registro de distribuidor</title>
 
+<script>
+    function validarLongitud(input) {
+        if (input.value.length !== 10) {
+            input.setCustomValidity("La cédula debe tener exactamente 10 dígitos numéricos.");
+        } else {
+            input.setCustomValidity("");
+        }
+    }
+
+    function validarCelular(input) {
+        const valor = input.value;
+        const errorMessage = document.getElementById("celularError");
+
+        const regex = /^\+?\d+$/;
+
+        if (!regex.test(valor)) {
+            errorMessage.style.display = "block";
+            input.setCustomValidity("Solo se permiten números y únicamente un símbolo '+' al inicio.");
+        } else {
+            errorMessage.style.display = "none";
+            input.setCustomValidity("");
+        }
+    }
+</script>
+
 <main class="main">
     <section class="section">
+        <div id="mensaje" class="hidden"></div>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -21,7 +47,7 @@
                                         <i class="bi bi-person-fill"></i> Nombre Distribuidor
                                     </label>
                                     <input type="text" class="form-control" id="nombre" name="nom" required
-                                        minlength="3" maxlength="150" />
+                                        minlength="3" maxlength="50" />
                                 </div>
 
                                 <!-- Cédula -->
@@ -29,8 +55,8 @@
                                     <label for="cedula" class="form-label">
                                         <i class="bi bi-credit-card"></i> Cédula
                                     </label>
-                                    <input type="number" class="form-control" id="cedula" name="ced" required
-                                        min="0000000000" max="9999999999" />
+                                    <input type="number" class="form-control" id="cedula" name="ced" required min="0"
+                                        max="9999999999" oninput="validarLongitud(this)" />
                                 </div>
 
                                 <!-- Celular de contacto -->
@@ -38,8 +64,10 @@
                                     <label for="celular" class="form-label">
                                         <i class="bi bi-phone"></i> Celular de Contacto
                                     </label>
-                                    <input type="number" class="form-control" id="celular" name="cel" required
-                                        min="0000000000" max="9999999999" />
+                                    <input type="text" class="form-control" id="celular" name="cel" required
+                                        minlength="10" maxlength="15" oninput="validarCelular(this)" />
+                                    <small id="celularError" class="text-danger" style="display: none;">Solo se permiten
+                                        números y un símbolo '+' al inicio.</small>
                                 </div>
 
                                 <!-- Descripción -->
@@ -48,7 +76,7 @@
                                         <i class="bi bi-info-circle"></i> Descripción
                                     </label>
                                     <input type="text" class="form-control" id="descripcion" name="descripcion" required
-                                        minlength="3" maxlength="150" />
+                                        minlength="3" maxlength="75" />
                                 </div>
 
                                 <!-- Botones -->

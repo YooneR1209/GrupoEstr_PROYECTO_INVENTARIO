@@ -3,6 +3,7 @@ package controller.dao;
 import java.util.HashMap;
 
 import controller.tda.list.LinkedList;
+import controller.tda.list.ListEmptyException;
 import models.Lote;
 import models.Distribuidor;
 
@@ -83,6 +84,10 @@ public class DistribuidorServicies {
 
     public Boolean delete(int index) throws Exception { // Elimina un objeto Distribuidor por su índice
         return obj.delete(index); // Invoca el método delete() de la clase DistribuidorDao y envía el índice
+    }
+
+    public Boolean isUnique(String cedula) throws ListEmptyException {
+        return obj.isUnique(cedula);
     }
 
 }

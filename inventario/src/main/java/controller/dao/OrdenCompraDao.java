@@ -135,11 +135,9 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
 
         OrdenCompra[] ordenes = list.toArray();
 
-        // Recorrer el array de órdenes de compra
         for (OrdenCompra orden : ordenes) {
-            // Comparar el número de orden de compra
             if (orden.getNro_OrdenCompra().equals(nroOrdenCompra)) {
-                return false; // Si encuentra una coincidencia, retorna false
+                return false;
             }
         }
 
@@ -148,21 +146,64 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
 
     public boolean isFechaCompraValida(String fechaCompra) {
         try {
-            // Definir el formato de la fecha
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            // Convertir la fecha de compra (String) a LocalDate
             LocalDate fechaCompraLocalDate = LocalDate.parse(fechaCompra, formatter);
 
-            // Obtener la fecha actual
             LocalDate fechaActual = LocalDate.now();
 
-            // Validar que la fecha de compra no sea mayor que la fecha actual
             return !fechaCompraLocalDate.isAfter(fechaActual);
 
         } catch (DateTimeParseException e) {
-            // Si hay un error en el formato de la fecha, se considera inválida
             return false;
+        }
+    }
+
+    public OrdenCompra buscar_nro_OrdenCompra(String texto) {
+        System.out.println("Estamos buscando por Metodo Binario");
+        OrdenCompra resultado = null;
+
+        try {
+            this.getlistAll();
+
+            if (!listAll.isEmpty()) {
+
+                listAll.mergeSort("nro_OrdenCompra", 0); // Asumimos que la lista ya está ordenada
+
+                int derecha = 0;
+                int izquierda = listAll.getSize() - 1;
+
+                while (derecha <= izquierda) {
+                    int mid = (derecha + izquierda) / 2;
+                    OrdenCompra midOrdenCompra = listAll.get(mid);
+                    String codigoOrdenCompra = midOrdenCompra.getNro_OrdenCompra().toLowerCase();
+
+                    if (codigoOrdenCompra.startsWith(texto.toLowerCase())) {
+                        resultado = midOrdenCompra; // Se encuentra el primer OrdenCompra que coincide
+                        break; // Terminamos la búsqueda al encontrar la coincidencia
+                    } else if (codigoOrdenCompra.compareTo(texto.toLowerCase()) < 0) {
+                        derecha = mid + 1;
+                    } else {
+                        izquierda = mid - 1;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+        }
+
+        return resultado; // Devuelve el Lote encontrado o null si no se encuentra
+    }
+
+    public LinkedList<OrdenCompra> order(String attribute, Integer type) {
+        try {
+            getlistAll();
+            System.out.println("Lista antes de ordenar " + listAll.toString());
+            return this.listAll.mergeSort(attribute, type);
+
+        } catch (Exception e) {
+            return null;
         }
     }
 

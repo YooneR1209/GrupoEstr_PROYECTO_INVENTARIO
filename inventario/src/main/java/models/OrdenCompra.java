@@ -6,7 +6,20 @@ public class OrdenCompra {
     private String fechaCompra;
     private String cedula_Distribuidor;
     private Lote[] loteList;
-    private Float totalCompra;
+    private float totalCompra;
+
+    public OrdenCompra(Integer id, String nro_OrdenCompra, String fechaCompra, String cedula_Distribuidor,
+            Lote[] loteList, float totalCompra) {
+        this.id = id;
+        this.nro_OrdenCompra = nro_OrdenCompra;
+        this.fechaCompra = fechaCompra;
+        this.cedula_Distribuidor = cedula_Distribuidor;
+        this.loteList = loteList;
+        this.totalCompra = totalCompra;
+    }
+
+    public OrdenCompra() {
+    }
 
     public Integer getId() {
         return id;
@@ -48,11 +61,11 @@ public class OrdenCompra {
         this.loteList = loteList;
     }
 
-    public Float getTotalCompra() {
+    public float getTotalCompra() {
         return totalCompra;
     }
 
-    public void setTotalCompra(Float totalCompra) {
+    public void setTotalCompra(float totalCompra) {
         this.totalCompra = totalCompra;
     }
 

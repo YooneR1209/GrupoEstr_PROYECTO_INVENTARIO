@@ -94,17 +94,17 @@ public class LoteDao extends AdapterDao<Lote> {
     // return index;
     // }
 
-    public LinkedList<Lote> buscar_CodigoLote(String texto) {
-
-        System.out.println("Estamos buscando por Metodo Lineal Binario AP");
-        LinkedList<Lote> resultados = new LinkedList<>();
+    public Lote buscar_CodigoLote(String texto) {
+        System.out.println("Estamos buscando por Metodo Binario");
+        Lote resultado = null;
 
         try {
             this.getlistAll();
 
             if (!listAll.isEmpty()) {
 
-                listAll.mergeSort("codigoLote", 0);
+                listAll.mergeSort("codigoLote", 0); // Asumimos que la lista ya está ordenada
+
                 int derecha = 0;
                 int izquierda = listAll.getSize() - 1;
 
@@ -113,40 +113,33 @@ public class LoteDao extends AdapterDao<Lote> {
                     Lote midLote = listAll.get(mid);
                     String codigoLote = midLote.getCodigoLote().toLowerCase();
 
-                    if (codigoLote.startsWith(texto.toLowerCase())) { // Añadimos elementos que coincidan hacia
-                                                                      // ambos lados
-                        int izqL = mid;
-                        int derL = mid;
-                        while (izqL >= 0
-                                && listAll.get(izqL).getCodigoLote().toLowerCase()
-                                        .startsWith(texto.toLowerCase())) {
-                            resultados.addF(listAll.get(izqL--));
-                        }
-                        while (derL < listAll.getSize()
-                                && listAll.get(derL).getCodigoLote().toLowerCase()
-                                        .startsWith(texto.toLowerCase())) {
-                            if (derL != mid)
-                                resultados.add(listAll.get(derL));
-                            derL++;
-                        }
-                        break;
+                    if (codigoLote.startsWith(texto.toLowerCase())) {
+                        resultado = midLote; // Se encuentra el primer Lote que coincide
+                        break; // Terminamos la búsqueda al encontrar la coincidencia
                     } else if (codigoLote.compareTo(texto.toLowerCase()) < 0) {
                         derecha = mid + 1;
                     } else {
                         izquierda = mid - 1;
                     }
                 }
-
             }
 
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             System.out.println("Error " + e);
         }
 
-        return resultados;
+        return resultado; // Devuelve el Lote encontrado o null si no se encuentra
+    }
 
+    public LinkedList<Lote> order(String attribute, Integer type) {
+        try {
+            getlistAll();
+            System.out.println("Lista antes de ordenar " + listAll.toString());
+            return this.listAll.mergeSort(attribute, type);
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public LinkedList<Lote> search_By_Producto(Integer id) {

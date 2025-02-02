@@ -14,6 +14,53 @@
     </div>
 </div>
 
+<div class="col-lg-6" style="margin-left: 5%;">
+    <label>Buscar por Código de Lote</label>
+    <input id="textoBusqueda" placeholder="Ingresa un código de lote" />
+    <a id="btnBuscar" class="btn btn-success">Buscar</a>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Función para redirigir a la URL de búsqueda
+        function buscarLote() {
+            var texto = $("#textoBusqueda").val();  // Captura el valor del campo de búsqueda
+            if (texto) {
+                var url = "/lote/search/codigoLote/" + texto;  // Construye la URL de búsqueda
+                window.location.href = url;  // Redirige a la URL de búsqueda
+            } else {
+                alert("Por favor, ingresa un código de lote.");  // Muestra un mensaje si el campo está vacío
+            }
+        }
+
+        // Asignar la función al botón de búsqueda
+        $("#btnBuscar").click(buscarLote);
+
+        // Permitir la búsqueda al presionar "Enter" en el campo de texto
+        $("#textoBusqueda").keypress(function (e) {
+            if (e.which === 13) {  // 13 es el código de la tecla "Enter"
+                buscarLote();
+            }
+        });
+    });
+</script>
+
+<style>
+    th a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    th a:hover {
+        color: #007bff;
+    }
+
+    .bi-arrow-up,
+    .bi-arrow-down {
+        font-size: 0.8em;
+    }
+</style>
+
 <!-- Bloque para mostrar mensajes de flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -31,14 +78,32 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Producto</th>
-                                    <th>Marca</th>
-                                    <th>Código de Lote</th>
-                                    <th>Unidades</th>
-                                    <th>Precio Compra</th>
-                                    <th>Precio Venta</th>
-                                    <th>Fecha de Elaboración</th>
-                                    <th>Fecha de Vencimiento</th>
+                                    <th id="producto">Producto</th>
+                                    <th id="marca">Marca</th>
+                                    <th>Código de Lote
+                                        <a href="/lote/order/codigoLote/1"><i class="bi bi-arrow-up"></i></a>
+                                        <a href="/lote/order/codigoLote/0"><i class="bi bi-arrow-down"></i></a>
+                                    </th>
+                                    <th>Unidades
+                                        <a href="/lote/order/cantidad/1"><i class="bi bi-arrow-up"></i></a>
+                                        <a href="/lote/order/cantidad/0"><i class="bi bi-arrow-down"></i></a>
+                                    </th>
+                                    <th>Precio Compra
+                                        <a href="/lote/order/precioCompra/1"><i class="bi bi-arrow-up"></i></a>
+                                        <a href="/lote/order/precioCompra/0"><i class="bi bi-arrow-down"></i></a>
+                                    </th>
+                                    <th>Precio Venta
+                                        <a href="/lote/order/precioVenta/1"><i class="bi bi-arrow-up"></i></a>
+                                        <a href="/lote/order/precioVenta/0"><i class="bi bi-arrow-down"></i></a>
+                                    </th>
+                                    <th>Fecha de Elaboración
+                                        <a href="/lote/order/fechaCreacion/1"><i class="bi bi-arrow-up"></i></a>
+                                        <a href="/lote/order/fechaCreacion/0"><i class="bi bi-arrow-down"></i></a>
+                                    </th>
+                                    <th>Fecha de Vencimiento
+                                        <a href="/lote/order/fechaVencimiento/1"><i class="bi bi-arrow-up"></i></a>
+                                        <a href="/lote/order/fechaVencimiento/0"><i class="bi bi-arrow-down"></i></a>
+                                    </th>
                                     <th>Descripción de Lote</th>
                                     <th>Acciones</th>
                                 </tr>

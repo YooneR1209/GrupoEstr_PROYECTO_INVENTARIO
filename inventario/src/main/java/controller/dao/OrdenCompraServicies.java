@@ -48,4 +48,12 @@ public class OrdenCompraServicies {
         return obj.isFechaCompraValida(fechaCompra);
     }
 
+    public OrdenCompra buscar_nro_OrdenCompra(String texto) {
+        return obj.buscar_nro_OrdenCompra(texto);
+    }
+
+    public LinkedList<OrdenCompra> order(String attribute, Integer type) {
+        return obj.order(attribute, type);
+    }
+
 }

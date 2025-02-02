@@ -1,11 +1,13 @@
 package controller.dao;
 
 import models.Distribuidor;
+import models.OrdenCompra;
 
 import com.google.gson.Gson;
 
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import controller.tda.list.ListEmptyException;
 
 public class DistribuidorDao extends AdapterDao<Distribuidor> {
     private Distribuidor distribuidor = new Distribuidor();
@@ -99,6 +101,26 @@ public class DistribuidorDao extends AdapterDao<Distribuidor> {
             }
         }
         return p;
+    }
+
+    public Boolean isUnique(String cedula) throws ListEmptyException {
+        LinkedList<Distribuidor> list = listAll();
+
+        if (list.isEmpty()) {
+            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+        }
+
+        Distribuidor[] ordenes = list.toArray();
+
+        // Recorrer el array de órdenes de compra
+        for (Distribuidor orden : ordenes) {
+            // Comparar el número de orden de compra
+            if (orden.getCedula().equals(cedula)) {
+                return false; // Si encuentra una coincidencia, retorna false
+            }
+        }
+
+        return true; // Si no encuentra coincidencias, retorna true
     }
 
 }

@@ -1,16 +1,17 @@
 package controller.dao;
 
+
 import models.Lote;
 import models.OrdenCompra;
 import models.Producto;
-
 import com.google.gson.Gson;
-
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import models.Producto;
 import controller.tda.list.ListEmptyException;
 
 public class ProductoDao extends AdapterDao<Producto> {
+
     private Producto producto = new Producto();
     private LinkedList<Producto> listAll;
 

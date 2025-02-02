@@ -1,17 +1,24 @@
 import json
-
-from flask import Flask, Blueprint, flash, jsonify, render_template, request, redirect, url_for, session, get_flashed_messages
-
+import os
+from flask import Flask, Blueprint, flash, jsonify, render_template, request, redirect, url_for, session, send_file, make_response, get_flashed_messages
 import requests
-from flask import make_response
-import jwt
+import jwt  # Incluido desde master
+from fpdf import FPDF  # Incluido desde David_Guaman
+from weasyprint import HTML  # Incluido desde David_Guaman
+
 
 router = Blueprint("router", __name__)
 
 
 @router.route("/")
 def home():
-    return redirect(url_for("router.login"))
+    if "token" in session:
+        return redirect(url_for("router.login"))
+    return render_template(
+        "template.html",
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+    )  # Página de inicio o bienvenida
 
 @router.route("/login", methods=["GET", "POST"])
 def login():
@@ -33,11 +40,9 @@ def login():
     return response
 
 # Ruta para mostrar el formulario de login
-@router.route("/logout")
-def logout():
-    session.clear()  # Elimina todos los datos de la sesión
-    return redirect(url_for("router.login"))  # Redirige al login
- # Redirige al login
+@router.route("/login")
+def login():
+    return render_template("modulologin/iniciosesion.html")
 
 
 # Ruta para manejar el envío del formulario de login
@@ -56,9 +61,9 @@ def procesar_login():
         session["token"] = dat["token"]
         session["usuario"] = form["correo"]
         session["idPersona"] = dat["idPersona"]
-        flash("Inicio de sesión exitoso", category="success")
-        return redirect(url_for("router.dashboard"))
-    
+        return redirect(
+            url_for("router.dashboard")
+        )  # Redirige al dashboard si login exitoso
     else:
         error = r.json().get("error", "Correo o clave incorrectos")
         return render_template("modulologin/iniciosesion.html", error=error)
@@ -67,26 +72,30 @@ def procesar_login():
 # Ruta del dashboard
 @router.route("/navegacion")
 def dashboard():
-    if 'token' not in session:
-        return redirect(url_for('router.login'))  # Redirige al login si no hay token
-    
+    if "token" not in session:
+        return redirect(url_for("router.login"))  # Redirige al login si no hay token
+
     # Obtener los mensajes flash
-    
-    response = make_response(render_template('modulologin/datos.html', 
-                                             usuario=session.get('usuario'), 
-                                             idPersona=session.get('idPersona')))
-    response.headers['Cache-Control'] = 'no-store'  # Evitar caché
-    return response
+    success_message = get_flashed_messages(category_filter="success")
+
+    return render_template(
+        "modulologin/datos.html",
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+        success_message=success_message,
+    )  # Pasar el mensaje de éxito a la plantilla
+
 
 # Ruta para logout y eliminar la sesión
-# Elimina uno de estos dos bloques
+@router.route("/logout")
+def logout():
+    session.clear()  # Elimina todos los datos de la sesión
+    return redirect(url_for("router.login"))  # Redirige al login
 
 
-  
-    
-@router.route('/registro', methods=['POST'])
+@router.route("/registro", methods=["POST"])
 def registro():
-    headers = {'Content-Type': 'application/json'}
+    headers = {"Content-Type": "application/json"}
 
     form = request.form
 
@@ -99,27 +108,34 @@ def registro():
         "clave": form["clave"],
     }
 
-    r = requests.post("http://localhost:8080/myapp/persona/save", headers=headers, data=json.dumps(datar))
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/save",
+        headers=headers,
+        data=json.dumps(datar),
+    )
 
     dat = r.json()
 
     if r.status_code == 200:
         if "token" in dat:
-            session['token'] = dat["token"]
-            session['usuario'] = datar["correo"]
-            flash("¡Registro exitoso! Ahora puedes iniciar sesión.", category='success')  # Mensaje de éxito
-            return redirect(url_for('router.dashboard'))
+            session["token"] = dat["token"]
+            session["usuario"] = datar["correo"]
+            flash(
+                "¡Registro exitoso! Ahora puedes iniciar sesión.", category="success"
+            )  # Mensaje de éxito
+            return redirect(url_for("router.dashboard"))
         else:
             return render_template(
-                'modulologin/registro.html', 
-                error_message=dat.get("message", "No se recibió el token en la respuesta del servidor")
+                "modulologin/registro.html",
+                error_message=dat.get(
+                    "message", "No se recibió el token en la respuesta del servidor"
+                ),
             )
     else:
         return render_template(
-            'modulologin/registro.html', 
-            error_message=dat.get("message", "Erro22 al registrar")
+            "modulologin/registro.html",
+            error_message=dat.get("message", "Erro22 al registrar"),
         )
-      
 
 
 @router.route("/mipersona/<id>")
@@ -177,7 +193,6 @@ def formularegistro():
     return render_template("modulologin/registro.html")
 
 
-
 @router.route("/formulorecuperar")
 def formuloregistre():
     return render_template("modulologin/correo.html")
@@ -210,8 +225,6 @@ def recuperar_clave():
     else:
         flash("No se pudo actualizar la contraseña. Inténtalo nuevamente.", "error")
         return redirect(url_for("router.ingresa_correo"))
-
-
 
 # INICIO PRODUCTO
 
@@ -301,6 +314,90 @@ def save_lote():
         return redirect("/lote/list")
 
 
+@router.route("/lote/order/<atributo>/<tipo>")
+def view_order_lote(atributo, tipo):
+    url = f"http://localhost:8080/myapp/lote/list/order/{atributo}/{tipo}"
+    r = requests.get(url)
+    print("url: " + url)
+    if r.status_code == 200:
+        data1 = r.json()
+        print(data1)
+        return render_template(
+            "modulolote/lote.html",
+            lista_lote=data1["data"],
+            atributo_actual=atributo,
+            tipo_actual=tipo,
+        )
+    else:
+        return render_template(
+            "modulolote/lote.html",
+            lista_lote=[],
+            message="No se pudo obtener los lotes ordenados",
+        )
+
+
+@router.route("/lote/search/codigoLote/<texto>")
+def view_buscar_lote(texto):
+    url = f"http://localhost:8080/myapp/lote/list/search/codigoLote/{texto}"  # Usar f-string para incluir el texto
+    r = requests.get(url)
+    data1 = r.json()
+    print(f"Response JSON: {data1}")
+    if r.status_code == 200:
+        if isinstance(data1["data"], dict):  # Verificar si es un diccionario
+            lista = [data1["data"]]  # Convertir a lista
+        else:
+            lista = data1["data"]  # Usar la lista directamente
+        return render_template("modulolote/lote.html", lista_lote=lista)
+    else:
+        return render_template(
+            "modulolote/lote.html",
+            lista_lote=[],
+            message="No existe el elemento",
+        )
+
+
+@router.route("/ordenCompra/order/<atributo>/<tipo>")
+def view_order_ordenCompra(atributo, tipo):
+    url = f"http://localhost:8080/myapp/ordenCompra/list/order/{atributo}/{tipo}"
+    r = requests.get(url)
+    print("url: " + url)
+    if r.status_code == 200:
+        data1 = r.json()
+        print(data1)
+        return render_template(
+            "modulocompra/compras.html",
+            lista_ordenCompra=data1["data"],
+            atributo_actual=atributo,
+            tipo_actual=tipo,
+        )
+    else:
+        return render_template(
+            "modulocompra/compras.html",
+            lista_ordenCompra=[],
+            message="No se pudo obtener los ordenCompras ordenados",
+        )
+
+
+@router.route("/ordenCompra/search/codigoLote/<texto>")
+def view_buscar_ordenCompra(texto):
+    url = f"http://localhost:8080/myapp/ordenCompra/list/search/nro_OrdenCompra/{texto}"  # Usar f-string para incluir el texto
+    r = requests.get(url)
+    data1 = r.json()
+    print(f"Response JSON: {data1}")
+    if r.status_code == 200:
+        if isinstance(data1["data"], dict):  # Verificar si es un diccionario
+            lista = [data1["data"]]  # Convertir a lista
+        else:
+            lista = data1["data"]  # Usar la lista directamente
+        return render_template("modulocompra/compras.html", lista_ordenCompra=lista)
+    else:
+        return render_template(
+            "modulocompra/compras.html",
+            lista_ordenCompra=[],
+            message="No existe el elemento",
+        )
+
+
 @router.route("/lote/update", methods=["POST"])
 def update_lote():
     headers = {"Content-Type": "application/json"}
@@ -367,9 +464,18 @@ def delete_lote(id):
     if "token" not in session:
         return redirect(url_for("router.login"))
 
-    requests.post(f"http://localhost:8080/myapp/lote/delete/{id}")
+    r = requests.post(f"http://localhost:8080/myapp/lote/delete/{id}")
 
-    return redirect("/lote/list")  # Redirigimos al usuario a la lista de lotes
+    if r.status_code == 200:
+
+        flash("Lote eliminado con éxito", category="info")
+        return redirect("/lote/list")
+    else:
+        flash(
+            r.json().get("data", "Error al eliminar el lote"),
+            category="error",
+        )
+        return redirect("/lote/list")
 
 
 @router.route("/producto/register")
@@ -420,11 +526,18 @@ def save_producto():
 @router.route("/producto/delete/<int:id>", methods=["POST"])
 def delete_producto(id):
 
-    requests.post(f"http://localhost:8080/myapp/producto/delete/{id}")
+    r = requests.post(f"http://localhost:8080/myapp/producto/delete/{id}")
 
-    return redirect(
-        "/producto/list",
-    )
+    if r.status_code == 200:
+
+        flash("Producto eliminado con éxito", category="info")
+        return redirect("/producto/list")
+    else:
+        flash(
+            r.json().get("data", "Error al eliminar el producto"),
+            category="error",
+        )
+        return redirect("/producto/list")
 
 
 @router.route("/producto/edit/<id>", methods=["GET"])
@@ -483,31 +596,6 @@ def update_producto():
         return redirect("/producto/list")
 
 
-@router.route("/admin/lote/search/<criterio>/<texto>")
-def view_buscar_lote(criterio, texto):
-    url = "http://localhost:8080/myapp/lote/list/search/"
-    if criterio == "codigoLote":
-        r = requests.get(url + "codigoLote/" + texto)
-
-    data1 = r.json()
-    print(f"Response JSON: {data1}")
-    if r.status_code == 200:
-        if type(data1["data"]) is dict:
-            list = []
-            list.append(data1["data"])
-            return render_template("modulolote/lote.html", lista_lote=list)
-            print(f"Lista procesada (dict): {lista}")
-
-        else:
-            print(f"Lista procesada (lista): {data1['data']}")
-            return render_template("modulolote/lote.html", lista_lote=data1["data"])
-
-    else:
-        return render_template(
-            "modulolote/lote.html", lista_lote=[], message="No existe el elemento"
-        )
-
-
 @router.route("/producto/list/lote/<int:producto_id>")
 def list_lote_producto(producto_id, msg=""):
     r_lote = requests.get(
@@ -529,16 +617,157 @@ def list_lote_producto(producto_id, msg=""):
 def list_Venta(msg=""):
     r_OrdenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
     data_Venta = r_OrdenVenta.json()
-    print(data_Venta)
-    return render_template(
-        "moduloVenta/OrdenVenta.html", lista_Venta=data_Venta["data"]
-    )
+    
+    # Asegurar que "data" sea una lista
+    lista_Venta = data_Venta.get("data", [])
+
+    # Validar cada item en la lista
+    for item in lista_Venta:
+        if not isinstance(item, dict):
+            continue  # Si no es un diccionario, ignóralo
+        if "detalle" not in item or not isinstance(item["detalle"], dict):
+            item["detalle"] = {"detalle": [], "total": 0}  # Estructura predeterminada
+
+    print(lista_Venta)  # Para depuración
+
+    return render_template('moduloVenta/ventasLista.html', lista_Venta=lista_Venta)
 
 
-@router.route("/ordenVenta/register")
+@router.route('/ordenVenta/register')
+
 def view_register_ordenVenta():
-    r_ordenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
+    r_ordenVenta = requests.get("http://localhost:8080/myapp/detalle/list")
     data_ordenVenta = r_ordenVenta.json()
+    return render_template('moduloVenta/registrarVenta.html',lista_producto=data_ordenVenta["data"])
+
+"""MEJORAR ESTO """
+
+
+
+
+@router.route('/detalle/save', methods=['POST'])
+def guardar_orden_venta():
+
+    ARCHIVO_JSON = "data/DetalleVenta.json"  # Ruta donde se guardará el archivo JSON
+    try:
+        # Obtener los datos enviados desde el frontend
+        datos_orden = request.json
+
+        # Obtener los detalles de productos desde el objeto JSON
+        detalle_productos = datos_orden.get('detalle')
+        if not detalle_productos:
+            return jsonify({"msg": "Error: No se encontraron detalles de productos"}), 400
+        
+        # Leer el archivo JSON para obtener el último ID
+        if os.path.exists(ARCHIVO_JSON):
+            with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
+                ordenes = json.load(archivo)
+        else:
+            ordenes = []
+
+
+        # Procesar los datos
+        subtotal = datos_orden.get('subtotal', 0)
+        iva = datos_orden.get('iva', 0)
+        total = datos_orden.get('total', 0)
+
+        
+
+        nueva_orden = {
+            
+            "subtotal": subtotal,
+            "iva": iva,
+            "total": total,
+            "detalle": detalle_productos
+        }
+
+        
+        # Agregar la nueva orden a la lista
+        ordenes.append(nueva_orden)
+
+        # Guardar las órdenes actualizadas en el archivo
+        os.makedirs(os.path.dirname(ARCHIVO_JSON), exist_ok=True)  # Crear directorio si no existe
+        with open(ARCHIVO_JSON, "w", encoding="utf-8") as archivo:
+            json.dump(ordenes, archivo, indent=4, ensure_ascii=False)
+
+        # Enviar los datos al backend Java
+        url_backend_java = "http://localhost:8080/myapp/detalle/upload"  # Asegúrate de que esta URL sea correcta
+        headers = {"Content-Type": "application/json"}
+        response_java = requests.post(url_backend_java, json=nueva_orden, headers=headers)
+
+        # Verificar la respuesta del backend Java
+        if response_java.status_code == 200:
+            print("Orden enviada al backend Java correctamente.")
+        else:
+            print(f"Error al enviar la orden al backend Java: {response_java.status_code}")
+
+        # Responder al cliente
+        return jsonify({"msg": "Orden de venta guardada exitosamente"}), 200
+
+    except Exception as e:
+        print("Error al procesar la orden de venta:", str(e))
+        return jsonify({"msg": "Error interno del servidor"}), 500
+
+
+
+@router.route('/detalle_venta/<string:n_OrdenVenta>')
+def detalle_venta(n_OrdenVenta):
+    # Realiza la solicitud al servicio REST para obtener la venta específica
+    url = f"http://localhost:8080/myapp/ordenVenta/get/{n_OrdenVenta}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        venta = response.json().get("data")
+    else:
+        return f"Error: {response.json().get('data', 'No se pudo obtener la venta.')}", response.status_code
+
+    # Renderiza la plantilla con los detalles de la venta
+    return render_template('moduloVenta/factura.html', venta=venta)
+
+
+def generar_pdf(request, venta_id):
+
+    # Renderiza el contenido HTML
+    html_string = render_to_string('factura_template.html', {'venta': venta})
+
+    # Genera el PDF
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Prepara la respuesta HTTP con el PDF
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Factura_{venta["n_OrdenVenta"]}.pdf"'
+    
+    return response
+
+
+@router.route('/generar_pdf/<string:n_OrdenVenta>')
+def generar_pdf(n_OrdenVenta):
+    try:
+        # Solicita los datos al servicio REST
+        url = f"http://localhost:8080/myapp/ordenVenta/get/{n_OrdenVenta}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            return f"Error: No se pudo obtener la venta.", response.status_code
+
+        venta = response.json().get("data")
+
+        # Renderiza la plantilla con los datos de la venta
+        html_content = render_template('moduloVenta/factura.html', venta=venta)
+
+        # Genera el PDF
+        pdf = HTML(string=html_content).write_pdf()
+
+        # Responde con el PDF como archivo adjunto
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename="Factura_{n_OrdenVenta}.pdf"'
+
+        return response
+
+    except Exception as e:
+        print(f"Error al generar el PDF: {e}")
+        return f"Error interno del servidor al generar el PDF.", 500
     return render_template(
         "moduloVenta/registroVenta.html", lista_producto=data_ordenVenta["data"]
     )
@@ -660,14 +889,19 @@ def list_distribuidor(msg=""):
 def view_register_distribuidor():
     if "token" not in session:
         return redirect(url_for("router.login"))
+
     r_distribuidor = requests.get("http://localhost:8080/myapp/distribuidor/list")
     data_distribuidor = r_distribuidor.json()
+
+    # Obtener el mensaje de error de la sesión si existe
+    error_msg = session.pop("error_msg", None)
 
     return render_template(
         "modulodistribuidor/registro.html",
         lista_distribuidor=data_distribuidor["data"],
         usuario=session.get("usuario"),
         idPersona=session.get("idPersona"),
+        error_msg=error_msg,  # Pasar el mensaje de error a la plantilla
     )
 
 
@@ -687,28 +921,37 @@ def save_distribuidor():
         "http://localhost:8080/myapp/distribuidor/save",
         data=json.dumps(data_distribuidor),
         headers=headers,
-    )  # Hacer la petición para guardar la distribuidor
+    )  # Hacer la petición para guardar el distribuidor
 
     if r_distribuidor.status_code == 200:
-
-        flash("Registro guardado correctamente", category="info")
+        flash("Registro guardado correctamente", category="success")
         return redirect("/distribuidor/list")
     else:
-        flash(
-            r_distribuidor.json().get("data", "Error al guardar el distribuidor"),
-            category="error",
+        # Obtener el mensaje de error de la respuesta JSON
+        error_message = r_distribuidor.json().get(
+            "data", "Error al guardar el distribuidor"
         )
-        return redirect("/distribuidor/list")
+        flash(error_message, category="error")
+        return redirect("/distribuidor/register")  # Redirigir al formulario de registro
 
 
 @router.route("/distribuidor/delete/<int:id>", methods=["POST"])
 def delete_distribuidor(id):
 
-    requests.post(f"http://localhost:8080/myapp/distribuidor/delete/{id}")
-
-    return redirect(
-        "/distribuidor/list",
+    r_distribuidor = requests.post(
+        f"http://localhost:8080/myapp/distribuidor/delete/{id}"
     )
+
+    if r_distribuidor.status_code == 200:
+
+        flash("Distribuidor eliminado con éxito", category="info")
+        return redirect("/distribuidor/list")
+    else:
+        flash(
+            r_distribuidor.json().get("data", "Error al eliminar la distribuidor"),
+            category="error",
+        )
+        return redirect("/distribuidor/list")
 
 
 @router.route("/distribuidor/edit/<id>", methods=["GET"])
@@ -748,7 +991,7 @@ def update_distribuidor():
         "nombre": form["nom"],
         "cedula": form["ced"],
         "celular": form["cel"],
-        "totalCompra": totalCompra,
+        "descripcion": form["descripcion"],
     }
 
     r_distribuidor = requests.post(
@@ -759,7 +1002,7 @@ def update_distribuidor():
 
     if r_distribuidor.status_code == 200:
 
-        flash("Registro guardado correctamente", category="info")
+        flash("Distribuidor actualizado correctamente", category="info")
         return redirect("/distribuidor/list")
     else:
         flash(

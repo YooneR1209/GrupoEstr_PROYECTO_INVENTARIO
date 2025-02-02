@@ -1,0 +1,175 @@
+[
+    {
+        "subtotal": "49.00",
+        "iva": "7.35",
+        "total": "56.35",
+        "detalle": [
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 5,
+                "totalPrecio": 2
+            },
+            {
+                "id": 2,
+                "codigoLote": "11133",
+                "nombre": "Atún",
+                "descripcion": "Atún real de 150g",
+                "precioVenta": 13,
+                "cant": 3,
+                "totalPrecio": 13
+            }
+        ]
+    },
+    {
+        "subtotal": "99.00",
+        "iva": "14.85",
+        "total": "113.85",
+        "detalle": [
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 4,
+                "totalPrecio": 8
+            },
+            {
+                "id": 2,
+                "codigoLote": "11133",
+                "nombre": "Atún",
+                "descripcion": "Atún real de 150g",
+                "precioVenta": 13,
+                "cant": 7,
+                "totalPrecio": 91
+            }
+        ]
+    },
+    {
+        "subtotal": "205.00",
+        "iva": "30.75",
+        "total": "235.75",
+        "detalle": [
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 5,
+                "totalPrecio": 10
+            },
+            {
+                "id": 2,
+                "codigoLote": "11133",
+                "nombre": "Atún",
+                "descripcion": "Atún real de 150g",
+                "precioVenta": 13,
+                "cant": 15,
+                "totalPrecio": 195
+            }
+        ]
+    },
+    {
+        "subtotal": "205.00",
+        "iva": "30.75",
+        "total": "235.75",
+        "detalle": [
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 5,
+                "totalPrecio": 10
+            },
+            {
+                "id": 2,
+                "codigoLote": "11133",
+                "nombre": "Atún",
+                "descripcion": "Atún real de 150g",
+                "precioVenta": 13,
+                "cant": 15,
+                "totalPrecio": 195
+            }
+        ]
+    },
+    {
+        "subtotal": "10.00",
+        "iva": "1.50",
+        "total": "11.50",
+        "detalle": [
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 5,
+                "totalPrecio": 10
+            }
+        ]
+    },
+    {
+        "subtotal": "13.00",
+        "iva": "1.95",
+        "total": "14.95",
+        "detalle": [
+            {
+                "id": 2,
+                "codigoLote": "11133",
+                "nombre": "Atún",
+                "descripcion": "Atún real de 150g",
+                "precioVenta": 13,
+                "cant": 1,
+                "totalPrecio": 13
+            }
+        ]
+    },
+    {
+        "subtotal": "2.00",
+        "iva": "0.30",
+        "total": "2.30",
+        "detalle": [
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 1,
+                "totalPrecio": 2
+            }
+        ]
+    },
+    {
+        "subtotal": "150.00",
+        "iva": "22.50",
+        "total": "172.50",
+        "detalle": [
+            {
+                "id": 2,
+                "codigoLote": "11133",
+                "nombre": "Atún",
+                "descripcion": "Atún real de 150g",
+                "precioVenta": 13,
+                "cant": 10,
+                "totalPrecio": 130
+            },
+            {
+                "id": 1,
+                "codigoLote": "4000-hu-32",
+                "nombre": "Tallarin tornillo",
+                "descripcion": "Tallarines de 450g",
+                "precioVenta": 2,
+                "cant": 10,
+                "totalPrecio": 20
+            }
+        ]
+    }
+]

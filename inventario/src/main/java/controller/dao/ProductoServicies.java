@@ -8,6 +8,7 @@ import models.Lote;
 import models.Producto;
 
 public class ProductoServicies {
+
     private ProductoDao obj;
 
     public HashMap buscar_Id_Lotes(Integer id) throws Exception {
@@ -40,7 +41,7 @@ public class ProductoServicies {
                     }
                     mapa.put("lotes", detalist);
                 } else {
-                    mapa.put("lotes", new Object[] {});
+                    mapa.put("lotes", new Object[]{});
                 }
 
             } catch (Exception e) {
@@ -78,7 +79,7 @@ public class ProductoServicies {
 
     public void setProducto(Producto Producto) { // Recibe un objeto Producto
         obj.setProducto(Producto); // Invoca el método setProducto() de la clase ProductoDao y envía el objeto
-                                   // Producto
+        // Producto
     }
 
     public Producto get(Integer id) throws Exception { // Obtiene un objeto Producto por su id

@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "nombre": "Tomate",
+        "descripcion": "verduras frescas",
+        "precioUnitario": 12.0,
+        "codigoServicio": "1013"
+    },
+    {
+        "id": 2,
+        "nombre": "oregano",
+        "descripcion": "sellado y fresco",
+        "precioUnitario": 0.25,
+        "codigoServicio": "0004"
+    },
+    {
+        "id": 3,
+        "nombre": "cebolla",
+        "descripcion": "nuevo",
+        "precioUnitario": 1.25,
+        "codigoServicio": "0001"
+    },
+    {
+        "id": 4,
+        "nombre": "achote",
+        "descripcion": "envace",
+        "precioUnitario": 4.50,
+        "codigoServicio": "0002"
+    }
+]

@@ -2,10 +2,13 @@ package controller.dao;
 
 import models.OrdenCompra;
 
-import controller.dao.implement.AdapterDao;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
-import models.Distribuidor;
+import controller.tda.list.ListEmptyException;
 import models.Lote;
 
 public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
@@ -121,6 +124,46 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
             }
         }
         return p;
+    }
+
+    public Boolean isUnique(String nroOrdenCompra) throws ListEmptyException {
+        LinkedList<OrdenCompra> list = listAll();
+
+        if (list.isEmpty()) {
+            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+        }
+
+        OrdenCompra[] ordenes = list.toArray();
+
+        // Recorrer el array de órdenes de compra
+        for (OrdenCompra orden : ordenes) {
+            // Comparar el número de orden de compra
+            if (orden.getNro_OrdenCompra().equals(nroOrdenCompra)) {
+                return false; // Si encuentra una coincidencia, retorna false
+            }
+        }
+
+        return true; // Si no encuentra coincidencias, retorna true
+    }
+
+    public boolean isFechaCompraValida(String fechaCompra) {
+        try {
+            // Definir el formato de la fecha
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Convertir la fecha de compra (String) a LocalDate
+            LocalDate fechaCompraLocalDate = LocalDate.parse(fechaCompra, formatter);
+
+            // Obtener la fecha actual
+            LocalDate fechaActual = LocalDate.now();
+
+            // Validar que la fecha de compra no sea mayor que la fecha actual
+            return !fechaCompraLocalDate.isAfter(fechaActual);
+
+        } catch (DateTimeParseException e) {
+            // Si hay un error en el formato de la fecha, se considera inválida
+            return false;
+        }
     }
 
 }

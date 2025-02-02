@@ -1,108 +1,52 @@
-{% extends "template.html" %}
+{% extends "template.html" %} {% block content %}
 
-{% block content %}
-
-<style>
-    .main {
-        background-color: #f8f9fa;
-        padding: 20px 0;
-    }
-
-
-
-    .section {
-        margin-top: 20px;
-    }
-
-    .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-title {
-        color: #007bff;
-        font-size: 1.5rem;
-        text-align: center;
-        margin-top: 2%;
-        margin-bottom: 4%;
-    }
-
-    .form-label {
-        font-weight: bold;
-    }
-
-    .form-control {
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-    }
-
-    .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
-    }
-
-    .btn {
-        border-radius: 5px;
-        font-size: 1rem;
-        padding: 10px 20px;
-    }
-
-    .btn-success {
-        background-color: green;
-        border: none;
-    }
-
-    .btn-success:hover {
-        background-color: #005c00;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border: none;
-    }
-
-    .btn-danger:hover {
-        background-color: #bd2130;
-    }
-</style>
+<title>Registro de productos</title>
 
 <main class="main">
-    <!-- Page Title -->
-
-    <!-- End Page Title -->
-
     <section class="section">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title"><i class="bi bi-pencil-square"></i> REGISTRE UN PRODUCTO</h5>
+                            <h5 class="card-title">
+                                <i class="bi bi-pencil-square"></i> REGISTRE UN PRODUCTO
+                            </h5>
 
-                            <form class="row g-3 needs-validation" method="POST" action="/producto/save" novalidate>
+                            <form class="row g-3 needs-validation" method="POST" action="/producto/save">
                                 <div class="col-md-6">
-                                    <label for="nombre" class="form-label"><i class="bi bi-box"></i> Nombre Producto</label>
-                                    <input type="text" class="form-control" id="nombre" name="nom" required>
+                                    <label for="nombre" class="form-label"><i class="bi bi-box"></i> Nombre
+                                        Producto</label>
+                                    <input type="text" class="form-control" id="nombre" name="nom" required
+                                        minlength="3" maxlength="150" />
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="tipoProducto" class="form-label"><i class="bi bi-tag"></i> Tipo de Producto</label>
-                                    <input type="text" class="form-control" id="tipoProducto" name="tipop" required>
+                                    <label for="tipoProducto" class="form-label"><i class="bi bi-tag"></i> Tipo de
+                                        Producto</label>
+                                    <input type="text" class="form-control" id="tipoProducto" name="tipop" required
+                                        minlength="3" maxlength="150" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="marca" class="form-label"><i class="bi bi-shop"></i> Marca</label>
-                                    <input type="text" class="form-control" id="marca" name="marca" required>
+                                    <input type="text" class="form-control" id="marca" name="marca" required
+                                        minlength="3" maxlength="150" />
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="descripcion" class="form-label"><i class="bi bi-card-text"></i> Descripción</label>
-                                    <input type="text" class="form-control" id="descripcion" name="descripcion" required>
+                                    <label for="descripcion" class="form-label"><i class="bi bi-card-text"></i>
+                                        Descripción</label>
+                                    <input type="text" class="form-control" id="descripcion" name="descripcion" required
+                                        minlength="3" maxlength="150" />
                                 </div>
 
                                 <div class="col-12 text-center">
-                                    <button class="btn btn-success" type="submit"><i class="bi bi-check-circle"></i> REGISTRAR</button>
-                                    <a href="/producto/list" class="btn btn-danger"><i class="bi bi-x-circle"></i> CANCELAR</a>
+                                    <button class="btn btn-success" type="submit">
+                                        <i class="bi bi-check-circle"></i> REGISTRAR
+                                    </button>
+                                    <a href="/producto/list" class="btn btn-danger"><i class="bi bi-x-circle"></i>
+                                        CANCELAR</a>
                                 </div>
                             </form>
                         </div>

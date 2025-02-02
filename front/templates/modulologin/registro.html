@@ -39,13 +39,6 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
-        .text-center a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .text-center a:hover {
-            text-decoration: underline;
-        }
         .password-container {
             display: flex;
             align-items: center;
@@ -59,81 +52,75 @@
             border-radius: 50%;
             padding: 5px 10px;
         }
-        .links-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-        }
-        .links-container a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .links-container a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
     <div class="register-container">
         <h2><i class="bi bi-person-plus-fill"></i> Registro de Usuario</h2>
-        <form action="/registro" method="POST">
+        <form action="/registro" method="POST" id="registroForm">
             <div class="row">
-                <!-- Columna izquierda para Nombre y Apellido -->
+                <!-- Nombre -->
                 <div class="col-md-6 mb-3">
                     <label for="nombre" class="form-label"><i class="bi bi-person-fill"></i> Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre" maxlength="50" required>
                 </div>
+                <!-- Apellido -->
                 <div class="col-md-6 mb-3">
                     <label for="apellido" class="form-label"><i class="bi bi-person-fill"></i> Apellido</label>
-                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    <input type="text" class="form-control" id="apellido" name="apellido" maxlength="50" required>
                 </div>
             </div>
             <div class="row">
-                <!-- Columna izquierda para Correo y Teléfono -->
+                <!-- Correo Electrónico -->
                 <div class="col-md-6 mb-3">
                     <label for="correo" class="form-label"><i class="bi bi-envelope-fill"></i> Correo Electrónico</label>
-                    <input type="email" class="form-control" id="correo" name="correo" required>
+                    <input type="email" class="form-control" id="correo" name="correo" 
+                    pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+                    title="Introduce un correo electrónico válido (ejemplo@dominio.com)" required>
                 </div>
+                <!-- Teléfono -->
                 <div class="col-md-6 mb-3">
                     <label for="telefono" class="form-label"><i class="bi bi-telephone-fill"></i> Teléfono</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono" required>
+                    <input type="text" class="form-control" id="telefono" name="telefono" 
+                           pattern="\d{10}" maxlength="10" minlength="10" required>
                 </div>
             </div>
             <div class="row">
-                <!-- Columna izquierda para DNI y Contraseña -->
+                <!-- DNI -->
                 <div class="col-md-6 mb-3">
-                    <label for="dni" class="form-label"><i class="bi bi-card-heading"></i> DNI</label>
-                    <input type="text" class="form-control" id="dni" name="dni" required>
+                    <label for="dni" class="form-label"><i class="bi bi-card-heading"></i> Cédula</label>
+                    <input type="text" class="form-control" id="dni" name="dni" 
+                           pattern="\d{10,11}" maxlength="10" minlength="10" required>
                 </div>
+                <!-- Contraseña -->
                 <div class="col-md-6 mb-3">
                     <label for="clave" class="form-label"><i class="bi bi-lock-fill"></i> Contraseña</label>
                     <div class="password-container">
-                        <input type="password" class="form-control" id="clave" name="clave" required>
+                        <input type="password" class="form-control" id="clave" name="clave" 
+                               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
                         <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
                             <i class="bi bi-eye" id="toggleIcon"></i>
                         </button>
                     </div>
+                    <small class="text-muted">La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.</small>
                 </div>
             </div>
-            <!-- Error -->
-            {% if error %}
-            <div class="alert alert-danger">
-                {{ error }}
-            </div>
-            {% endif %}
             <!-- Botón de Enviar -->
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-            </div>
+            <!-- Botón de Enviar -->
+<div class="text-center mt-4">
+    <p class="mb-2">
+        ¿Ya tienes una cuenta? 
+        <a href="/login" class="text-primary">Inicia sesión aquí</a>.
+    </p>
+    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+</div>
+
         </form>
-        <!-- Enlace a Iniciar Sesión y Regresar -->
-        <div class="links-container">
-            <a href="/login"><i class="bi bi-box-arrow-in-right"></i> ¿Ya tienes una cuenta? Inicia sesión</a>
-            <a href="/home" class="btn btn-link"><i class="bi bi-arrow-left"></i> Regresar</a>
-        </div>
     </div>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('clave');
@@ -148,6 +135,31 @@
                 toggleIcon.classList.add('bi-eye');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const successMessage = "{{ success_message|safe }}";
+            const errorMessage = "{{ error_message|safe }}";
+    
+            if (successMessage) {
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: successMessage,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+    
+            if (errorMessage) {
+                Swal.fire({
+                    title: 'Error',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+            }
+        });
     </script>
+        
+    
 </body>
 </html>

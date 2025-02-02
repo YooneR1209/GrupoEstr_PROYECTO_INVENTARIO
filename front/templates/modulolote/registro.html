@@ -1,142 +1,84 @@
-{% extends "template.html" %}
-{% block content %}
-
-<style>
-    .main {
-        background-color: #f8f9fa;
-        padding: 20px 0;
-    }
-
-    .page-title {
-        padding: 20px 0;
-        text-align: center;
-        border-radius: 5px;
-    }
-
-    .section {
-        margin-top: 20px;
-    }
-
-    .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-title {
-        color: #007bff;
-        font-size: 1.5rem;
-    }
-
-    .form-label {
-        font-weight: bold;
-    }
-
-    .form-control {
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-    }
-
-    .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
-    }
-
-    .btn {
-        border-radius: 5px;
-        font-size: 1rem;
-        padding: 10px 20px;
-    }
-
-    .btn-success {
-        background-color: green;
-        border: none;
-    }
-
-    .btn-success:hover {
-        background-color: #005c00;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border: none;
-    }
-
-    .btn-danger:hover {
-        background-color: #bd2130;
-    }
-</style>
+{% extends "template.html" %} {% block content %}
+<title>Registre un producto</title>
 
 <main class="main">
-    <!-- Page Title -->
-    <div class="page-title">
-        <h1>REGISTRE UN LOTE</h1>
-    </div>
-    <!-- End Page Title -->
+  <!-- Page Title -->
+  <div class="page-title">
+    <h1>REGISTRE UN LOTE</h1>
+  </div>
+  <!-- End Page Title -->
 
-    <section class="section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Datos de Lote</h5>
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">Datos de Lote</h5>
 
-                            <form class="row g-3 needs-validation" method="POST" action="/lote/save" novalidate>
-                                <div class="col-md-6">
-                                    <label for="lblproducto" class="form-label">Producto</label>
-                                    <select class="form-control" required name="produc">
-                                        {% for item in lista_producto %}
-                                        <option value="{{ item.id }}">{{ item.nombre }} - {{ item.marca }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="codigoLote" class="form-label">Código Lote</label>
-                                    <input type="text" class="form-control" id="codigoLote" name="codigol" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="cantidad" class="form-label">Unidades</label>
-                                    <input type="text" class="form-control" id="cantidad" name="cant" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="precioCompra" class="form-label">Precio Compra</label>
-                                    <input type="number" class="form-control" id="precioCompra" name="precioc" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="precioVenta" class="form-label">Precio Venta</label>
-                                    <input type="number" class="form-control" id="precioVenta" name="preciov" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="fechaCreacion" class="form-label">Fecha de Elaboración</label>
-                                    <input type="date" class="form-control" id="fechaCreacion" name="fechac" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="fechaVencimiento" class="form-label">Fecha de Vencimiento</label>
-                                    <input type="date" class="form-control" id="fechaVencimiento" name="fechav" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="descripcionLote" class="form-label">Descripción Lote</label>
-                                    <input type="text" class="form-control" id="descripcionLote" name="descripcionl" required>
-                                </div>
-
-                                <div class="col-12 text-center">
-                                    <button class="btn btn-success" type="submit">REGISTRAR</button>
-                                    <a href="/lote/list" class="btn btn-danger">CANCELAR</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+              <form class="row g-3 needs-validation" method="POST" action="/lote/save">
+                <div class="col-md-6">
+                  <label for="lblproducto" class="form-label">Producto</label>
+                  <select class="form-control" required name="produc">
+                    {% for item in lista_producto %}
+                    <option value="{{ item.id }}">
+                      {{ item.nombre }} - {{ item.marca }}
+                    </option>
+                    {% endfor %}
+                  </select>
                 </div>
+
+                <div class="col-md-6">
+                  <label for="codigoLote" class="form-label">Código Lote</label>
+                  <input type="text" class="form-control" id="codigoLote" name="codigol" minlength="3" maxlength="15" />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="cantidad" class="form-label">Unidades</label>
+                  <input type="number" class="form-control" id="cantidad" name="cant" required min="0" max="10000" />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="precioCompra" class="form-label">Precio Compra</label>
+                  <input type="number" class="form-control" id="precioCompra" name="precioc" required min="0"
+                    max="100000" step="0.01" />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="precioVenta" class="form-label">Precio Venta</label>
+                  <input type="number" class="form-control" id="precioVenta" name="preciov" required min="0"
+                    max="100000" step="0.01" />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fechaCreacion" class="form-label">Fecha de Elaboración</label>
+                  <input type="date" class="form-control" id="fechaCreacion" name="fechac" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fechaVencimiento" class="form-label">Fecha de Vencimiento</label>
+                  <input type="date" class="form-control" id="fechaVencimiento" name="fechav" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="descripcionLote" class="form-label">Descripción Lote</label>
+                  <input type="text" class="form-control" id="descripcionLote" name="descripcionl" required
+                    minlength="3" maxlength="150" />
+                </div>
+
+                <div class="col-12 text-center">
+                  <button class="btn btn-success" type="submit">
+                    REGISTRAR
+                  </button>
+                  <a href="/lote/list" class="btn btn-danger">CANCELAR</a>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </main>
 
 {% endblock %}

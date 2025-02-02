@@ -1,36 +1,35 @@
 package controller.dao;
 
-
-import models.Lote;
+import models.Distribuidor;
 import models.OrdenCompra;
-import models.Producto;
+
 import com.google.gson.Gson;
+
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
-import models.Producto;
 import controller.tda.list.ListEmptyException;
 
-public class ProductoDao extends AdapterDao<Producto> {
+public class DistribuidorDao extends AdapterDao<Distribuidor> {
+    private Distribuidor distribuidor = new Distribuidor();
+    private LinkedList<Distribuidor> listAll;
 
-    private Producto producto = new Producto();
-    private LinkedList<Producto> listAll;
-
-    public ProductoDao() {
-        super(Producto.class);
+    public DistribuidorDao() {
+        super(Distribuidor.class);
     }
 
-    public Producto getProducto() { // Obtiene la producto
-        if (producto == null) {
-            producto = new Producto(); // En caso de que la producto sea nula, crea una nueva instancia de Producto
+    public Distribuidor getDistribuidor() { // Obtiene la distribuidor
+        if (distribuidor == null) {
+            distribuidor = new Distribuidor(); // En caso de que la distribuidor sea nula, crea una nueva instancia de
+                                               // Distribuidor
         }
-        return this.producto; // Devuelve la producto
+        return this.distribuidor; // Devuelve la distribuidor
     }
 
-    public void setProducto(Producto producto) { // Establece la producto con un objeto Producto
-        this.producto = producto; // Asigna el objeto Producto a la variable producto
+    public void setDistribuidor(Distribuidor distribuidor) { // Establece la distribuidor con un objeto Distribuidor
+        this.distribuidor = distribuidor; // Asigna el objeto Distribuidor a la variable distribuidor
     }
 
-    public LinkedList<Producto> getlistAll() { // Obtiene la lista de objetos
+    public LinkedList<Distribuidor> getlistAll() { // Obtiene la lista de objetos
         if (listAll == null) { // Si la lista es nula
             this.listAll = listAll(); // Invoca el método listAll() para obtener la lista de objetos
         }
@@ -42,16 +41,17 @@ public class ProductoDao extends AdapterDao<Producto> {
         if (!getlistAll().isEmpty()) {
             id = getlistAll().getLast().getId(); // Obtiene el tamaño de la lista y le suma 1 para asignar un nuevo id
         }
-        producto.setId(id + 1); // Asigna el id a producto
-        this.persist(this.producto); // Guarda la lote en la lista de objetos LinkedList y en el archivo JSON
+        distribuidor.setId(id + 1); // Asigna el id a distribuidor
+        this.persist(this.distribuidor); // Guarda la lote en la lista de objetos LinkedList y en el archivo JSON
         this.listAll = listAll(); // Actualiza la lista de objetos
         return true; // Retorna verdadero si se guardó correctamente
     }
 
     public Boolean update() throws Exception { // Actualiza el nodo Lote en la lista de objetos
         this.getlistAll();
-        this.mergeA(getProducto(), recuperoIndex(producto.getId())); // Envia la producto a actualizar con su index
-        System.out.println("valor" + recuperoIndex(producto.getId()));
+        this.mergeA(getDistribuidor(), recuperoIndex(distribuidor.getId())); // Envia la distribuidor a actualizar con
+                                                                             // su index
+        System.out.println("valor" + recuperoIndex(distribuidor.getId()));
         this.listAll = listAll(); // Actualiza la lista de objetos
         System.out.println("listaaa = " + listAll.toString());
         ;
@@ -71,7 +71,7 @@ public class ProductoDao extends AdapterDao<Producto> {
     }
 
     public Integer recuperoIndex(Integer id) {
-        Producto[] lista = listAll.toArray();
+        Distribuidor[] lista = listAll.toArray();
         Integer count = 0;
         System.out.println("Entramos acá " + id);
         try {
@@ -88,10 +88,10 @@ public class ProductoDao extends AdapterDao<Producto> {
         return null;
     }
 
-    public Producto buscar_IdProducto(int id) {
+    public Distribuidor buscar_IdDistribuidor(int id) {
         this.listAll = listAll();
-        Producto p = new Producto();
-        Producto[] lista = listAll.toArray();
+        Distribuidor p = new Distribuidor();
+        Distribuidor[] lista = listAll.toArray();
         if (!listAll.isEmpty()) {
             for (int i = 0; i < lista.length; i++) {
                 if (lista[i].getId().intValue() == id) {
@@ -103,19 +103,19 @@ public class ProductoDao extends AdapterDao<Producto> {
         return p;
     }
 
-    public Boolean isUnique(String nombre, String marca) throws ListEmptyException {
-        LinkedList<Producto> list = listAll();
+    public Boolean isUnique(String cedula) throws ListEmptyException {
+        LinkedList<Distribuidor> list = listAll();
 
         if (list.isEmpty()) {
             throw new ListEmptyException("La lista de órdenes de compra está vacía.");
         }
 
-        Producto[] producto = list.toArray();
+        Distribuidor[] ordenes = list.toArray();
 
         // Recorrer el array de órdenes de compra
-        for (Producto prod : producto) {
-            // Comparar el número de prod de compra
-            if (prod.getNombre().equals(nombre) && prod.getMarca().equals(marca)) {
+        for (Distribuidor orden : ordenes) {
+            // Comparar el número de orden de compra
+            if (orden.getCedula().equals(cedula)) {
                 return false; // Si encuentra una coincidencia, retorna false
             }
         }

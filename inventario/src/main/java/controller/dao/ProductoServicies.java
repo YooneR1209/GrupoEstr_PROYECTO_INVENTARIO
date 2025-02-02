@@ -3,6 +3,7 @@ package controller.dao;
 import java.util.HashMap;
 
 import controller.tda.list.LinkedList;
+import controller.tda.list.ListEmptyException;
 import models.Lote;
 import models.Producto;
 
@@ -61,6 +62,10 @@ public class ProductoServicies {
 
     public Boolean save() throws Exception { // Guarda la variable Producto en la lista de objetos
         return obj.save(); // Invoca el método save() de la clase ProductoDao
+    }
+
+    public Boolean isUnique(String nombre, String marca) throws ListEmptyException {
+        return obj.isUnique(nombre, marca);
     }
 
     public LinkedList<Producto> listAll() { // Obtiene la lista de objetos LinkedList<T>

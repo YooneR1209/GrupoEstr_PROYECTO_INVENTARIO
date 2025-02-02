@@ -1,0 +1,76 @@
+{% extends "template.html" %}
+{% block content %}
+
+<title>Distribuidores</title>
+
+<div class="pagetitle text-center mb-4">
+    <h1>LISTADO DE DISTRIBUIDORES</h1>
+</div>
+
+<!-- Bloque para mostrar mensajes de flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="alert alert-warning">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<section class="section">
+    <div class="text-center mb-3">
+        <a href="/distribuidor/register" class="btn btn-success me-2 d-inline-flex align-items-center">
+            <i class="bi bi-plus-circle me-1"></i> REGISTRAR
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Cedula</th>
+                                    <th>Celular</th>
+                                    <th>Descripcion</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in lista_distribuidor %}
+                                <tr>
+                                    <td>{{ item.nombre }}</td>
+                                    <td>{{ item.cedula }}</td>
+                                    <td>{{ item.celular }}</td>
+                                    <td>{{ item.descripcion }}</td>
+
+                                    <td>
+                                        <a href="/distribuidor/edit/{{ item.id }}"
+                                            class="btn btn-info d-inline-flex align-items-center">
+                                            <i class="bi bi-pencil-square me-1"></i> Modificar
+                                        </a>
+                                        <form action="/distribuidor/delete/{{ item.id }}" method="post"
+                                            style="display:inline;">
+                                            <button type="submit"
+                                                class="btn btn-danger d-inline-flex align-items-center"
+                                                onclick="return confirm('¿Estás seguro de que deseas eliminar este distribuidor?');">
+                                                <i class="bi bi-trash-fill me-1"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}

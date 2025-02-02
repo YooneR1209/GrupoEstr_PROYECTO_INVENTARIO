@@ -88,4 +88,19 @@ public class PersonaServices {
     public Boolean iniciosesion(String correo, String clave) throws ListEmptyException {
         return obj.iniciosesion(correo, clave); 
     }
+
+    public Boolean recuperarClave(String correo, String nuevaClave) throws Exception {
+        return obj.recuperarClave(correo, nuevaClave);
+    }
+
+      public Boolean existeCorreo(String correo) throws ListEmptyException {
+        return obj.existeCorreo(correo);
+    } 
+
+    public LinkedList<String> getAllDnis()  {
+        return obj.getAllDnis();
+    }
+
+
+    
 }

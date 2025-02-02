@@ -1,8 +1,9 @@
 package com.example.rest;
 
+import controller.dao.DistribuidorServicies;
+
 import java.util.HashMap;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,10 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import controller.dao.ProductoServicies;
-
-@Path("producto")
-public class ProductoApi {
+@Path("distribuidor")
+public class DistribuidorApi {
 
     @Path("/list")
     @GET
@@ -24,12 +23,12 @@ public class ProductoApi {
     public Response getAllPersons() {
 
         HashMap map = new HashMap<>();
-        ProductoServicies ps = new ProductoServicies();
+        DistribuidorServicies ps = new DistribuidorServicies();
         map.put("msg", "Ok");
         map.put("data", ps.listAll().toArray());
 
         if (ps.listAll().isEmpty()) {
-            map.put("data", new Object[]{});
+            map.put("data", new Object[] {});
 
         }
         return Response.ok(map).build();
@@ -40,16 +39,16 @@ public class ProductoApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPerson(@PathParam("id") Integer id) {
         HashMap map = new HashMap<>();
-        ProductoServicies ps = new ProductoServicies();
+        DistribuidorServicies ps = new DistribuidorServicies();
         try {
-            ps.setProducto(ps.get(id));
+            ps.setDistribuidor(ps.get(id));
         } catch (Exception e) {
             System.out.println("Error " + e);
         }
         map.put("msg", "Ok");
-        map.put("data", ps.getProducto());
-        if (ps.getProducto().getId() == null) {
-            map.put("data", "No existe la Producto con ese identificador");
+        map.put("data", ps.getDistribuidor());
+        if (ps.getDistribuidor().getId() == null) {
+            map.put("data", "No existe la Distribuidor con ese identificador");
             return Response.status(Status.BAD_REQUEST).entity(map).build();
         }
 
@@ -68,19 +67,17 @@ public class ProductoApi {
 
         try {
 
-            ProductoServicies ps = new ProductoServicies();
+            DistribuidorServicies ps = new DistribuidorServicies();
+            ps.getDistribuidor().setNombre(map.get("nombre").toString());
+            ps.getDistribuidor().setCedula(map.get("cedula").toString());
+            ps.getDistribuidor().setCelular(map.get("celular").toString());
+            ps.getDistribuidor().setDescripcion(map.get("descripcion").toString());
 
-            ps.getProducto().setNombre(map.get("nombre").toString());
-            ps.getProducto().setTipoProducto(map.get("tipoProducto").toString());
-            ps.getProducto().setMarca(map.get("marca").toString());
-            ps.getProducto().setDescripcion(map.get("descripcion").toString());
-
-            if (!ps.isUnique(ps.getProducto().getNombre(), ps.getProducto().getMarca())) {
+            if (!ps.isUnique(ps.getDistribuidor().getCedula())) {
                 res.put("msg", "Error");
-                res.put("data", "Ya existe un producto registrado con éste nombre y marca.");
+                res.put("data", "Error: Ya existe un distribuidor registrado con ésta cédula");
                 return Response.status(Status.BAD_REQUEST).entity(res).build();
             }
-
             ps.save();
 
             res.put("msg", "Ok");
@@ -104,18 +101,12 @@ public class ProductoApi {
 
         try {
 
-            ProductoServicies ps = new ProductoServicies();
-            ps.setProducto(ps.get(Integer.parseInt(map.get("id").toString())));
-            ps.getProducto().setNombre(map.get("nombre").toString());
-            ps.getProducto().setTipoProducto(map.get("tipoProducto").toString());
-            ps.getProducto().setMarca(map.get("marca").toString());
-            ps.getProducto().setDescripcion(map.get("descripcion").toString());
-
-            if (!ps.isUnique(ps.getProducto().getNombre(), ps.getProducto().getMarca())) {
-                res.put("msg", "Error");
-                res.put("data", "Ya existe un producto registrado con éste nombre y marca.");
-                return Response.status(Status.BAD_REQUEST).entity(res).build();
-            }
+            DistribuidorServicies ps = new DistribuidorServicies();
+            ps.setDistribuidor(ps.get(Integer.parseInt(map.get("id").toString())));
+            ps.getDistribuidor().setNombre(map.get("nombre").toString());
+            ps.getDistribuidor().setCedula(map.get("cedula").toString());
+            ps.getDistribuidor().setCelular(map.get("celular").toString());
+            ps.getDistribuidor().setDescripcion(map.get("descripcion").toString());
 
             ps.update();
 
@@ -136,37 +127,39 @@ public class ProductoApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getType() {
         HashMap map = new HashMap<>();
-        ProductoServicies ps = new ProductoServicies();
+        DistribuidorServicies ps = new DistribuidorServicies();
 
         map.put("msg", "Ok");
-        map.put("data", ps.getProducto());
+        map.put("data", ps.getDistribuidor());
         return Response.ok(map).build();
     }
 
     @Path("/delete/{id}")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteProducto(@PathParam("id") int id) {
+    public Response deleteDistribuidor(@PathParam("id") int id) {
         HashMap<String, Object> res = new HashMap<>();
 
         try {
-            ProductoServicies fs = new ProductoServicies();
+            DistribuidorServicies fs = new DistribuidorServicies();
 
-            boolean ProductoDeleted = fs.delete(id); // Intentamos eliminar el Producto
+            boolean DistribuidorDeleted = fs.delete(id); // Intentamos eliminar el Distribuidor
 
-            if (ProductoDeleted) {
-                res.put("message", "Producto y Generador eliminados exitosamente");
+            if (DistribuidorDeleted) {
+                res.put("message", "Distribuidor y Generador eliminados exitosamente");
                 return Response.ok(res).build();
 
             } else {
 
-                res.put("message", "Producto no encontrada o no eliminada"); // Si no se eliminó, enviar un error 404
+                res.put("message", "Distribuidor no encontrada o no eliminada"); // Si no se eliminó, enviar un error
+                                                                                 // 404
                 return Response.status(Response.Status.NOT_FOUND).entity(res).build();
 
             }
         } catch (Exception e) {
 
-            res.put("message", "Error al intentar eliminar la Producto"); // En caso de error, devolver una respuesta de
+            res.put("message", "Error al intentar eliminar la Distribuidor"); // En caso de error, devolver una
+                                                                              // respuesta de
             // error interno
             res.put("error", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
@@ -179,34 +172,17 @@ public class ProductoApi {
     // public Response getOrder(@PathParam("attribute") String attribute,
     // @PathParam("type") Integer type, @PathParam("metodo") Integer metodo) {
     // HashMap map = new HashMap<>();
-    // ProductoServicies ps = new ProductoServicies();
+    // DistribuidorServicies ps = new DistribuidorServicies();
+
     // map.put("msg", "Ok");
     // map.put("data", ps.order(attribute, type, metodo).toArray());
+
     // if (ps.order(attribute, type, metodo).isEmpty()) {
     // map.put("data", new Object[]{});
     // return Response.status(Status.BAD_REQUEST).entity(map).build();
     // }
+
     // return Response.ok(map).build();
     // }
-    @Path("/list/search/id/lote/{productoId}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getLotesIdProducto(@PathParam("productoId") Integer id) {
-        HashMap map = new HashMap<>();
-        ProductoServicies ps = new ProductoServicies();
-        try {
-            map.put("msg", "Ok");
-            map.put("data", ps.buscar_Id_Lotes(id));
-            if (map.isEmpty()) {
-                map.put("data", "No existe el Producto");
-                return Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin", "*").entity(map)
-                        .build();
-            }
-        } catch (Exception e) {
-            System.out.println("Error" + e);
-
-        }
-        return Response.ok(map).header("Access-Control-Allow-Origin", "*").build();
-    }
 
 }

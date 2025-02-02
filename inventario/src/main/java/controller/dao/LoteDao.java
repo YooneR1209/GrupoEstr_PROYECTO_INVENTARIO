@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
 import models.Lote;
+import com.google.gson.Gson;
 
 public class LoteDao extends AdapterDao<Lote> {
 
@@ -46,10 +47,10 @@ public class LoteDao extends AdapterDao<Lote> {
 
     public Boolean update() throws Exception { // Actualiza el nodo Lote en la lista de objetos
         this.getlistAll();
-        this.mergeA(getLote(), recuperoIndex(lote.getId())); // Envia la lote a actualizar con su index
+        this.mergeA(getLote(), recuperoIndex(lote.getId())); // Envia el lote a actualizar con su index
         System.out.println("valor" + recuperoIndex(lote.getId()));
         this.listAll = listAll(); // Actualiza la lista de objetos
-        System.out.println("listaaa = " + listAll.toString());;
+        System.out.println("listaaa = " + listAll.toString());
         return true;
     }
 
@@ -57,9 +58,10 @@ public class LoteDao extends AdapterDao<Lote> {
         Gson g = new Gson();
         System.out.println("intentamos eliminar el elemento con id " + index);
         this.listAll = listAll();
-        System.out.println("lista:" + this.listAll.toString());;
+        System.out.println("lista:" + this.listAll.toString());
+        ;
         this.listAll.remove(recuperoIndex(index));
-        String info = g.toJson(this.listAll.toArray()); //Convierte la lista en un String JSON
+        String info = g.toJson(this.listAll.toArray()); // Convierte la lista en un String JSON
         super.saveFile(info);
         return true; // Retorna verdadero si se eliminó correctamente
     }
@@ -83,26 +85,28 @@ public class LoteDao extends AdapterDao<Lote> {
     }
 
     // public Integer searchIndex (Integer id) {
-    //     Integer index = 0;
-    //     getlistAll();
-    //     Lote [] lista = listAll.toArray();
-    //     for (int i = 0; i < lista.length; i++) {
-    //         if (lista[i].getId() != id) {
-    //         }
-    //     }
-    //     return index;
-    // }
-    public LinkedList<Lote> buscar_CodigoLote(String texto) {
+    // Integer index = 0;
+    // getlistAll();
+    // Lote [] lista = listAll.toArray();
+    // for (int i = 0; i < lista.length; i++) {
+    // if (lista[i].getId() != id) {
 
-        System.out.println("Estamos buscando por Metodo Lineal Binario AP");
-        LinkedList<Lote> resultados = new LinkedList<>();
+    // }
+    // }
+    // return index;
+    // }
+
+    public Lote buscar_CodigoLote(String texto) {
+        System.out.println("Estamos buscando por Metodo Binario");
+        Lote resultado = null;
 
         try {
             this.getlistAll();
 
             if (!listAll.isEmpty()) {
 
-                listAll.mergeSort("codigoLote", 0);
+                listAll.mergeSort("codigoLote", 0); // Asumimos que la lista ya está ordenada
+
                 int derecha = 0;
                 int izquierda = listAll.getSize() - 1;
 
@@ -110,40 +114,33 @@ public class LoteDao extends AdapterDao<Lote> {
                     int mid = (derecha + izquierda) / 2;
                     Lote midLote = listAll.get(mid);
                     String codigoLote = midLote.getCodigoLote().toLowerCase();
-
-                    if (codigoLote.startsWith(texto.toLowerCase())) { // Añadimos elementos que coincidan hacia
-                        // ambos lados
-                        int izqL = mid;
-                        int derL = mid;
-                        while (izqL >= 0
-                                && listAll.get(izqL).getCodigoLote().toLowerCase()
-                                        .startsWith(texto.toLowerCase())) {
-                            resultados.addF(listAll.get(izqL--));
-                        }
-                        while (derL < listAll.getSize()
-                                && listAll.get(derL).getCodigoLote().toLowerCase()
-                                        .startsWith(texto.toLowerCase())) {
-                            if (derL != mid) {
-                                resultados.add(listAll.get(derL));
-                            }
-                            derL++;
-                        }
-                        break;
+                    if (codigoLote.startsWith(texto.toLowerCase())) {
+                        resultado = midLote; // Se encuentra el primer Lote que coincide
+                        break; // Terminamos la búsqueda al encontrar la coincidencia
                     } else if (codigoLote.compareTo(texto.toLowerCase()) < 0) {
                         derecha = mid + 1;
                     } else {
                         izquierda = mid - 1;
                     }
                 }
-
             }
 
         } catch (Exception e) {
             System.out.println("Error " + e);
         }
 
-        return resultados;
+        return resultado; // Devuelve el Lote encontrado o null si no se encuentra
+    }
 
+    public LinkedList<Lote> order(String attribute, Integer type) {
+        try {
+            getlistAll();
+            System.out.println("Lista antes de ordenar " + listAll.toString());
+            return this.listAll.mergeSort(attribute, type);
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public LinkedList<Lote> search_By_Producto(Integer id) {

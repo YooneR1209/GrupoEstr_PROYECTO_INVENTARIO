@@ -1,5 +1,8 @@
 package models;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 public class Lote {
     private Integer id;
     private String codigoLote;
@@ -12,7 +15,12 @@ public class Lote {
     private Integer id_Producto;
 
     public Lote(Integer id, int cantidad, float precioCompra, float precioVenta, String fechaVencimiento,
-            String fechaCreacion, String descripcionLote, Integer id_Producto) {
+                String fechaCreacion, String descripcionLote, Integer id_Producto) {
+        if (cantidad <= 0) throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
+        if (id_Producto == null) throw new IllegalArgumentException("El id_Producto no puede ser nulo.");
+        
+        validarFechas(fechaCreacion, fechaVencimiento);
+        
         this.id = id;
         this.cantidad = cantidad;
         this.precioCompra = precioCompra;
@@ -23,8 +31,7 @@ public class Lote {
         this.id_Producto = id_Producto;
     }
 
-    public Lote() {
-    }
+    public Lote() {}
 
     public Integer getId() {
         return id;
@@ -39,6 +46,9 @@ public class Lote {
     }
 
     public void setCodigoLote(String codigoLote) {
+        if (codigoLote == null || codigoLote.trim().isEmpty()) {
+            throw new IllegalArgumentException("El código de lote no puede ser nulo o vacío.");
+        }
         this.codigoLote = codigoLote;
     }
 
@@ -47,6 +57,7 @@ public class Lote {
     }
 
     public void setCantidad(int cantidad) {
+        if (cantidad <= 0) throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
         this.cantidad = cantidad;
     }
 
@@ -71,6 +82,7 @@ public class Lote {
     }
 
     public void setFechaVencimiento(String fechaVencimiento) {
+        validarFechas(this.fechaCreacion, fechaVencimiento);
         this.fechaVencimiento = fechaVencimiento;
     }
 
@@ -79,6 +91,7 @@ public class Lote {
     }
 
     public void setFechaCreacion(String fechaCreacion) {
+        validarFechas(fechaCreacion, this.fechaVencimiento);
         this.fechaCreacion = fechaCreacion;
     }
 
@@ -95,10 +108,21 @@ public class Lote {
     }
 
     public void setId_Producto(Integer id_Producto) {
+        if (id_Producto == null) throw new IllegalArgumentException("El id_Producto no puede ser nulo.");
         this.id_Producto = id_Producto;
     }
-   
-    public String toString() {
-        return "Producto{id='"+ id + "', codigoLote='" + codigoLote + "', id_Producto='" + id_Producto +"}";
+
+    private static void validarFechas(String fechaCreacion, String fechaVencimiento) {
+        if (fechaCreacion != null && fechaVencimiento != null) {
+            try {
+                LocalDate creacion = LocalDate.parse(fechaCreacion);
+                LocalDate vencimiento = LocalDate.parse(fechaVencimiento);
+                if (creacion.isAfter(vencimiento)) {
+                    throw new IllegalArgumentException("La fecha de creación no puede ser posterior a la fecha de vencimiento.");
+                }
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Formato de fecha inválido.");
+            }
+        }
     }
 }

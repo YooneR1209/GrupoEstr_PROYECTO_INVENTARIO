@@ -13,6 +13,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 
 import controller.dao.PersonaServices;
+import controller.tda.list.LinkedList;
+import models.Persona;
 
 /**
  * Clase PersonaApi: Exposición de un API REST que proporciona operaciones relacionadas con las personas.
@@ -56,12 +58,6 @@ public class PersonaApi {
     public Response savePersona(HashMap<String , Object> map){
         HashMap<String, Object> res = new HashMap<>();
         PersonaServices ps = new PersonaServices();
-
-        if (map.get("nombre") == null || map.get("apellido") == null || map.get("telefono") == null || map.get("correo") == null || map.get("dni") == null || map.get("clave") == null) {
-            res.put("message", "Faltan datos");
-            return Response.status(Response.Status.BAD_REQUEST).entity(res).build(); 
-        }
-
         try {
             ps.getPersona().setNombre(map.get("nombre").toString());
             ps.getPersona().setApellido(map.get("apellido").toString());
@@ -69,16 +65,20 @@ public class PersonaApi {
             ps.getPersona().setCorreo(map.get("correo").toString());
             ps.getPersona().setDni(map.get("dni").toString());
             ps.getPersona().setClave(map.get("clave").toString());
-
-            
+    
             ps.save();
             res.put("message", "Persona registrada correctamente");
             res.put("data", "Guardado");
-            res.put("token", ps.getPersona().getToken());  
-            
+            res.put("token", ps.getPersona().getToken());
+    
             return Response.ok(res).build(); 
         } catch (Exception e) {
-            
+            // Verifica si ya existe una persona registrada
+            if (e.getMessage().contains("Ya se ha registrado una persona")) {
+                res.put("message", "Ya se ha registrado una persona, no se pueden guardar más.");
+                return Response.status(Response.Status.BAD_REQUEST).entity(res).build();  
+            }
+            // Verifica si el correo o DNI ya existen
             if (e.getMessage().contains("Correo o DNI ya existen")) {
                 res.put("message", "Correo o DNI ya existen");
                 return Response.status(Response.Status.BAD_REQUEST).entity(res).build();  
@@ -88,6 +88,7 @@ public class PersonaApi {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
         }
     }
+    
 
     /**
      * Endpoint que obtiene los datos de una persona específica por su ID.
@@ -190,4 +191,80 @@ public class PersonaApi {
         }
     }
 
+    @Path("/recuperar_clave")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response recuperarClave(HashMap<String, Object> map){
+        HashMap<String, Object> res = new HashMap<>();
+        PersonaServices ps = new PersonaServices();
+        String correo = map.get("correo").toString();
+        String nuevaClave = map.get("nuevaClave").toString();                        ;
+        try {
+            if (ps.recuperarClave(correo, nuevaClave)) {
+                res.put("msg", "Clave recuperada");
+                res.put("clave", ps.getPersona().getClave());
+                return Response.ok(res).build();  
+            } else {
+                res.put("msg", "Correo no encontrado");
+                return Response.status(Response.Status.NOT_FOUND).entity(res).build();  
+            }
+        } catch (Exception e) {
+            res.put("msg", "Error al recuperar clave");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
+        }
+    }
+
+    
+    @Path("/correoexiste")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response correoexiste(HashMap<String, Object> map){
+        HashMap<String, Object> res = new HashMap<>();
+        PersonaServices ps = new PersonaServices();
+        String correo = map.get("correo").toString();
+        try {
+            if (ps.existeCorreo(correo)) {
+                res.put("msg", "Correo encontrado");
+                res.put("persona", ps.getPersona());	
+                return Response.ok(res).build();  
+            } else {
+                res.put("msg", "Correo no encontrado");
+                return Response.status(Response.Status.NOT_FOUND).entity(res).build();  
+            }
+        } catch (Exception e) {
+            res.put("msg", "Error al buscar correo");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
+        }
+    }
+// Agregado a PersonaApi
+
+@Path("/listDnis")
+@GET
+@Produces(MediaType.APPLICATION_JSON)
+public Response getAllDnis() {
+    HashMap<String, Object> map = new HashMap<>();
+    PersonaServices ps = new PersonaServices();
+    
+    try {
+        LinkedList<String> dnis = ps.getAllDnis();  // Llamamos al método para obtener los DNI.
+        map.put("dnis", dnis);
+        if (dnis.isEmpty()) {
+            map.put("message", "No hay personas registradas.");
+        }
+    } catch (Exception e) {
+        map.put("message", "Error al obtener los DNI.");
+        map.put("error", e.getMessage());
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(map).build();
+    }
+
+    return Response.ok(map).build();
+}
+
+
+
+    
 }

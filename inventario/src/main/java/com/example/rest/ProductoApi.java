@@ -1,9 +1,8 @@
 package com.example.rest;
 
-import controller.dao.ProductoServicies;
-
 import java.util.HashMap;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,6 +12,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import controller.dao.ProductoServicies;
 
 @Path("producto")
 public class ProductoApi {
@@ -28,7 +29,7 @@ public class ProductoApi {
         map.put("data", ps.listAll().toArray());
 
         if (ps.listAll().isEmpty()) {
-            map.put("data", new Object[] {});
+            map.put("data", new Object[]{});
 
         }
         return Response.ok(map).build();
@@ -166,7 +167,7 @@ public class ProductoApi {
         } catch (Exception e) {
 
             res.put("message", "Error al intentar eliminar la Producto"); // En caso de error, devolver una respuesta de
-                                                                          // error interno
+            // error interno
             res.put("error", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
         }
@@ -179,18 +180,14 @@ public class ProductoApi {
     // @PathParam("type") Integer type, @PathParam("metodo") Integer metodo) {
     // HashMap map = new HashMap<>();
     // ProductoServicies ps = new ProductoServicies();
-
     // map.put("msg", "Ok");
     // map.put("data", ps.order(attribute, type, metodo).toArray());
-
     // if (ps.order(attribute, type, metodo).isEmpty()) {
     // map.put("data", new Object[]{});
     // return Response.status(Status.BAD_REQUEST).entity(map).build();
     // }
-
     // return Response.ok(map).build();
     // }
-
     @Path("/list/search/id/lote/{productoId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

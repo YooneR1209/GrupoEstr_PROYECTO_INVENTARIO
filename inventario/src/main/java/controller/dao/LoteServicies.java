@@ -7,6 +7,7 @@ import models.Lote;
 import models.Producto;
 
 public class LoteServicies {
+
     private LoteDao obj;
 
     public Object[] listShowAll() throws Exception {
@@ -104,6 +105,7 @@ public class LoteServicies {
 
     public void setLote(Lote Lote) { // Recibe un objeto Lote
         obj.setLote(Lote); // Invoca el método setLote() de la clase LoteDao y envía el objeto
+
                            // Lote
     }
 
@@ -113,6 +115,27 @@ public class LoteServicies {
 
     public Boolean delete(int index) throws Exception { // Elimina un objeto Lote por su índice
         return obj.delete(index); // Invoca el método delete() de la clase LoteDao y envía el índice
+    }
+
+    public LinkedList<Lote> search_By_Producto(int id) {
+        return obj.search_By_Producto(id);
+    }
+
+    public Lote lote_codigo(String code) {
+        LinkedList<Lote> lista = obj.listAll();
+        Lote lote = null;
+        if (lista.isEmpty()) {
+            return lote;
+        } else {
+            Lote[] lotes = lista.toArray();
+            for (int i = 0; i < lotes.length; i++) {
+                if (lotes[i].getCodigoLote().equals(code)) {
+                    lote = lotes[i];
+                    break;
+                }
+            }
+        }
+        return lote;
     }
 
     public Lote buscar_CodigoLote(String texto) {

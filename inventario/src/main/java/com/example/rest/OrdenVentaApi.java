@@ -1,11 +1,12 @@
 package com.example.rest;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.Map;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,7 +14,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import controller.dao.OrdenVentaServices;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Path("ordenVenta")
 public class OrdenVentaApi {
@@ -21,162 +24,61 @@ public class OrdenVentaApi {
     @Path("/list")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllOrder() {
-
-        HashMap map = new HashMap<>();
-        OrdenVentaServices ls = new OrdenVentaServices();
-        map.put("msg", "Ok");
-
-        map.put("data", ls.listAll().toArray());
-        if (ls.listAll().isEmpty()) {
-            map.put("data", new Object[]{});
-        }
-
-        return Response.ok(map).build();
-
-    }
-
-    @Path("/get/{id}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPerson(@PathParam("id") Integer id) {
-        HashMap map = new HashMap<>();
-        OrdenVentaServices ls = new OrdenVentaServices();
-        try {
-            ls.setOrdenVenta(ls.get(id));
-        } catch (Exception e) {
-            System.out.println("Error " + e);
-        }
-        map.put("msg", "Ok");
-        map.put("data", ls.getOrdenVenta());
-        if (ls.getOrdenVenta().getIdVenta() == null) {
-            map.put("data", "No existe la Lote con ese identificador");
-            return Response.status(Status.BAD_REQUEST).entity(map).build();
-        }
-
-        return Response.ok(map).build();
-    }
-
-    @Path("/save")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response save(HashMap map) {
-        //todo
-        //Validation
-
-        HashMap res = new HashMap<>();
+    public Response getAllOrdenes() {
+        HashMap<String, Object> map = new HashMap<>();
 
         try {
+            // Ruta del archivo JSON de órdenes de venta
+            String rutaBase = System.getProperty("user.dir");
+            String rutaArchivo = rutaBase + "/data/OrdenVenta.json";
+            File archivo = new File(rutaArchivo);
 
-            OrdenVentaServices ls = new OrdenVentaServices();/*
-            DetalleVentaServices detalleVentaServices = new DetalleVentaServices();
-            detalleVentaServices.setDetalleVenta(detalleVentaServices.get(Integer.parseInt(map.get("detalle").toString()))); */
-            ls.getOrdenVenta().setN_OrdenVenta(map.get("n_ordenVenta").toString());
-            ls.getOrdenVenta().setSubtotalVenta(Float.parseFloat(map.get("subtotalVenta").toString()));
-            ls.getOrdenVenta().setTotalVenta(Float.parseFloat(map.get("totalVenta").toString()));
-            ls.getOrdenVenta().setIva(Float.parseFloat(map.get("iva").toString()));
-            ls.getOrdenVenta().setFechaVenta(map.get("fechaVenta").toString());/*
-            ls.getOrdenVenta().setIdDetalleVenta(detalleVentaServices.getDetalleVenta().getIdDetalleVenta()); */
+            if (archivo.exists()) {
+                String contenido = new String(Files.readAllBytes(archivo.toPath()), StandardCharsets.UTF_8);
+                ObjectMapper mapper = new ObjectMapper();
+                ArrayNode listaOrdenes = (ArrayNode) mapper.readTree(contenido);
 
-            ls.save();
-
-            res.put("msg", "Ok");
-            res.put("data", "Guardado correctamente");
-            return Response.ok(res).build();
-
-        } catch (Exception e) {
-            res.put("msg", "Error");
-            res.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-        }
-    }
-
-    @Path("/update")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(HashMap map) {
-
-        HashMap res = new HashMap<>();
-
-        try {
-
-            OrdenVentaServices ls = new OrdenVentaServices();
-            ls.getOrdenVenta().setN_OrdenVenta(map.get("n_ordenVenta").toString());
-            ls.getOrdenVenta().setSubtotalVenta(Float.parseFloat(map.get("subtotalVenta").toString()));
-            ls.getOrdenVenta().setTotalVenta(Float.parseFloat(map.get("totalVenta").toString()));
-            ls.getOrdenVenta().setIva(Float.parseFloat(map.get("iva").toString()));
-            ls.getOrdenVenta().setFechaVenta(map.get("fechaVenta").toString());
-
-            ls.update();
-
-            res.put("msg", "Ok");
-            res.put("data", "Guardado correctamente");
-            return Response.ok(res).build();
-
-        } catch (Exception e) {
-            res.put("msg", "Error");
-            res.put("data", e.toString());
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(res).build();
-        }
-    }
-
-    @Path("/listType")
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getType() {
-        HashMap map = new HashMap<>();
-        OrdenVentaServices ls = new OrdenVentaServices();
-
-        map.put("msg", "Ok");
-        map.put("data", ls.getOrdenVenta());
-        return Response.ok(map).build();
-    }
-
-    @Path("/delete/{id}")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteLote(@PathParam("id") int id) {
-        HashMap<String, Object> res = new HashMap<>();
-
-        try {
-            OrdenVentaServices fs = new OrdenVentaServices();
-
-            boolean LoteDeleted = fs.delete(id - 1);       // Intentamos eliminar el Lote
-
-            if (LoteDeleted) {
-                res.put("message", "Lote y Generador eliminados exitosamente");
-                return Response.ok(res).build();
-
+                map.put("msg", "Ok");
+                map.put("data", listaOrdenes);
             } else {
-
-                res.put("message", "Lote no encontrada o no eliminada");     // Si no se eliminó, enviar un error 404
-                return Response.status(Response.Status.NOT_FOUND).entity(res).build();
-
+                map.put("msg", "Error");
+                map.put("data", "No se encontraron órdenes de venta.");
             }
         } catch (Exception e) {
+            map.put("msg", "Error al obtener los datos.");
+            map.put("data", e.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
 
-            res.put("message", "Error al intentar eliminar la Lote"); // En caso de error, devolver una respuesta de error interno
-            res.put("error", e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();
+        return Response.ok(map).build();
+    }
+
+    @Path("/get/{n_OrdenVenta}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrdenVenta(@PathParam("n_OrdenVenta") String nOrdenVenta) {
+        try {
+            File archivo = new File(System.getProperty("user.dir") + "/data/OrdenVenta.json");
+
+            if (!archivo.exists()) {
+                return Response.status(Status.NOT_FOUND).entity(Map.of("msg", "Error", "data", "No se encontraron órdenes de venta.")).build();
+            }
+
+            String contenido = Files.readString(archivo.toPath(), StandardCharsets.UTF_8);
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayNode listaOrdenes = (ArrayNode) mapper.readTree(contenido);
+
+            for (JsonNode orden : listaOrdenes) {
+                if (orden.has("n_OrdenVenta") && orden.get("n_OrdenVenta").asText().equals(nOrdenVenta)) {
+                    return Response.ok(Map.of("msg", "Ok", "data", orden)).build();
+                }
+            }
+
+            return Response.status(Status.NOT_FOUND).entity(Map.of("msg", "Error", "data", "No existe una orden de venta con ese identificador.")).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(Map.of("msg", "Error al obtener los datos.", "data", e.toString())).build();
         }
     }
 
-    // @Path("/list/order/{attribute}/{type}/{metodo}")
-    // @GET
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response getOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type, @PathParam("metodo") Integer metodo) {
-    //     HashMap map = new HashMap<>();
-    //     OrdenVentaServices ls = new OrdenVentaServices();
-    //     map.put("msg", "Ok");
-    //     map.put("data", ls.order(attribute, type, metodo).toArray());
-    //     if (ls.order(attribute, type, metodo).isEmpty()) {
-    //         map.put("data", new Object[]{});
-    //        return Response.status(Status.BAD_REQUEST).entity(map).build();
-    //     }
-    //     return Response.ok(map).build();
-    // }
-    //IMPLEMENTAR BUSQEDA POR N DE ORDEN DE VENTA////
 }

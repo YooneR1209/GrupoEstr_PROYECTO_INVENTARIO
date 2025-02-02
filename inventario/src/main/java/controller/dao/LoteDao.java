@@ -1,12 +1,14 @@
 package controller.dao;
 
-import models.Lote;
+import com.google.gson.Gson;
 
 import controller.dao.implement.AdapterDao;
 import controller.tda.list.LinkedList;
+import models.Lote;
 import com.google.gson.Gson;
 
 public class LoteDao extends AdapterDao<Lote> {
+
     private Lote lote = new Lote();
     private LinkedList<Lote> listAll;
 
@@ -112,7 +114,6 @@ public class LoteDao extends AdapterDao<Lote> {
                     int mid = (derecha + izquierda) / 2;
                     Lote midLote = listAll.get(mid);
                     String codigoLote = midLote.getCodigoLote().toLowerCase();
-
                     if (codigoLote.startsWith(texto.toLowerCase())) {
                         resultado = midLote; // Se encuentra el primer Lote que coincide
                         break; // Terminamos la búsqueda al encontrar la coincidencia
@@ -150,6 +151,21 @@ public class LoteDao extends AdapterDao<Lote> {
             for (int i = 0; i < aux.length; i++) {
                 if (aux[i].getId_Producto().intValue() == id.intValue()) {
                     System.out.println("***" + aux[i].getId());
+                    lista.add(aux[i]);
+                }
+            }
+        }
+        return lista;
+    }
+
+    public LinkedList<Lote> search_By_codigoLote(String codigoLote) {
+        LinkedList<Lote> lista = new LinkedList<>();
+        LinkedList<Lote> listita = listAll();
+        if (!listita.isEmpty()) {
+            Lote[] aux = listita.toArray();
+            for (int i = 0; i < aux.length; i++) {
+                if (aux[i].getCodigoLote().toString() == codigoLote.toString()) {
+                    System.out.println("***" + aux[i].getCodigoLote());
                     lista.add(aux[i]);
                 }
             }

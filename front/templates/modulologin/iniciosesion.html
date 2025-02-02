@@ -68,7 +68,6 @@
     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
     title="Introduce un correo electrónico válido (ejemplo@dominio.com)" 
     required>
-
             </div>
             <div class="mb-3">
                 <label for="clave" class="form-label"><i class="bi bi-lock-fill"></i> Contraseña:</label>
@@ -89,12 +88,11 @@
         {% endif %}
         <div class="links-container">
             <a href="/formulorecuperar">¿Olvidaste tu contraseña?</a>
-            <a href="/formularegistro">Registrarse</a>
+            <!-- Mostrar solo si el DNI no está registrado -->
+            {% if not dni_registrado %}
+                <a href="/formularegistro">Registrarse</a>
+            {% endif %}
         </div>
-       <!-- <div class="links-container mt-3">
-            <a href="/home" class="btn btn-link"><i class="bi bi-arrow-left"></i> Regresar</a>
-        </div>
-        -->
     </div>
 
     <!-- Bootstrap JS -->
@@ -113,10 +111,12 @@
                 toggleIcon.classList.add('bi-eye');
             }
         }
+
         if (sessionStorage.getItem('token')) {
-        window.location.href = '/navegacion';  // Redirige a la página del dashboard si ya está logueado
-    }
-    if (window.history && window.history.pushState) {
+            window.location.href = '/navegacion';  // Redirige a la página del dashboard si ya está logueado
+        }
+
+        if (window.history && window.history.pushState) {
             window.history.pushState('forward', null, './');
             window.history.forward();
 
@@ -126,6 +126,5 @@
             });
         }
     </script>
-    
 </body>
 </html>

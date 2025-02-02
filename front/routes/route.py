@@ -1,19 +1,10 @@
 import json
 
-from flask import (
-    Flask,
-    Blueprint,
-    flash,
-    render_template,
-    request,
-    redirect,
-    url_for,
-    session,
-    get_flashed_messages,
-)
+from flask import Flask, Blueprint, flash, jsonify, render_template, request, redirect, url_for, session, get_flashed_messages
 
 import requests
 from flask import make_response
+import jwt
 
 router = Blueprint("router", __name__)
 
@@ -28,16 +19,24 @@ def home():
         idPersona=session.get("idPersona"),
     )  # Página de inicio o bienvenida
 
+@router.route("/login", methods=["GET", "POST"])
+def login():
+    if 'token' in session:
+        return redirect(url_for("router.dashboard"))  # Si ya está logueado, redirigir
 
-@router.route("/home")
-def homeo():
-    return render_template("inicio.html")  # Página de inicio o bienvenida
+    # Hacer la petición al backend que verifica si hay un DNI registrado
+    response = requests.get(f"http://localhost:8080/myapp/persona/listDnis")
+    dnis_data = response.json()
 
+    # Verificar si la respuesta tiene algún DNI
+    dni_registrado = False
+    if 'dnis' in dnis_data and 'header' in dnis_data['dnis'] and dnis_data['dnis']['header']['info']:
+        dni_registrado = True
 
-@router.route("/inventario")
-def inventario():
-    return render_template("fragmento/inventario.html")  # Ruta de inventario
-
+    # Pasar el valor a la plantilla
+    response = make_response( render_template("modulologin/iniciosesion.html", dni_registrado=dni_registrado))
+    response.headers['Cache-Control'] = 'no-store'  # Evitar caché
+    return response
 
 # Ruta para mostrar el formulario de login
 @router.route("/login")
@@ -179,11 +178,52 @@ def actualizar():
         return render_template("modulologin/perfil.html", lista=dat["data"])
 
 
+
 @router.route("/formularegistro")
 def formularegistro():
+    # Hacer la petición al backend que verifica si hay un DNI registrado
+    response = requests.get(f"http://localhost:8080/myapp/persona/listDnis")
+    dnis_data = response.json()
 
+    # Verificar si la respuesta tiene algún DNI
+    if 'dnis' in dnis_data and 'header' in dnis_data['dnis'] and dnis_data['dnis']['header']['info']:
+        return redirect(url_for('router.login'))  # Si hay un DNI registrado, redirigir al login
+    
     return render_template("modulologin/registro.html")
 
+
+@router.route("/formulorecuperar")
+def formuloregistre():
+    return render_template("modulologin/correo.html")
+
+@router.route("/verificarcorreo", methods=["POST"])
+def ingresa_correo():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+    data = {"correo": form["correo"]}
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/correoexiste", headers=headers, data=json.dumps(data)
+    )
+    if r.status_code == 200:
+        return render_template("modulologin/recuperar.html", correo=data["correo"])
+    else:
+        flash("El correo ingresado no existe. Por favor verifica e intenta nuevamente.", "error")
+        return redirect(url_for("router.formuloregistre"))
+
+@router.route("/recuperarclave", methods=["POST"])
+def recuperar_clave():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+    data = {"correo": form["correo"], "nuevaClave": form["nuevaClave"]}
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/recuperar_clave", headers=headers, data=json.dumps(data)
+    )
+    if r.status_code == 200:
+        flash("Contraseña actualizada exitosamente. Por favor, inicia sesión.", "success")
+        return redirect(url_for("router.login"))
+    else:
+        flash("No se pudo actualizar la contraseña. Inténtalo nuevamente.", "error")
+        return redirect(url_for("router.ingresa_correo"))
 
 # INICIO PRODUCTO
 

@@ -13,6 +13,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 
 import controller.dao.PersonaServices;
+import controller.tda.list.LinkedList;
+import models.Persona;
 
 /**
  * Clase PersonaApi: Exposición de un API REST que proporciona operaciones relacionadas con las personas.
@@ -63,25 +65,30 @@ public class PersonaApi {
             ps.getPersona().setCorreo(map.get("correo").toString());
             ps.getPersona().setDni(map.get("dni").toString());
             ps.getPersona().setClave(map.get("clave").toString());
-
-            
+    
             ps.save();
             res.put("message", "Persona registrada correctamente");
             res.put("data", "Guardado");
-            res.put("token", ps.getPersona().getToken());  
-            
+            res.put("token", ps.getPersona().getToken());
+    
             return Response.ok(res).build(); 
         } catch (Exception e) {
-            
+            // Verifica si ya existe una persona registrada
+            if (e.getMessage().contains("Ya se ha registrado una persona")) {
+                res.put("message", "Ya se ha registrado una persona, no se pueden guardar más.");
+                return Response.status(Response.Status.BAD_REQUEST).entity(res).build();  
+            }
+            // Verifica si el correo o DNI ya existen
             if (e.getMessage().contains("Correo o DNI ya existen")) {
                 res.put("message", "Correo o DNI ya existen");
                 return Response.status(Response.Status.BAD_REQUEST).entity(res).build();  
             }
-            res.put("message", "Error al registrar persona incorrecto");
+            res.put("message", "Error al registrar persona");
             res.put("data", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
         }
     }
+    
 
     /**
      * Endpoint que obtiene los datos de una persona específica por su ID.
@@ -233,5 +240,31 @@ public class PersonaApi {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
         }
     }
+// Agregado a PersonaApi
 
+@Path("/listDnis")
+@GET
+@Produces(MediaType.APPLICATION_JSON)
+public Response getAllDnis() {
+    HashMap<String, Object> map = new HashMap<>();
+    PersonaServices ps = new PersonaServices();
+    
+    try {
+        LinkedList<String> dnis = ps.getAllDnis();  // Llamamos al método para obtener los DNI.
+        map.put("dnis", dnis);
+        if (dnis.isEmpty()) {
+            map.put("message", "No hay personas registradas.");
+        }
+    } catch (Exception e) {
+        map.put("message", "Error al obtener los DNI.");
+        map.put("error", e.getMessage());
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(map).build();
+    }
+
+    return Response.ok(map).build();
+}
+
+
+
+    
 }

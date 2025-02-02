@@ -77,7 +77,7 @@ public class PersonaApi {
                 res.put("message", "Correo o DNI ya existen");
                 return Response.status(Response.Status.BAD_REQUEST).entity(res).build();  
             }
-            res.put("message", "Error al registrar persona");
+            res.put("message", "Error al registrar persona incorrecto");
             res.put("data", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
         }

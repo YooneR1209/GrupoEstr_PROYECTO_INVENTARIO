@@ -10,18 +10,7 @@ router = Blueprint("router", __name__)
 
 @router.route("/")
 def home():
-    if "token" in session:
-        return redirect(url_for("router.login"))
-    return render_template(
-        "template.html",
-        usuario=session.get("usuario"),
-        idPersona=session.get("idPersona"),
-    )  # Página de inicio o bienvenida
-
-
-@router.route("/home")
-def homeo():
-    return render_template("inicio.html")  # Página de inicio o bienvenida
+    return redirect(url_for("router.login"))
 
 
 @router.route("/login")
@@ -120,7 +109,7 @@ def registro():
     else:
         return render_template(
             'modulologin/registro.html', 
-            error_message=dat.get("message", "Error al registrar")
+            error_message=dat.get("message", "Erro22 al registrar")
         )
       
 

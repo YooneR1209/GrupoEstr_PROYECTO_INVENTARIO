@@ -10,11 +10,8 @@
 <!-- Bloque para mostrar mensajes de flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-<div class="alert alert-warning">
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-</div>
+{% for category, message in messages %}
+{% endfor %}
 {% endif %}
 {% endwith %}
 
@@ -78,4 +75,36 @@
         </div>
     </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // SweetAlert2 para mostrar el mensaje
+            Swal.fire({
+                position: 'bottom-end',  // Posición en la esquina inferior derecha
+                icon: 'success' ,      // Tipo de notificación (puede ser 'success', 'error', etc.)
+                title: "{{ messages[0] }}",  // Mensaje de la notificación
+                showConfirmButton: false,  // No mostrar el botón de confirmar
+                timer: 10000,           // Duración de la notificación en milisegundos
+                toast: true,            // Estilo de notificación tipo 'toast'
+                background: '#008000',  // Fondo de la notificación
+                color: '#fff',          // Color del texto
+                padding: '10px',        // Espaciado dentro de la notificación
+                margin: '20px'          // Distancia desde el borde inferior
+            });
+        });
+        if (window.history && window.history.pushState) {
+            window.history.pushState('forward', null, './');
+            window.history.forward();
+
+            window.addEventListener('popstate', function() {
+                window.history.pushState('forward', null, './');
+                window.history.forward();
+            });
+        }
+    </script>
+    {% endif %}
+    {% endwith %}
 {% endblock %}

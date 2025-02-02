@@ -1,5 +1,5 @@
 body {
-  background-color: #e7f3ff;
+  background: #d4e3ff;
   font-family: "Roboto", sans-serif;
 }
 
@@ -171,14 +171,14 @@ footer {
 }
 
 .main {
-  background-color: #f8f9fa;
+  background: #d4e3ff;
   padding: 20px 0;
 }
 
 .page-title {
   text-align: center;
   color: #007bff;
-  background-color: white;
+  background-color: d4e3ff;
   border-radius: 5px;
 }
 

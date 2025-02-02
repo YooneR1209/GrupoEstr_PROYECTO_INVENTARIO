@@ -59,7 +59,7 @@ public class PersonaDao extends AdapterDao<Persona> {
 
         public Boolean isFirstPerson() {
             LinkedList<Persona> list = getListAll();
-            return list.getSize() == 0; // Si no hay personas registradas, devuelve true
+            return list.getSize() == 0; 
         }
     public Boolean update() throws Exception {
         String newtoken = TokenUtil.generateToken(getPersona().getIdPersona(), getPersona().getCorreo());

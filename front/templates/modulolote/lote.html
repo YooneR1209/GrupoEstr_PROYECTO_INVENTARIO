@@ -16,14 +16,11 @@
 
 <!-- Bloque para mostrar mensajes de flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<div class="alert alert-warning">
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
 
 <section class="section">
     <div class="row justify-content-center">
@@ -80,5 +77,26 @@
         </div>
     </div>
     </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // SweetAlert2 para mostrar el mensaje
+            Swal.fire({
+                position: 'bottom-end',  // Posición en la esquina inferior derecha
+                icon: 'success',         // Tipo de notificación (puede ser 'success', 'error', etc.)
+                title: "{{ messages[0] }}",  // Mensaje de la notificación
+                showConfirmButton: false,  // No mostrar el botón de confirmar
+                timer: 10000,           // Duración de la notificación en milisegundos
+                toast: true,            // Estilo de notificación tipo 'toast'
+                background: '#008000',  // Fondo de la notificación
+                color: '#fff',          // Color del texto
+                padding: '10px',        // Espaciado dentro de la notificación
+                margin: '20px'          // Distancia desde el borde inferior
+            });
+        });
+    </script>
+    {% endif %}
+    {% endwith %}
 </section>
 {% endblock %}

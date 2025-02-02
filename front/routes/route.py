@@ -13,6 +13,7 @@ from flask import (
 )
 
 import requests
+from flask import make_response
 
 router = Blueprint("router", __name__)
 
@@ -64,7 +65,7 @@ def procesar_login():
             url_for("router.dashboard")
         )  # Redirige al dashboard si login exitoso
     else:
-        error = r.json().get("error", "Error al iniciar sesión")
+        error = r.json().get("error", "Correo o clave incorrectos")
         return render_template("modulologin/iniciosesion.html", error=error)
 
 
@@ -133,7 +134,7 @@ def registro():
     else:
         return render_template(
             "modulologin/registro.html",
-            error_message=dat.get("message", "Error al registrar"),
+            error_message=dat.get("message", "Erro22 al registrar"),
         )
 
 
@@ -169,10 +170,12 @@ def actualizar():
     )
     dat = r.json()
     if r.status_code == 200:
+        flash("Registro guardado correctamente", category="success")
         return redirect(
             url_for("router.mipersona", id=dataF["idPersona"], lista=dat["data"])
         )
     else:
+        flash("Hubo un error al guardar el registro", category="danger")
         return render_template("modulologin/perfil.html", lista=dat["data"])
 
 

@@ -1,1 +1,51 @@
-[{"id":1,"tipoProducto":"Industrial","nombre":"Tallarin tornillo","marca":"Amancay","descripcion":"Tallarines de 450g"},{"id":2,"tipoProducto":"Industrial","nombre":"Atún","marca":"Real","descripcion":"Atún real de 150g"},{"id":3,"tipoProducto":"aaaaa","nombre":"Naranjas","marca":"Don Juan","descripcion":"aaaaa"},{"id":4,"tipoProducto":"aaaaa","nombre":"Naranjas","marca":"Don Juan","descripcion":"aaaaa"},{"id":7,"tipoProducto":"aaaaa","nombre":"Naranjas","marca":"Don Juan","descripcion":"aaaaa"},{"id":8,"tipoProducto":"aaaaa","nombre":"Peras","marca":"Don Pepe","descripcion":"aaaaa"}]
+[
+    {
+        "id": 1,
+        "tipoProducto": "Industrial",
+        "nombre": "Tallarin tornillo",
+        "marca": "Amancay",
+        "descripcion": "Tallarines de 450g"
+    },
+    {
+        "id": 2,
+        "tipoProducto": "Industrial",
+        "nombre": "Atún",
+        "marca": "Real",
+        "descripcion": "Atún real de 150g"
+    },
+    {
+        "id": 3,
+        "tipoProducto": "aaaaa",
+        "nombre": "Naranjas",
+        "marca": "Don Juan",
+        "descripcion": "aaaaa"
+    },
+    {
+        "id": 4,
+        "tipoProducto": "aaaaa",
+        "nombre": "Naranjas",
+        "marca": "Don Juan",
+        "descripcion": "aaaaa"
+    },
+    {
+        "id": 7,
+        "tipoProducto": "aaaaa",
+        "nombre": "Naranjas",
+        "marca": "Don Juan",
+        "descripcion": "aaaaa"
+    },
+    {
+        "id": 8,
+        "tipoProducto": "aaaaa",
+        "nombre": "Peras",
+        "marca": "Don Pepe",
+        "descripcion": "aaaaa"
+    },
+    {
+        "id": 9,
+        "tipoProducto": "Limpieza",
+        "nombre": "Cotonetes",
+        "marca": "Capileos",
+        "descripcion": "nuevo el producto"
+    }
+]

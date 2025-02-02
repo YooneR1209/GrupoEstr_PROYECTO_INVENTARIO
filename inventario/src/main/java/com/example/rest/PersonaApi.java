@@ -56,12 +56,6 @@ public class PersonaApi {
     public Response savePersona(HashMap<String , Object> map){
         HashMap<String, Object> res = new HashMap<>();
         PersonaServices ps = new PersonaServices();
-
-        if (map.get("nombre") == null || map.get("apellido") == null || map.get("telefono") == null || map.get("correo") == null || map.get("dni") == null || map.get("clave") == null) {
-            res.put("message", "Faltan datos");
-            return Response.status(Response.Status.BAD_REQUEST).entity(res).build(); 
-        }
-
         try {
             ps.getPersona().setNombre(map.get("nombre").toString());
             ps.getPersona().setApellido(map.get("apellido").toString());
@@ -83,7 +77,7 @@ public class PersonaApi {
                 res.put("message", "Correo o DNI ya existen");
                 return Response.status(Response.Status.BAD_REQUEST).entity(res).build();  
             }
-            res.put("message", "Error al registrar persona");
+            res.put("message", "Error al registrar persona incorrecto");
             res.put("data", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
         }
@@ -185,6 +179,56 @@ public class PersonaApi {
             }
         } catch (Exception e) {
             res.put("msg", "Error al iniciar sesión");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
+        }
+    }
+
+    @Path("/recuperar_clave")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response recuperarClave(HashMap<String, Object> map){
+        HashMap<String, Object> res = new HashMap<>();
+        PersonaServices ps = new PersonaServices();
+        String correo = map.get("correo").toString();
+        String nuevaClave = map.get("nuevaClave").toString();                        ;
+        try {
+            if (ps.recuperarClave(correo, nuevaClave)) {
+                res.put("msg", "Clave recuperada");
+                res.put("clave", ps.getPersona().getClave());
+                return Response.ok(res).build();  
+            } else {
+                res.put("msg", "Correo no encontrado");
+                return Response.status(Response.Status.NOT_FOUND).entity(res).build();  
+            }
+        } catch (Exception e) {
+            res.put("msg", "Error al recuperar clave");
+            res.put("data", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
+        }
+    }
+
+    
+    @Path("/correoexiste")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response correoexiste(HashMap<String, Object> map){
+        HashMap<String, Object> res = new HashMap<>();
+        PersonaServices ps = new PersonaServices();
+        String correo = map.get("correo").toString();
+        try {
+            if (ps.existeCorreo(correo)) {
+                res.put("msg", "Correo encontrado");
+                res.put("persona", ps.getPersona());	
+                return Response.ok(res).build();  
+            } else {
+                res.put("msg", "Correo no encontrado");
+                return Response.status(Response.Status.NOT_FOUND).entity(res).build();  
+            }
+        } catch (Exception e) {
+            res.put("msg", "Error al buscar correo");
             res.put("data", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(res).build();  
         }

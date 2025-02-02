@@ -1,1 +1,12 @@
-[{"idPersona":1,"nombre":"Byron","apellido":"Berru","telefono":"0978654333","correo":"Byron.berru@gmail.com","dni":"1103112772","clave":"$2a$10$SjHdCS53l8yID51gLSizgOIkd9A2gKog.Cm61./RDI26P6ZBQsLCm","token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJCeXJvbi5iZXJydUBnbWFpbC5jb20iLCJpZFBlcnNvbmEiOjEsImlhdCI6MTczNjczNzY5NywiZXhwIjoxNzM2NzQxMjk3fQ.wd2o7RbPHPnHBdfmIvC2vZvKkzlUe2nDlAUNFFan_e4"},{"idPersona":2,"nombre":"Pepe","apellido":"Pérez","telefono":"1234567891","correo":"juan.perez@example.com","dni":"1150259313","clave":"$2a$10$89332BAzrXlwRtA9YEB/nuE6U8dUDLJ.tjRNS7bl1cflWSriUN9Du","token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGV4YW1wbGUuY29tIiwiaWRQZXJzb25hIjoyLCJpYXQiOjE3Mzg0NTcxNzgsImV4cCI6MTczODQ2MDc3OH0.EOCuvnupyFHTyZmC-I_GUHt_IQTdbz-SNatR1umc8xU"}]
+[
+    {
+        "idPersona": 1,
+        "nombre": "Techi",
+        "apellido": "Berru",
+        "telefono": "0999896743",
+        "correo": "techy.berru@gmail.com",
+        "dni": "1102112882",
+        "clave": "$2a$10$ywVMz7Kk./o3LZ0Nxd8Jq.o9X0F/WXg1cjXFrW/n6kL46DvwcZ4Vi",
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZWNoeS5iZXJydUBnbWFpbC5jb20iLCJpZFBlcnNvbmEiOjEsImlhdCI6MTczODQ4NTQyOSwiZXhwIjoxNzM4NDg5MDI5fQ.ZLL1cjxAvjtuMRy8I-vGJXcREQ88xDWghIKwhIqpjbw"
+    }
+]

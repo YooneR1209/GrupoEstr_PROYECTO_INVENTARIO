@@ -6,26 +6,16 @@ import controller.tda.list.ListEmptyException;
 import models.Persona;
 import org.mindrot.jbcrypt.BCrypt;
 
-/**
- * Clase PersonaDao: Maneja las operaciones de persistencia y lógica para la entidad Persona.
- * Hereda de AdapterDao para aprovechar las operaciones CRUD genéricas.
- */
 public class PersonaDao extends AdapterDao<Persona> {
     private Persona persona; 
     private LinkedList<Persona> listAll; 
 
-    /**
-     * Constructor que inicializa el DAO con la clase Persona.
-     */
+   
     public PersonaDao() {
         super(Persona.class);
     }
 
-    /**
-     * Obtiene la instancia actual de Persona. Si no existe, crea una nueva.
-     * 
-     * return La instancia de Persona actual.
-     */
+    
     public Persona getPersona() {
         if(persona == null) {
             persona = new Persona();
@@ -33,21 +23,10 @@ public class PersonaDao extends AdapterDao<Persona> {
         return this.persona;
     }
 
-    /**
-     * Establece la instancia actual de Persona.
-     * 
-     * param persona La nueva instancia de Persona.
-     */
     public void setPersona(Persona persona) {
         this.persona = persona;
     }
 
-    /**
-     * Obtiene una lista de todas las personas almacenadas. Si la lista no está inicializada,
-     * la carga desde la json.
-     * 
-     * return LinkedList con todas las personas.
-     */
     public LinkedList<Persona> getListAll() {
         if (this.listAll == null) {
             this.listAll = listAll();
@@ -55,15 +34,10 @@ public class PersonaDao extends AdapterDao<Persona> {
         return this.listAll();
     }
 
-    /**
-     * Guarda la instancia actual de Persona en la json.
-     * Verifica unicidad del correo y DNI antes de guardar.
-     * Genera una clave cifrada y un token para la Persona.
-     * 
-     * return true si la operación fue exitosa.
-     * throws Exception Si el correo o DNI ya existen.
-     */
     public Boolean save() throws Exception {
+        if(!isFirstPerson()) {
+            throw new Exception("Ya se ha registrado una persona, no se pueden guardar más.");
+        }
         if (!isUnique(getPersona().getCorreo(), getPersona().getDni())) {
             throw new Exception("Correo o DNI ya existen.");
         }
@@ -83,12 +57,10 @@ public class PersonaDao extends AdapterDao<Persona> {
             }
         }
 
-    /**
-     * Actualiza la información de la instancia actual de Persona en la json.
-     * 
-     * return true si la operación fue exitosa.
-     *throws Exception Si ocurre un error en la actualización.
-     */
+        public Boolean isFirstPerson() {
+            LinkedList<Persona> list = getListAll();
+            return list.getSize() == 0; // Si no hay personas registradas, devuelve true
+        }
     public Boolean update() throws Exception {
         String newtoken = TokenUtil.generateToken(getPersona().getIdPersona(), getPersona().getCorreo());
         getPersona().setToken(newtoken);
@@ -99,15 +71,6 @@ public class PersonaDao extends AdapterDao<Persona> {
         return true;
     }
 
-    /**
-     * Inicia sesión para un usuario. Valida el correo y la clave encriptada,
-     * y genera un nuevo token si las credenciales son correctas.
-     * 
-     * param correo El correo electrónico del usuario.
-     * param clave La clave ingresada.
-     * return true si las credenciales son válidas.
-     *throws ListEmptyException Si la lista de personas está vacía.
-     */
     public Boolean iniciosesion(String correo, String clave) throws ListEmptyException {
         LinkedList<Persona> list = getListAll();
         
@@ -133,24 +96,10 @@ public class PersonaDao extends AdapterDao<Persona> {
         return false;  
     }
 
-    /**
-     * Cifra una clave utilizando el algoritmo BCrypt.
-     * 
-     * param clave La clave en texto plano.
-     * return La clave cifrada.
-     */
     public static String encryclave(String clave) {
         return BCrypt.hashpw(clave, BCrypt.gensalt());
     }
     
-    /**
-     * Verifica si el correo y el DNI de una persona son únicos en la lista de personas.
-     * 
-     * param correo El correo a verificar.
-     * param dni El DNI a verificar.
-     * return true si ambos son únicos, false de lo contrario.
-     * throws ListEmptyException Si la lista de personas está vacía.
-     */
     public Boolean isUnique(String correo, String dni) throws ListEmptyException {
         LinkedList<Persona> list = getListAll();
 
@@ -169,7 +118,6 @@ public class PersonaDao extends AdapterDao<Persona> {
         return true;  
     }
 
-    //recuperar la contraseña 
     public Boolean recuperarClave(String correo, String nuevaClave) throws ListEmptyException {
         LinkedList<Persona> list = listAll(); // Obtén la lista de todas las personas.
         Persona[] personas = list.toArray(); // Convierte la lista en un array para iterar.
@@ -247,11 +195,9 @@ public class PersonaDao extends AdapterDao<Persona> {
                 return persona;
             }
             
-            // Si el correo de la persona en la posición medio es menor, entonces buscar en la mitad derecha
             if (persona.getCorreo().compareTo(correo) < 0) {
                 left = middle + 1;
             }
-            // Si el correo de la persona en la posición medio es mayor, entonces buscar en la mitad izquierda
             else {
                 right = middle - 1;
             }
@@ -260,6 +206,32 @@ public class PersonaDao extends AdapterDao<Persona> {
         // Si no se encuentra
         return null;
     }
+
+    public Persona getPersonaByToken(String token) throws ListEmptyException {
+        LinkedList<Persona> list = getListAll();
+        
+        for (Persona persona : list.toArray()) {
+            if (persona.getToken().equals(token)) {
+                return persona;
+            }
+        }
+        return null; // Si no se encuentra la persona con ese token
+    }
+
+    // Agregado al final de PersonaDao
+
+public LinkedList<String> getAllDnis() {
+    LinkedList<String> dnis = new LinkedList<>();
+    for (Persona persona : getListAll().toArray()) {
+        dnis.add(persona.getDni());
+    }
+    return dnis;
+}
+
+    
+    
+    
+    
 
 
 

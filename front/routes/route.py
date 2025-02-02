@@ -1,9 +1,10 @@
 import json
 
-from flask import Flask, Blueprint, flash, render_template, request, redirect, url_for, session, get_flashed_messages
+from flask import Flask, Blueprint, flash, jsonify, render_template, request, redirect, url_for, session, get_flashed_messages
 
 import requests
 from flask import make_response
+import jwt
 
 router = Blueprint("router", __name__)
 
@@ -12,17 +13,24 @@ router = Blueprint("router", __name__)
 def home():
     return redirect(url_for("router.login"))
 
-
-@router.route("/login")
+@router.route("/login", methods=["GET", "POST"])
 def login():
     if 'token' in session:
-        return redirect(url_for("router.dashboard"))  # Si ya está autenticado, redirige al dashboard
-    
-    response = make_response(render_template("modulologin/iniciosesion.html"))
+        return redirect(url_for("router.dashboard"))  # Si ya está logueado, redirigir
+
+    # Hacer la petición al backend que verifica si hay un DNI registrado
+    response = requests.get(f"http://localhost:8080/myapp/persona/listDnis")
+    dnis_data = response.json()
+
+    # Verificar si la respuesta tiene algún DNI
+    dni_registrado = False
+    if 'dnis' in dnis_data and 'header' in dnis_data['dnis'] and dnis_data['dnis']['header']['info']:
+        dni_registrado = True
+
+    # Pasar el valor a la plantilla
+    response = make_response( render_template("modulologin/iniciosesion.html", dni_registrado=dni_registrado))
     response.headers['Cache-Control'] = 'no-store'  # Evitar caché
     return response
- # Ruta de inventario
-
 
 # Ruta para mostrar el formulario de login
 @router.route("/logout")
@@ -155,10 +163,19 @@ def actualizar():
         return render_template("modulologin/perfil.html", lista=dat["data"])
 
 
+
 @router.route("/formularegistro")
 def formularegistro():
+    # Hacer la petición al backend que verifica si hay un DNI registrado
+    response = requests.get(f"http://localhost:8080/myapp/persona/listDnis")
+    dnis_data = response.json()
 
+    # Verificar si la respuesta tiene algún DNI
+    if 'dnis' in dnis_data and 'header' in dnis_data['dnis'] and dnis_data['dnis']['header']['info']:
+        return redirect(url_for('router.login'))  # Si hay un DNI registrado, redirigir al login
+    
     return render_template("modulologin/registro.html")
+
 
 
 @router.route("/formulorecuperar")

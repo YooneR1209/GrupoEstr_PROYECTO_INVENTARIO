@@ -1,6 +1,7 @@
 package controller.dao;
 
 import controller.tda.list.LinkedList;
+import controller.tda.list.ListEmptyException;
 import models.OrdenCompra;
 
 public class OrdenCompraServicies {
@@ -37,6 +38,14 @@ public class OrdenCompraServicies {
 
     public OrdenCompra get(Integer id) throws Exception { // Obtiene un objeto OrdenCompra por su id
         return obj.buscar_IdOrdenCompra(id); // Invoca el método get() de la clase OrdenCompraDao y envía el id
+    }
+
+    public Boolean isUnique(String nroOrdenCompra) throws ListEmptyException {
+        return obj.isUnique(nroOrdenCompra);
+    }
+
+    public boolean isFechaCompraValida(String fechaCompra) {
+        return obj.isFechaCompraValida(fechaCompra);
     }
 
 }

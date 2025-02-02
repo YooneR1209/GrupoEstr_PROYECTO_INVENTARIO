@@ -184,15 +184,41 @@ public class LoteApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLoteFirstApellido(@PathParam("texto") String texto) {
         HashMap map = new HashMap<>();
-        LoteServicies fs = new LoteServicies();
 
-        map.put("msg", "Ok");
-        map.put("data", fs.buscar_CodigoLote(texto).toArray());
-        if (fs.buscar_CodigoLote(texto).isEmpty()) {
+        try {
+            LoteServicies fs = new LoteServicies();
+            fs.setLote(fs.buscar_CodigoLote(texto));
+            map.put("msg", "Ok");
+            map.put("data", fs.showLote(fs.getLote()));
+            if (fs.getLote().getId() == null) {
+                map.put("data", "No existe familia con ese id");
+                return Response.status(Status.BAD_REQUEST).entity(map).build();
+            }
+        } catch (Exception e) {
+            System.out.println("Error en search codigoLote" + e);
+        }
+        return Response.ok(map).build();
+
+    }
+
+    @Path("/list/order/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        LoteServicies ps = new LoteServicies();
+        try {
+            map.put("msg", "Ok");
+            map.put("data", ps.listShowAll2(ps.order(attribute, type)));
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        if (ps.order(attribute, type).isEmpty()) {
             map.put("data", new Object[] {});
+            return Response.status(Status.BAD_REQUEST).entity(map).build();
         }
 
         return Response.ok(map).build();
     }
-
 }

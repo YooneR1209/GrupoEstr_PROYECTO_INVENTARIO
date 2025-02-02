@@ -110,6 +110,12 @@ public class ProductoApi {
             ps.getProducto().setMarca(map.get("marca").toString());
             ps.getProducto().setDescripcion(map.get("descripcion").toString());
 
+            if (!ps.isUnique(ps.getProducto().getNombre(), ps.getProducto().getMarca())) {
+                res.put("msg", "Error");
+                res.put("data", "Ya existe un producto registrado con éste nombre y marca.");
+                return Response.status(Status.BAD_REQUEST).entity(res).build();
+            }
+
             ps.update();
 
             res.put("msg", "Ok");

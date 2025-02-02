@@ -22,20 +22,47 @@
 {% endif %}
 {% endwith %}
 
+<div class="col-lg-6" style="margin-left: 5%; margin-bottom: 20px;">
+    <label>Buscar por Nro de Orden</label>
+    <input id="textoBusqueda" placeholder="Ingresa un nro de Orden" class="form-control"
+        style="width: 220px; display: inline-block; text-align: center; padding-left: 10px; padding-right: 10px;" />
+    <a id="btnBuscar" class="btn btn-success">Buscar</a>
+</div>
+
 <section class="section">
     <div class="row justify-content-center">
-        <div class="col-lg-5">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <div class="">
-                        <table class="table">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>nro_OrdenCompra</th>
-                                    <th>Fecha Factura</th>
-                                    <th>Cedula Distribuidor</th>
-                                    <th>Total Compra</th>
-                                    <th>Acciones</th>
+                                    <th style="width: 15%;">Nro Orden Compra
+                                        <a href="/ordenCompra/order/nro_OrdenCompra/1"> <i
+                                                class="bi bi-arrow-up text-white"></i></a>
+                                        <a href="/ordenCompra/order/nro_OrdenCompra/0"><i
+                                                class="bi bi-arrow-down text-white"></i></a>
+                                    </th>
+                                    <th style="width: 13%;">Fecha Factura
+                                        <a href="/ordenCompra/order/fechaCompra/1"><i
+                                                class="bi bi-arrow-up text-white"></i></a>
+                                        <a href="/ordenCompra/order/fechaCompra/0"><i
+                                                class="bi bi-arrow-down text-white"></i></a>
+                                    </th>
+                                    <th style="width: 17%;">Cedula Distribuidor
+                                        <a href="/ordenCompra/order/cedula_Distribuidor/1"><i
+                                                class="bi bi-arrow-up text-white"></i></a>
+                                        <a href="/ordenCompra/order/cedula_Distribuidor/0"><i
+                                                class="bi bi-arrow-down text-white"></i></a>
+                                    </th>
+                                    <th style="width: 13%;">Total Compra
+                                        <a href="/ordenCompra/order/totalCompra/1"><i
+                                                class="bi bi-arrow-up text-white"></i></a>
+                                        <a href="/ordenCompra/order/totalCompra/0"><i
+                                                class="bi bi-arrow-down text-white"></i></a>
+                                    </th>
+                                    <th style="width: 15%;">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,7 +79,6 @@
                                         </a>
                                     </td>
                                 </tr>
-
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -61,6 +87,34 @@
             </div>
         </div>
     </div>
-    </div>
 </section>
+
+<!-- Incluir jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Script para manejar la búsqueda -->
+<script>
+    $(document).ready(function () {
+        // Función para redirigir a la URL de búsqueda
+        function buscarOrdenCompra() {
+            var texto = $("#textoBusqueda").val();  // Captura el valor del campo de búsqueda
+            if (texto) {
+                var url = "/ordenCompra/search/codigoLote/" + texto;  // Construye la URL de búsqueda
+                window.location.href = url;  // Redirige a la URL de búsqueda
+            } else {
+                alert("Por favor, ingresa un código de lote.");  // Muestra un mensaje si el campo está vacío
+            }
+        }
+
+        // Asignar la función al botón de búsqueda
+        $("#btnBuscar").click(buscarOrdenCompra);
+
+        // Permitir la búsqueda al presionar "Enter" en el campo de texto
+        $("#textoBusqueda").keypress(function (e) {
+            if (e.which === 13) {  // 13 es el código de la tecla "Enter"
+                buscarOrdenCompra();
+            }
+        });
+    });
+</script>
 {% endblock %}

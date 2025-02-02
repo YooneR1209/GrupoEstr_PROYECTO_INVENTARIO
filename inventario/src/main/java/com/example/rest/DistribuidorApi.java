@@ -73,6 +73,11 @@ public class DistribuidorApi {
             ps.getDistribuidor().setCelular(map.get("celular").toString());
             ps.getDistribuidor().setDescripcion(map.get("descripcion").toString());
 
+            if (!ps.isUnique(ps.getDistribuidor().getCedula())) {
+                res.put("msg", "Error");
+                res.put("data", "Error: Ya existe un distribuidor registrado con ésta cédula");
+                return Response.status(Status.BAD_REQUEST).entity(res).build();
+            }
             ps.save();
 
             res.put("msg", "Ok");

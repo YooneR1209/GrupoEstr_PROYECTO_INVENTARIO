@@ -1,5 +1,6 @@
 package com.example.rest;
 
+import controller.dao.LoteServicies;
 import controller.dao.OrdenCompraServicies;
 import models.OrdenCompra;
 
@@ -120,48 +121,48 @@ public class OrdenCompraApi {
         return Response.ok(map).build();
     }
 
-    // @Path("/list/order/{attribute}/{type}/{metodo}")
-    // @GET
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response getOrder(@PathParam("attribute") String attribute,
-    // @PathParam("type") Integer type, @PathParam("metodo") Integer metodo) {
-    // HashMap map = new HashMap<>();
-    // OrdenCompraServicies ocs = new OrdenCompraServicies();
+    @Path("/list/search/nro_OrdenCompra/{texto}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrdenCompra(@PathParam("texto") String texto) {
+        HashMap map = new HashMap<>();
 
-    // map.put("msg", "Ok");
-    // map.put("data", ocs.order(attribute, type, metodo).toArray());
+        try {
+            OrdenCompraServicies fs = new OrdenCompraServicies();
+            fs.setOrdenCompra(fs.buscar_nro_OrdenCompra(texto));
+            map.put("msg", "Ok");
+            map.put("data", fs.getOrdenCompra());
+            if (fs.getOrdenCompra().getId() == null) {
+                map.put("data", "No existe familia con ese id");
+                return Response.status(Status.BAD_REQUEST).entity(map).build();
+            }
+        } catch (Exception e) {
+            System.out.println("Error en search codigoLote" + e);
+        }
+        return Response.ok(map).build();
 
-    // if (ocs.order(attribute, type, metodo).isEmpty()) {
-    // map.put("data", new Object[]{});
-    // return Response.status(Status.BAD_REQUEST).entity(map).build();
-    // }
+    }
 
-    // return Response.ok(map).build();
-    // }
+    @Path("/list/order/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        OrdenCompraServicies ps = new OrdenCompraServicies();
+        try {
+            map.put("msg", "Ok");
+            map.put("data", ps.order(attribute, type).toArray());
+        } catch (Exception e) {
+            System.out.println("Error en order OrdenCompra" + e);
+        }
 
-    // @Path("/list/search/id/lote/{ordenCompraId}")
-    // @GET
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response getLotesIdOrdenCompra(@PathParam("ordenCompraId") Integer id)
-    // {
-    // HashMap map = new HashMap<>();
-    // OrdenCompraServicies ocs = new OrdenCompraServicies();
-    // try {
-    // map.put("msg", "Ok");
-    // map.put("data", ocs.buscar_Id_Lotes(id));
-    // if (map.isEmpty()) {
-    // map.put("data", "No existe el OrdenCompra");
-    // return
-    // Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin",
-    // "*").entity(map)
-    // .build();
-    // }
-    // } catch (Exception e) {
-    // System.out.println("Error" + e);
+        if (ps.order(attribute, type).isEmpty()) {
+            map.put("data", new Object[] {});
+            return Response.status(Status.BAD_REQUEST).entity(map).build();
+        }
 
-    // }
-    // return Response.ok(map).header("Access-Control-Allow-Origin", "*").build();
-    // }
+        return Response.ok(map).build();
+    }
 
     @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)

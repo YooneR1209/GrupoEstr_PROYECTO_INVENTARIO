@@ -20,7 +20,11 @@ public class Distribuidor {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        if (nombre != null && nombre.matches(".*[a-zA-Z].*")) {
+            this.nombre = nombre;
+        } else {
+            throw new IllegalArgumentException("El nombre del distribuidor debe contener al menos una letra.");
+        }
     }
 
     public String getCedula() {
@@ -28,7 +32,11 @@ public class Distribuidor {
     }
 
     public void setCedula(String cedula) {
-        this.cedula = cedula;
+        if (cedula != null && cedula.matches("\\d{10}")) {
+            this.cedula = cedula;
+        } else {
+            throw new IllegalArgumentException("La cédula debe tener exactamente 10 dígitos numéricos.");
+        }
     }
 
     public String getCelular() {
@@ -43,8 +51,7 @@ public class Distribuidor {
         return descripcion;
     }
 
-    public void setDescripcion(String descipcioon) {
-        this.descripcion = descipcioon;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
-
 }

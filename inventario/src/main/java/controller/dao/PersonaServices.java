@@ -95,6 +95,10 @@ public class PersonaServices {
 
       public Boolean existeCorreo(String correo) throws ListEmptyException {
         return obj.existeCorreo(correo);
+    } 
+
+    public LinkedList<String> getAllDnis()  {
+        return obj.getAllDnis();
     }
 
 

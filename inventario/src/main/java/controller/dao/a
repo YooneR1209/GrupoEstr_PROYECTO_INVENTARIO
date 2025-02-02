@@ -1,0 +1,180 @@
+package controller.dao;
+
+import controller.dao.implement.AdapterDao;
+import controller.tda.list.LinkedList;
+import controller.tda.list.ListEmptyException;
+import models.Persona;
+import org.mindrot.jbcrypt.BCrypt;
+
+/**
+ * Clase PersonaDao: Maneja las operaciones de persistencia y lógica para la entidad Persona.
+ * Hereda de AdapterDao para aprovechar las operaciones CRUD genéricas.
+ */
+public class PersonaDao extends AdapterDao<Persona> {
+    private Persona persona; 
+    private LinkedList<Persona> listAll; 
+
+    /**
+     * Constructor que inicializa el DAO con la clase Persona.
+     */
+    public PersonaDao() {
+        super(Persona.class);
+    }
+
+    /**
+     * Obtiene la instancia actual de Persona. Si no existe, crea una nueva.
+     * 
+     * return La instancia de Persona actual.
+     */
+    public Persona getPersona() {
+        if(persona == null) {
+            persona = new Persona();
+        }
+        return this.persona;
+    }
+
+    /**
+     * Establece la instancia actual de Persona.
+     * 
+     * param persona La nueva instancia de Persona.
+     */
+    public void setPersona(Persona persona) {
+        this.persona = persona;
+    }
+
+    /**
+     * Obtiene una lista de todas las personas almacenadas. Si la lista no está inicializada,
+     * la carga desde la json.
+     * 
+     * return LinkedList con todas las personas.
+     */
+    public LinkedList<Persona> getListAll() {
+        if (this.listAll == null) {
+            this.listAll = listAll();
+            // Asegurarse de que la lista esté ordenada (por correo, por ejemplo).
+            sortListByCorreo();
+        }
+        return this.listAll;
+    }
+
+    /**
+     * Ordena la lista de personas por correo (o cualquier otro criterio).
+     */
+    private void sortListByCorreo() {
+        // Implementar el algoritmo de ordenación, por ejemplo, un algoritmo de ordenación de burbuja.
+        for (int i = 0; i < listAll.getSize(); i++) {
+            for (int j = i + 1; j < listAll.getSize(); j++) {
+                if (listAll.get(i).getCorreo().compareTo(listAll.get(j).getCorreo()) > 0) {
+                    // Intercambiar las personas
+                    Persona temp = listAll.get(i);
+                    listAll.set(i, listAll.get(j));
+                    listAll.set(j, temp);
+                }
+            }
+        }
+    }
+
+    /**
+     * Busca una persona por correo utilizando búsqueda binaria en la lista ordenada.
+     * 
+     * return Persona si se encuentra, null si no.
+     */
+    private Persona binarySearch(String correo) {
+        int left = 0;
+        int right = listAll.getSize() - 1;
+        
+        while (left <= right) {
+            int middle = left + (right - left) / 2;
+            Persona persona = listAll.get(middle);
+            
+            // Si el correo coincide
+            if (persona.getCorreo().equals(correo)) {
+                return persona;
+            }
+            
+            // Si el correo de la persona en la posición medio es menor, entonces buscar en la mitad derecha
+            if (persona.getCorreo().compareTo(correo) < 0) {
+                left = middle + 1;
+            }
+            // Si el correo de la persona en la posición medio es mayor, entonces buscar en la mitad izquierda
+            else {
+                right = middle - 1;
+            }
+        }
+        
+        // Si no se encuentra
+        return null;
+    }
+
+    /**
+     * Inicia sesión para un usuario. Valida el correo y la clave encriptada,
+     * y genera un nuevo token si las credenciales son correctas.
+     * 
+     * param correo El correo electrónico del usuario.
+     * param clave La clave ingresada.
+     * return true si las credenciales son válidas.
+     * throws ListEmptyException Si la lista de personas está vacía.
+     */
+    public Boolean iniciosesion(String correo, String clave) throws ListEmptyException {
+        LinkedList<Persona> list = getListAll();
+        
+        // Búsqueda binaria de la persona por correo
+        Persona persona = binarySearch(correo);
+    
+        if (persona != null && BCrypt.checkpw(clave, persona.getClave())) {
+            String token = TokenUtil.generateToken(persona.getIdPersona(), persona.getCorreo());
+            persona.setToken(token);
+    
+            // Actualizar la persona en la lista
+            for (int i = 0; i < list.getSize(); i++) {
+                if (list.get(i).getIdPersona().equals(persona.getIdPersona())) {
+                    list.update(persona, i);  
+                    break;
+                }
+            }
+
+            setPersona(persona);
+            return true; 
+        }
+    
+        return false;  
+    }
+
+    /**
+     * Cifra una clave utilizando el algoritmo BCrypt.
+     * 
+     * param clave La clave en texto plano.
+     * return La clave cifrada.
+     */
+    public static String encryclave(String clave) {
+        return BCrypt.hashpw(clave, BCrypt.gensalt());
+    }
+    
+    /**
+     * Verifica si el correo y el DNI de una persona son únicos en la lista de personas.
+     * 
+     * param correo El correo a verificar.
+     * param dni El DNI a verificar.
+     * return true si ambos son únicos, false de lo contrario.
+     * throws ListEmptyException Si la lista de personas está vacía.
+     */
+    public Boolean isUnique(String correo, String dni) throws ListEmptyException {
+        LinkedList<Persona> list = getListAll();
+
+        // Búsqueda binaria para correo
+        if (binarySearch(correo) != null) {
+            return false; 
+        }
+
+        // Búsqueda binaria para DNI (suponiendo que también se debe ordenar por DNI)
+        for (int i = 0; i < list.getSize(); i++) {
+            if (list.get(i).getDni().equals(dni)) {
+                return false;
+            }
+        }
+
+        return true;  
+    }
+
+    // El resto del código sigue igual...
+}

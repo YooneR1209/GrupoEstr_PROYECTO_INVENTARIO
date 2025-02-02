@@ -65,15 +65,16 @@
             <div class="mb-3">
                 <label for="correo" class="form-label"><i class="bi bi-envelope-fill"></i> Correo:</label>
                 <input type="email" id="correo" name="correo" class="form-control" 
-                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}" 
-                    title="Introduce un correo electrónico válido (ejemplo@dominio.com)" 
-                    required>
+    pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+    title="Introduce un correo electrónico válido (ejemplo@dominio.com)" 
+    required>
+
             </div>
             <div class="mb-3">
                 <label for="clave" class="form-label"><i class="bi bi-lock-fill"></i> Contraseña:</label>
                 <div class="input-group">
                     <input type="password" id="clave" name="clave" class="form-control" 
-                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                         title="La contraseña debe contener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número" 
                         required>
                     <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
@@ -87,12 +88,13 @@
             <p class="error">{{ error }}</p>
         {% endif %}
         <div class="links-container">
-            <a href="/recuperar">¿Olvidaste tu contraseña?</a>
+            <a href="/formulorecuperar">¿Olvidaste tu contraseña?</a>
             <a href="/formularegistro">Registrarse</a>
         </div>
-        <div class="links-container mt-3">
+       <!-- <div class="links-container mt-3">
             <a href="/home" class="btn btn-link"><i class="bi bi-arrow-left"></i> Regresar</a>
         </div>
+        -->
     </div>
 
     <!-- Bootstrap JS -->
@@ -111,6 +113,19 @@
                 toggleIcon.classList.add('bi-eye');
             }
         }
+        if (sessionStorage.getItem('token')) {
+        window.location.href = '/navegacion';  // Redirige a la página del dashboard si ya está logueado
+    }
+    if (window.history && window.history.pushState) {
+            window.history.pushState('forward', null, './');
+            window.history.forward();
+
+            window.addEventListener('popstate', function() {
+                window.history.pushState('forward', null, './');
+                window.history.forward();
+            });
+        }
     </script>
+    
 </body>
 </html>

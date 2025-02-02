@@ -3,6 +3,7 @@ package controller.tda.list;
 import java.lang.reflect.Method;
 
 import controller.tda.list.LinkedList;
+import models.Persona;
 
 public class LinkedList<E> {
     private Node<E> header; // Nodo cabecera (el primer nodo de la lista)
@@ -438,5 +439,6 @@ public class LinkedList<E> {
     public void addF(E info) {
         addHeader(info);
     }
+
 
 }

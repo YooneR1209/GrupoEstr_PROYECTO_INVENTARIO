@@ -3,35 +3,33 @@ import json
 from flask import Flask, Blueprint, flash, render_template, request, redirect, url_for, session, get_flashed_messages
 
 import requests
+from flask import make_response
 
 router = Blueprint("router", __name__)
 
 
 @router.route("/")
 def home():
-    if "token" in session:
-        return redirect(url_for("router.login"))
-    return render_template(
-        "template.html",
-        usuario=session.get("usuario"),
-        idPersona=session.get("idPersona"),
-    )  # Página de inicio o bienvenida
+    return redirect(url_for("router.login"))
 
 
-@router.route("/home")
-def homeo():
-    return render_template("inicio.html")  # Página de inicio o bienvenida
-
-
-@router.route("/inventario")
-def inventario():
-    return render_template("fragmento/inventario.html")  # Ruta de inventario
+@router.route("/login")
+def login():
+    if 'token' in session:
+        return redirect(url_for("router.dashboard"))  # Si ya está autenticado, redirige al dashboard
+    
+    response = make_response(render_template("modulologin/iniciosesion.html"))
+    response.headers['Cache-Control'] = 'no-store'  # Evitar caché
+    return response
+ # Ruta de inventario
 
 
 # Ruta para mostrar el formulario de login
-@router.route("/login")
-def login():
-    return render_template("modulologin/iniciosesion.html")
+@router.route("/logout")
+def logout():
+    session.clear()  # Elimina todos los datos de la sesión
+    return redirect(url_for("router.login"))  # Redirige al login
+ # Redirige al login
 
 
 # Ruta para manejar el envío del formulario de login
@@ -50,11 +48,11 @@ def procesar_login():
         session["token"] = dat["token"]
         session["usuario"] = form["correo"]
         session["idPersona"] = dat["idPersona"]
-        return redirect(
-            url_for("router.dashboard")
-        )  # Redirige al dashboard si login exitoso
+        flash("Inicio de sesión exitoso", category="success")
+        return redirect(url_for("router.dashboard"))
+    
     else:
-        error = r.json().get("error", "Error al iniciar sesión")
+        error = r.json().get("error", "Correo o clave incorrectos")
         return render_template("modulologin/iniciosesion.html", error=error)
 
 
@@ -65,19 +63,16 @@ def dashboard():
         return redirect(url_for('router.login'))  # Redirige al login si no hay token
     
     # Obtener los mensajes flash
-    success_message = get_flashed_messages(category_filter='success')
     
-    return render_template('modulologin/datos.html', 
-                           usuario=session.get('usuario'), 
-                           idPersona=session.get('idPersona'),
-                           success_message=success_message)  # Pasar el mensaje de éxito a la plantilla
-
+    response = make_response(render_template('modulologin/datos.html', 
+                                             usuario=session.get('usuario'), 
+                                             idPersona=session.get('idPersona')))
+    response.headers['Cache-Control'] = 'no-store'  # Evitar caché
+    return response
 
 # Ruta para logout y eliminar la sesión
-@router.route("/logout")
-def logout():
-    session.clear()  # Elimina todos los datos de la sesión
-    return redirect(url_for("router.login"))  # Redirige al login
+# Elimina uno de estos dos bloques
+
 
   
     
@@ -114,7 +109,7 @@ def registro():
     else:
         return render_template(
             'modulologin/registro.html', 
-            error_message=dat.get("message", "Error al registrar")
+            error_message=dat.get("message", "Erro22 al registrar")
         )
       
 
@@ -151,10 +146,12 @@ def actualizar():
     )
     dat = r.json()
     if r.status_code == 200:
+        flash("Registro guardado correctamente", category="success")
         return redirect(
             url_for("router.mipersona", id=dataF["idPersona"], lista=dat["data"])
         )
     else:
+        flash("Hubo un error al guardar el registro", category="danger")
         return render_template("modulologin/perfil.html", lista=dat["data"])
 
 
@@ -162,6 +159,41 @@ def actualizar():
 def formularegistro():
 
     return render_template("modulologin/registro.html")
+
+
+@router.route("/formulorecuperar")
+def formuloregistre():
+    return render_template("modulologin/correo.html")
+
+@router.route("/verificarcorreo", methods=["POST"])
+def ingresa_correo():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+    data = {"correo": form["correo"]}
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/correoexiste", headers=headers, data=json.dumps(data)
+    )
+    if r.status_code == 200:
+        return render_template("modulologin/recuperar.html", correo=data["correo"])
+    else:
+        flash("El correo ingresado no existe. Por favor verifica e intenta nuevamente.", "error")
+        return redirect(url_for("router.formuloregistre"))
+
+@router.route("/recuperarclave", methods=["POST"])
+def recuperar_clave():
+    headers = {"Content-Type": "application/json"}
+    form = request.form
+    data = {"correo": form["correo"], "nuevaClave": form["nuevaClave"]}
+    r = requests.post(
+        "http://localhost:8080/myapp/persona/recuperar_clave", headers=headers, data=json.dumps(data)
+    )
+    if r.status_code == 200:
+        flash("Contraseña actualizada exitosamente. Por favor, inicia sesión.", "success")
+        return redirect(url_for("router.login"))
+    else:
+        flash("No se pudo actualizar la contraseña. Inténtalo nuevamente.", "error")
+        return redirect(url_for("router.ingresa_correo"))
+
 
 
 # INICIO PRODUCTO

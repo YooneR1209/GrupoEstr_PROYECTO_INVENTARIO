@@ -67,15 +67,21 @@ public class PersonaDao extends AdapterDao<Persona> {
         if (!isUnique(getPersona().getCorreo(), getPersona().getDni())) {
             throw new Exception("Correo o DNI ya existen.");
         }
-        Integer id = getListAll().getSize() + 1;
-        getPersona().setIdPersona(id);
-        String encryclave = getPersona().getClave();
-        getPersona().setClave(encryclave(encryclave));
-        String token = TokenUtil.generateToken(getPersona().getIdPersona(), getPersona().getCorreo());
-        getPersona().setToken(token);
-        persist(getPersona());
-        return true;
-    }
+        try {
+            Integer id = getListAll().getSize() + 1;
+            getPersona().setIdPersona(id);
+            String encryclave = getPersona().getClave();
+            getPersona().setClave(encryclave(encryclave));
+            String token = TokenUtil.generateToken(getPersona().getIdPersona(), getPersona().getCorreo());
+            getPersona().setToken(token);
+            persist(getPersona());
+            System.out.println("Persona guardada exitosamente.");
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error al guardar la persona: " + e.getMessage());
+                return false;
+            }
+        }
 
     /**
      * Actualiza la información de la instancia actual de Persona en la json.
@@ -103,26 +109,25 @@ public class PersonaDao extends AdapterDao<Persona> {
      *throws ListEmptyException Si la lista de personas está vacía.
      */
     public Boolean iniciosesion(String correo, String clave) throws ListEmptyException {
-        LinkedList<Persona> list = listAll();
-        Persona[] personas = list.toArray();
+        LinkedList<Persona> list = getListAll();
+        
+        // Búsqueda binaria de la persona por correo
+        Persona persona = binarySearch(correo);
     
-        for (Persona persona : personas) {
-            if (persona.getCorreo().equals(correo)) {
-                if (BCrypt.checkpw(clave, persona.getClave())) {
-                    String token = TokenUtil.generateToken(persona.getIdPersona(), persona.getCorreo());
-                    persona.setToken(token);
+        if (persona != null && BCrypt.checkpw(clave, persona.getClave())) {
+            String token = TokenUtil.generateToken(persona.getIdPersona(), persona.getCorreo());
+            persona.setToken(token);
     
-                    for (int i = 0; i < list.getSize(); i++) {
-                        if (list.get(i).getIdPersona().equals(persona.getIdPersona())) {
-                            list.update(persona, i);  
-                            break;
-                        }
-                    }
-
-                    setPersona(persona);
-                    return true; 
+            // Actualizar la persona en la lista
+            for (int i = 0; i < list.getSize(); i++) {
+                if (list.get(i).getIdPersona().equals(persona.getIdPersona())) {
+                    list.update(persona, i);  
+                    break;
                 }
             }
+
+            setPersona(persona);
+            return true; 
         }
     
         return false;  
@@ -147,15 +152,118 @@ public class PersonaDao extends AdapterDao<Persona> {
      * throws ListEmptyException Si la lista de personas está vacía.
      */
     public Boolean isUnique(String correo, String dni) throws ListEmptyException {
-        LinkedList<Persona> list = listAll();
-        Persona[] personas = list.toArray();
+        LinkedList<Persona> list = getListAll();
 
-        for (Persona persona : personas) {
-            if (persona.getCorreo().equals(correo) || persona.getDni().equals(dni)) {
-                return false; 
+        // Búsqueda binaria para correo
+        if (binarySearch(correo) != null) {
+            return false; 
+        }
+
+        // Búsqueda binaria para DNI (suponiendo que también se debe ordenar por DNI)
+        for (int i = 0; i < list.getSize(); i++) {
+            if (list.get(i).getDni().equals(dni)) {
+                return false;
             }
         }
 
         return true;  
     }
+
+    //recuperar la contraseña 
+    public Boolean recuperarClave(String correo, String nuevaClave) throws ListEmptyException {
+        LinkedList<Persona> list = listAll(); // Obtén la lista de todas las personas.
+        Persona[] personas = list.toArray(); // Convierte la lista en un array para iterar.
+    
+        for (int i = 0; i < personas.length; i++) {
+            Persona persona = personas[i];
+    
+            if (persona.getCorreo().equals(correo)) {
+                // Generar un nuevo token y cifrar la nueva clave.
+                String token = TokenUtil.generateToken(persona.getIdPersona(), persona.getCorreo());
+                persona.setToken(token);
+    
+                String encryclave = encryclave(nuevaClave); // Cifra la nueva clave.
+                persona.setClave(encryclave); // Actualiza la clave cifrada.
+    
+                // Actualizar la lista con la nueva información.
+                list.update(persona, i); // Actualiza el objeto Persona en la lista.
+    
+                // Persistir los cambios directamente con el método `merge`.
+                try {
+                    merge(persona, i); // `merge` sobrescribe el archivo JSON en la posición correspondiente.
+                } catch (Exception e) {
+                    System.err.println("Error al persistir la nueva contraseña: " + e.getMessage());
+                    return false;
+                }
+                setPersona(persona);
+                return true; // Retorna true si todo fue exitoso.
+            }
+        }
+    
+        return false; // Retorna false si el correo no se encuentra.
+    }
+
+    public Boolean existeCorreo(String correo) throws ListEmptyException {
+        LinkedList<Persona> list = listAll();
+        for (Persona persona : list.toArray()) {
+            if (persona.getCorreo().equals(correo)) {
+                setPersona(persona);
+                return true;
+
+                    
+
+            }
+        }
+        return null;
+
+    }
+
+
+    @SuppressWarnings("unused")
+    private void sortListByCorreo() throws ListEmptyException {
+        // Implementar el algoritmo de ordenación, por ejemplo, un algoritmo de ordenación de burbuja.
+        for (int i = 0; i < listAll.getSize(); i++) {
+            for (int j = i + 1; j < listAll.getSize(); j++) {
+                if (listAll.get(i).getCorreo().compareTo(listAll.get(j).getCorreo()) > 0) {
+                    // Intercambiar las personas
+                    Persona temp = listAll.get(i);
+                    listAll.update(listAll.get(j), i);
+                    listAll.update(temp, j);
+                }
+            }
+        }
+    }
+
+    private Persona binarySearch(String correo) throws IndexOutOfBoundsException, ListEmptyException {
+        int left = 0;
+        int right = listAll.getSize() - 1;
+        
+        while (left <= right) {
+            int middle = left + (right - left) / 2;
+            Persona persona = listAll.get(middle);
+            
+            // Si el correo coincide
+            if (persona.getCorreo().equals(correo)) {
+                return persona;
+            }
+            
+            // Si el correo de la persona en la posición medio es menor, entonces buscar en la mitad derecha
+            if (persona.getCorreo().compareTo(correo) < 0) {
+                left = middle + 1;
+            }
+            // Si el correo de la persona en la posición medio es mayor, entonces buscar en la mitad izquierda
+            else {
+                right = middle - 1;
+            }
+        }
+        
+        // Si no se encuentra
+        return null;
+    }
+
+
+
+    
+    
+    
 }

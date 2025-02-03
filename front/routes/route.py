@@ -13,6 +13,7 @@ from flask import (
 )
 
 import requests
+from flask_cors import CORS
 
 router = Blueprint("router", __name__)
 
@@ -861,6 +862,28 @@ def list_compras(msg=""):
 
     return render_template(
         "modulocompra/registro.html",
+        lista_distribuidor=data_distribuidor["data"],
+        lista_producto=data_producto["data"],
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+    )
+
+
+@router.route("/ventas/register")
+def list_ventas(msg=""):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r_distribuidor = requests.get("http://localhost:8080/myapp/distribuidor/list")
+    data_distribuidor = r_distribuidor.json()
+
+    r_producto = requests.get("http://localhost:8080/myapp/producto/list")
+    data_producto = r_producto.json()
+
+    print(data_distribuidor)
+
+    return render_template(
+        "moduloventa/registro.html",
         lista_distribuidor=data_distribuidor["data"],
         lista_producto=data_producto["data"],
         usuario=session.get("usuario"),

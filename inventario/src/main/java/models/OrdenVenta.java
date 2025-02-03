@@ -1,63 +1,85 @@
 package models;
+
 public class OrdenVenta {
-    private Integer idVenta;
+    private Integer id;
+    private String nro_OrdenVenta;
     private String fechaVenta;
-    private Float subtotalVenta;
-    private Float iva;
-    private Float totalVenta;
-    private String n_OrdenVenta;
-    private Integer IdDetalleVenta;
+    private Lote[] loteList;
+    private float totalVenta;
+
+    public OrdenVenta(Integer id, String nro_OrdenVenta, String fechaVenta,
+            Lote[] loteList, float totalVenta) {
+        this.id = id;
+        this.nro_OrdenVenta = nro_OrdenVenta;
+        this.fechaVenta = fechaVenta;
+        this.loteList = loteList;
+        this.totalVenta = totalVenta;
+    }
+
     public OrdenVenta() {
     }
-    public OrdenVenta(Integer idVenta, String fechaVenta, Float subtotalVenta, Float iva, Float totalVenta, String n_OrdenVenta, Integer IdDetalleVenta) {
-        this.idVenta = idVenta;
-        this.fechaVenta = fechaVenta;
-        this.subtotalVenta = subtotalVenta;
-        this.iva = iva;
-        this.totalVenta = totalVenta;
-        this.n_OrdenVenta = n_OrdenVenta;
-        this.IdDetalleVenta = IdDetalleVenta;
+
+    public Integer getId() {
+        return id;
     }
-    public Integer getIdVenta() {
-        return idVenta;
+
+    public void setId(Integer id) {
+        this.id = id;
     }
-    public void setIdVenta(Integer idVenta) {
-        this.idVenta = idVenta;
+
+    public String getNro_OrdenVenta() {
+        return nro_OrdenVenta;
     }
+
+    public void setNro_OrdenVenta(String nro_OrdenVenta) {
+        this.nro_OrdenVenta = nro_OrdenVenta;
+    }
+
     public String getFechaVenta() {
         return fechaVenta;
     }
+
     public void setFechaVenta(String fechaVenta) {
         this.fechaVenta = fechaVenta;
     }
-    public Float getSubtotalVenta() {
-        return subtotalVenta;
+
+    public Lote[] getLoteList() {
+        return loteList;
     }
-    public void setSubtotalVenta(Float subtotalVenta) {
-        this.subtotalVenta = subtotalVenta;
+
+    public void setLoteList(Lote[] loteList) {
+        this.loteList = loteList;
     }
-    public Float getIva() {
-        return iva;
-    }
-    public void setIva(Float iva) {
-        this.iva = iva;
-    }
-    public Float getTotalVenta() {
+
+    public float getTotalVenta() {
         return totalVenta;
     }
-    public void setTotalVenta(Float totalVenta) {
+
+    public void setTotalVenta(float totalVenta) {
         this.totalVenta = totalVenta;
     }
-    public String getN_OrdenVenta() {
-        return n_OrdenVenta;
+
+    @Override
+    public String toString() {
+        StringBuilder loteInfo = new StringBuilder();
+
+        if (loteList != null && loteList.length > 0) {
+            loteInfo.append("[\n");
+            for (Lote lote : loteList) {
+                loteInfo.append("  ").append(lote).append(",\n");
+            }
+            loteInfo.append("]");
+        } else {
+            loteInfo.append("Sin lotes");
+        }
+
+        return "OrdenVenta {" +
+                "id=" + id +
+                ", nro_OrdenVenta='" + nro_OrdenVenta + '\'' +
+                ", fechaVenta='" + fechaVenta + '\'' +
+                ", totalVenta=" + totalVenta +
+                ", loteList=" + loteInfo +
+                '}';
     }
-    public void setN_OrdenVenta(String n_OrdenVenta) {
-        this.n_OrdenVenta = n_OrdenVenta;
-    }
-    public Integer getIdDetalleVenta() {
-        return IdDetalleVenta;
-    }
-    public void setIdDetalleVenta(Integer IdDetalleVenta) {
-        this.IdDetalleVenta = IdDetalleVenta;
-    }
+
 }

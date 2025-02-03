@@ -1,0 +1,65 @@
+{% extends "template.html" %}
+{% block content %}
+
+<title>Ingresar Venta</title>
+
+
+<main class="main">
+  <!-- Page Title -->
+
+  <div class="page-title">
+    <h1>Ingresar Venta</h1>
+  </div>
+
+
+  <section class="section">
+    <div id="mensaje" class="hidden"></div>
+    <div class="div-compra">
+
+      <form method="POST" action="/venta/save" class="form-compra" id="ordenVentaForm">
+
+        <!-- Fecha de Compra -->
+        <div class="elementos-compra">
+          <label for="fechaVenta" class="form-label">
+            <i class="bi bi-tag"></i> Fecha de Venta
+          </label>
+          <input type="date" class="form-control" id="fechaVenta" name="fechaVenta" required>
+        </div>
+
+
+        <form id="ordenVentaForm">
+          <!-- Campos para lotes dinámicos -->
+          <label for="loteContainer" class="form-label">
+            <i class="bi bi-box"></i> Productos
+          </label>
+          <div id="loteContainer"></div>
+
+          <button class="boton-lote" type="button" onclick="addLote()">Añadir Producto</button><br><br>
+
+          <!-- El monto total aparecerá aquí -->
+          <input type="hidden" name="totalC" id="totalC">
+
+          <div class="lote-row">
+            <label>Monto Total:</label>
+            <span class="total-final" id="totalFinal">0.00</span>
+          </div>
+
+          <!-- Buttons -->
+          <div class="div-botones-compra">
+            <button class="btn btn-success boton" type="submit">
+              <i class="bi bi-check-circle"></i> Registrar
+            </button>
+            <a href="/compras/list" class="btn btn-danger boton">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+          </div>
+        </form>
+
+      </form>
+    </div>
+  </section>
+</main>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+<script src="../../static/assets/js/scriptVenta.js"></script>
+{% endblock %}

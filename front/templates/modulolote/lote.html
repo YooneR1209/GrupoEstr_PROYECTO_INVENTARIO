@@ -2,6 +2,93 @@
 {% block content %}
 <title>Lotes</title>
 
+
+<style>
+    /* Estilos para ajustar el ancho de las columnas */
+    table {
+        table-layout: fixed;
+        /* Hace que las columnas tengan un ancho uniforme */
+        width: 100%;
+        /* Ancho total de la tabla */
+    }
+
+    th,
+    td {
+        width: auto;
+        /* Ancho automático basado en el contenido */
+        max-width: 150px;
+        /* Ancho máximo para evitar que las columnas sean demasiado anchas */
+        white-space: nowrap;
+        /* Evita que el texto se divida en varias líneas */
+        overflow: hidden;
+        /* Oculta el contenido que excede el ancho */
+        text-overflow: ellipsis;
+        /* Muestra puntos suspensivos (...) si el texto es demasiado largo */
+    }
+
+    /* Ajustes específicos para columnas */
+    th#producto,
+    td:nth-child(1) {
+        width: 12%;
+    }
+
+    /* Columna "Producto" */
+    th#marca,
+    td:nth-child(2) {
+        width: 10%;
+    }
+
+    /* Columna "Marca" */
+    th:nth-child(3),
+    td:nth-child(3) {
+        width: 15%;
+    }
+
+    /* Columna "Código de Lote" */
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 10%;
+    }
+
+    /* Columna "Unidades" */
+    th:nth-child(5),
+    td:nth-child(5) {
+        width: 13%;
+    }
+
+    /* Columna "Precio Compra" */
+    th:nth-child(6),
+    td:nth-child(6) {
+        width: 12%;
+    }
+
+    /* Columna "Precio Venta" */
+    th:nth-child(7),
+    td:nth-child(7) {
+        width: 15%;
+    }
+
+    /* Columna "Fecha de Elaboración" */
+    th:nth-child(8),
+    td:nth-child(8) {
+        width: 16%;
+    }
+
+    /* Columna "Fecha de Vencimiento" */
+    th:nth-child(9),
+    td:nth-child(9) {
+        width: 20%;
+    }
+
+    /* Columna "Descripción de Lote" */
+    th:nth-child(10),
+    td:nth-child(10) {
+        width: 15%;
+    }
+
+    /* Columna "Acciones" */
+</style>
+
 <div class="pagetitle text-center mb-4">
     <h1>LISTADO DE LOTES</h1>
     <div class="mt-3">
@@ -99,11 +186,11 @@
                                         <a href="/lote/order/precioVenta/1"><i class="bi bi-arrow-up"></i></a>
                                         <a href="/lote/order/precioVenta/0"><i class="bi bi-arrow-down"></i></a>
                                     </th>
-                                    <th>Fecha de Elaboración
+                                    <th>Fecha Elaboración
                                         <a href="/lote/order/fechaCreacion/1"><i class="bi bi-arrow-up"></i></a>
                                         <a href="/lote/order/fechaCreacion/0"><i class="bi bi-arrow-down"></i></a>
                                     </th>
-                                    <th>Fecha de Vencimiento
+                                    <th>Fecha Vencimiento
                                         <a href="/lote/order/fechaVencimiento/1"><i class="bi bi-arrow-up"></i></a>
                                         <a href="/lote/order/fechaVencimiento/0"><i class="bi bi-arrow-down"></i></a>
                                     </th>

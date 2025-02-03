@@ -3,9 +3,9 @@
 <title>Lotes</title>
 
 <div class="pagetitle text-center mb-4">
-    <h1>LISTA DE COMPRAS</h1>
+    <h1>LISTA DE VENTAS</h1>
     <div class="mt-3">
-        <a href="/compras/register" class="btn btn-success me-2 d-inline-flex align-items-center">
+        <a href="/ventas/register" class="btn btn-success me-2 d-inline-flex align-items-center">
             <i class="bi bi-plus-circle me-1"></i> REGISTRAR
         </a>
     </div>
@@ -23,9 +23,9 @@
 {% endwith %}
 
 <div class="col-lg-6" style="margin-left: 5%; margin-bottom: 20px;">
-    <label>Buscar por Nro de Orden</label>
-    <input id="textoBusqueda" placeholder="Ingresa un nro de Orden" class="form-control"
-        style="width: 220px; display: inline-block; text-align: center; padding-left: 10px; padding-right: 10px;" />
+    <label>Buscar por nro_OrdenVenta</label>
+    <input id="textoBusqueda" placeholder="Ingresa un nro Venta" class="form-control"
+        style="width: 220px; display: inline-block; padding-left: 10px; padding-right: 10px;" />
     <a id="btnBuscar" class="btn btn-success">Buscar</a>
 </div>
 
@@ -38,42 +38,35 @@
                         <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
                                 <tr>
-                                    <th style="width: 15%;">Nro Orden Compra
-                                        <a href="/ordenCompra/order/nro_OrdenCompra/1"> <i
+                                    <th style="width: 13%;">Nro Venta
+                                        <a href="/ordenVenta/order/nro_OrdenVenta/1"><i
                                                 class="bi bi-arrow-up text-white"></i></a>
-                                        <a href="/ordenCompra/order/nro_OrdenCompra/0"><i
+                                        <a href="/ordenVenta/order/nro_OrdenVenta/0"><i
                                                 class="bi bi-arrow-down text-white"></i></a>
                                     </th>
-                                    <th style="width: 13%;">Fecha Factura
-                                        <a href="/ordenCompra/order/fechaCompra/1"><i
+                                    <th style="width: 13%;">Fecha Venta
+                                        <a href="/ordenVenta/order/fechaVenta/1"><i
                                                 class="bi bi-arrow-up text-white"></i></a>
-                                        <a href="/ordenCompra/order/fechaCompra/0"><i
+                                        <a href="/ordenVenta/order/fechaVenta/0"><i
                                                 class="bi bi-arrow-down text-white"></i></a>
                                     </th>
-                                    <th style="width: 17%;">Cedula Distribuidor
-                                        <a href="/ordenCompra/order/cedula_Distribuidor/1"><i
+                                    <th style="width: 13%;">Total Venta
+                                        <a href="/ordenVenta/order/totalVenta/1"><i
                                                 class="bi bi-arrow-up text-white"></i></a>
-                                        <a href="/ordenCompra/order/cedula_Distribuidor/0"><i
-                                                class="bi bi-arrow-down text-white"></i></a>
-                                    </th>
-                                    <th style="width: 13%;">Total Compra
-                                        <a href="/ordenCompra/order/totalCompra/1"><i
-                                                class="bi bi-arrow-up text-white"></i></a>
-                                        <a href="/ordenCompra/order/totalCompra/0"><i
+                                        <a href="/ordenVenta/order/totalVenta/0"><i
                                                 class="bi bi-arrow-down text-white"></i></a>
                                     </th>
                                     <th style="width: 15%;">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in lista_ordenCompra %}
+                                {% for item in lista_ordenVenta %}
                                 <tr>
-                                    <td>{{ item.nro_OrdenCompra }}</td>
-                                    <td>{{ item.fechaCompra }}</td>
-                                    <td>{{ item.cedula_Distribuidor }}</td>
-                                    <td>{{ item.totalCompra }}</td>
+                                    <td>{{ item.nro_OrdenVenta }}</td>
+                                    <td>{{ item.fechaVenta }}</td>
+                                    <td>{{ item.totalVenta }}</td>
                                     <td>
-                                        <a href="/ordenCompra/imprimir/{{ item.id }}"
+                                        <a href="/ordenVenta/imprimir/{{ item.id }}"
                                             class="btn btn-info d-flex justify-content-center align-items-center mb-1">
                                             <i class="bi bi-printer me-1"></i> Imprimir
                                         </a>
@@ -96,23 +89,23 @@
 <script>
     $(document).ready(function () {
         // Función para redirigir a la URL de búsqueda
-        function buscarOrdenCompra() {
+        function buscarOrdenVenta() {
             var texto = $("#textoBusqueda").val();  // Captura el valor del campo de búsqueda
             if (texto) {
-                var url = "/ordenCompra/search/codigoLote/" + texto;  // Construye la URL de búsqueda
+                var url = "/ordenVenta/search/nro_OrdenVenta/" + texto;  // Construye la URL de búsqueda
                 window.location.href = url;  // Redirige a la URL de búsqueda
             } else {
-                alert("Por favor, ingresa un código de lote.");  // Muestra un mensaje si el campo está vacío
+                alert("Por favor, ingresa un nro_OrdenVenta.");  // Muestra un mensaje si el campo está vacío
             }
         }
 
         // Asignar la función al botón de búsqueda
-        $("#btnBuscar").click(buscarOrdenCompra);
+        $("#btnBuscar").click(buscarOrdenVenta);
 
         // Permitir la búsqueda al presionar "Enter" en el campo de texto
         $("#textoBusqueda").keypress(function (e) {
             if (e.which === 13) {  // 13 es el código de la tecla "Enter"
-                buscarOrdenCompra();
+                buscarOrdenVenta();
             }
         });
     });

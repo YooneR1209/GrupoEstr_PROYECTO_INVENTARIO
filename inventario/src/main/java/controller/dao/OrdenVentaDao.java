@@ -45,6 +45,8 @@ public class OrdenVentaDao extends AdapterDao<OrdenVenta> {
             id = getlistAll().getLast().getId(); // Obtiene el tamaño de la lista y le suma 1 para asignar un nuevo id
         }
         ordenVenta.setId(id + 1); // Asigna el id a ordenVenta
+        String nroOrdenVenta = String.format("%08d", ordenVenta.getId()); // Rellena con ceros a la izquierda
+        ordenVenta.setNro_OrdenVenta(nroOrdenVenta); // Asigna el nro_OrdenVenta
         this.persist(this.ordenVenta); // Guarda la lote en la lista de objetos LinkedList y en el archivo JSON
         this.listAll = listAll(); // Actualiza la lista de objetos
         return true; // Retorna verdadero si se guardó correctamente

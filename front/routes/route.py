@@ -13,6 +13,7 @@ from flask import (
 )
 
 import requests
+from flask_cors import CORS
 
 router = Blueprint("router", __name__)
 
@@ -331,6 +332,48 @@ def view_order_ordenCompra(atributo, tipo):
             "modulocompra/compras.html",
             lista_ordenCompra=[],
             message="No se pudo obtener los ordenCompras ordenados",
+        )
+
+
+@router.route("/ordenVenta/order/<atributo>/<tipo>")
+def view_order_ordenVenta(atributo, tipo):
+    url = f"http://localhost:8080/myapp/ordenVenta/list/order/{atributo}/{tipo}"
+    r = requests.get(url)
+    print("url: " + url)
+    if r.status_code == 200:
+        data1 = r.json()
+        print(data1)
+        return render_template(
+            "moduloventa/ventas.html",
+            lista_ordenVenta=data1["data"],
+            atributo_actual=atributo,
+            tipo_actual=tipo,
+        )
+    else:
+        return render_template(
+            "moduloventa/ventas.html",
+            lista_ordenVenta=[],
+            message="No se pudo obtener los ordenVentas ordenados",
+        )
+
+
+@router.route("/ordenVenta/search/nro_OrdenVenta/<texto>")
+def view_buscar_ordenVenta(texto):
+    url = f"http://localhost:8080/myapp/ordenVenta/list/search/nro_OrdenVenta/{texto}"  # Usar f-string para incluir el texto
+    r = requests.get(url)
+    data1 = r.json()
+    print(f"Response JSON: {data1}")
+    if r.status_code == 200:
+        if isinstance(data1["data"], dict):  # Verificar si es un diccionario
+            lista = [data1["data"]]  # Convertir a lista
+        else:
+            lista = data1["data"]  # Usar la lista directamente
+        return render_template("moduloventa/ventas.html", lista_ordenVenta=lista)
+    else:
+        return render_template(
+            "moduloventa/ventas.html",
+            lista_ordenVenta=[],
+            message="No existe el elemento",
         )
 
 
@@ -846,6 +889,22 @@ def list_ordenCompra(msg=""):
     )
 
 
+@router.route("/ventas/list")
+def list_ordenVenta(msg=""):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r_ordenVenta = requests.get("http://localhost:8080/myapp/ordenVenta/list")
+    data_ordenVenta = r_ordenVenta.json()
+
+    print(data_ordenVenta)
+
+    return render_template(
+        "moduloventa/ventas.html",
+        lista_ordenVenta=data_ordenVenta["data"],
+    )
+
+
 @router.route("/compras/register")
 def list_compras(msg=""):
     if "token" not in session:
@@ -861,6 +920,28 @@ def list_compras(msg=""):
 
     return render_template(
         "modulocompra/registro.html",
+        lista_distribuidor=data_distribuidor["data"],
+        lista_producto=data_producto["data"],
+        usuario=session.get("usuario"),
+        idPersona=session.get("idPersona"),
+    )
+
+
+@router.route("/ventas/register")
+def list_ventas(msg=""):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r_distribuidor = requests.get("http://localhost:8080/myapp/distribuidor/list")
+    data_distribuidor = r_distribuidor.json()
+
+    r_producto = requests.get("http://localhost:8080/myapp/producto/list")
+    data_producto = r_producto.json()
+
+    print(data_distribuidor)
+
+    return render_template(
+        "moduloventa/registro.html",
         lista_distribuidor=data_distribuidor["data"],
         lista_producto=data_producto["data"],
         usuario=session.get("usuario"),
@@ -928,3 +1009,30 @@ def view_edit_ordenCompra(id):
     else:
         flash("Error al obtener la ordenCompra", category="error")
         return redirect("/admin/ordenCompra/list")
+
+
+@router.route("/ordenVenta/imprimir/<id>", methods=["GET"])
+def view_edit_ordenVenta(id):
+    if "token" not in session:
+        return redirect(url_for("router.login"))
+
+    r = requests.get("http://localhost:8080/myapp/ordenVenta/listType")
+    lista_tipos = r.json()  # Guardamos la respuesta JSON
+
+    r1 = requests.get(
+        f"http://localhost:8080/myapp/ordenVenta/get/{id}"
+    )  # Obtenemos los datos de la ordenVenta por ID
+
+    if r1.status_code == 200:
+        data_ordenVenta = r1.json()
+        ordenVenta = data_ordenVenta["data"]
+
+        return render_template(
+            "moduloventa/imprimir.html",
+            lista=lista_tipos["data"],
+            ordenVenta=ordenVenta,
+        )
+
+    else:
+        flash("Error al obtener la ordenVenta", category="error")
+        return redirect("/admin/ordenVenta/list")

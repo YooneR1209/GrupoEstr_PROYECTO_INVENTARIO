@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "nro_OrdenVenta": "000001",
+    "fechaVenta": "2025-01-30",
+    "loteList": [
+      {
+        "codigoLote": "4000-hu-32",
+        "cantidad": 3,
+        "precioCompra": 0.0,
+        "precioVenta": 2.0
+      }
+    ],
+    "totalVenta": 6.0
+  },
+  {
+    "id": 2,
+    "nro_OrdenVenta": "000002",
+    "fechaVenta": "2025-01-30",
+    "loteList": [
+      {
+        "codigoLote": "4000-hu-32",
+        "cantidad": 3,
+        "precioCompra": 0.0,
+        "precioVenta": 2.0
+      }
+    ],
+    "totalVenta": 6.0
+  },
+  {
+    "id": 3,
+    "nro_OrdenVenta": "000003",
+    "fechaVenta": "2025-01-30",
+    "loteList": [
+      {
+        "codigoLote": "4000-hu-32",
+        "cantidad": 3,
+        "precioCompra": 0.0,
+        "precioVenta": 2.0
+      }
+    ],
+    "totalVenta": 6.0
+  },
+  {
+    "id": 4,
+    "nro_OrdenVenta": "000004",
+    "fechaVenta": "2025-01-30",
+    "loteList": [
+      {
+        "codigoLote": "4000-hu-32",
+        "cantidad": 2,
+        "precioCompra": 0.0,
+        "precioVenta": 2.0
+      }
+    ],
+    "totalVenta": 4.0
+  },
+  {
+    "id": 5,
+    "nro_OrdenVenta": "000005",
+    "fechaVenta": "2025-01-30",
+    "loteList": [
+      {
+        "codigoLote": "1E112Z",
+        "cantidad": 3,
+        "precioCompra": 0.0,
+        "precioVenta": 40.0
+      }
+    ],
+    "totalVenta": 120.0
+  }
+]

@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f4f9ff;
+            background: #d4e3ff; /* Fondo con gradiente */
             font-family: 'Roboto', sans-serif;
         }
 
@@ -67,18 +67,50 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 200px 20px;
+            padding: 80px 20px;
+        }
+
+        .dashboard-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .dashboard-section p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 700px;
+            margin: 10px auto;
+        }
+
+        .description-text {
+    font-size: 1.1rem;
+    margin-top: 30px;
+    color: #333;
+    text-align: justify; /* Cambio a justify */
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+
+        .description-text ul {
+            padding-left: 20px;
+        }
+
+        .description-text li {
+            margin: 10px 0;
         }
 
         .dashboard-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
         }
 
         .dashboard-buttons a {
-            background-color: #007bff;
+            background-color: #0057b4; /* Color destacado para los botones */
             color: white;
             padding: 15px 30px;
             font-size: 1.2rem;
@@ -87,22 +119,16 @@
             text-decoration: none;
             display: flex;
             align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dashboard-buttons a:hover {
+            background-color: #0069d9;
+            transform: scale(1.1); /* Efecto de ampliación */
         }
 
         .dashboard-buttons a i {
             margin-right: 8px;
-        }
-
-        .dashboard-buttons a:hover {
-            background-color: #0056b3;
-        }
-
-        footer {
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
         }
     </style>
 </head>
@@ -110,7 +136,7 @@
 <body>
     <header>
         <div class="logo">
-            <a href="/dashboard">Abarrotes Manager</a>
+            <a href="/navegacion">Tienda San Vicente</a>
         </div>
         <nav>
             <div class="user-info">
@@ -127,31 +153,67 @@
     </header>
 
     <div class="dashboard-section">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <h1>Panel de Control</h1>
-        <p>Gestiona tus productos, ventas y compras de manera eficiente.</p>
+        <p>Bienvenido al panel de control de Tienda San Vicente. Aquí podrás gestionar todos los aspectos de tu tienda de manera eficiente y sencilla.</p>
+
+        <div class="description-text">
+            <p><strong>¿Qué puedes hacer aquí?</strong></p>
+            <ul>
+                <li><strong>Productos:</strong> Administra tus productos, agrega nuevos o edita los existentes.</li>
+                <li><strong>Ventas:</strong> Visualiza y gestiona todas las transacciones de ventas realizadas.</li>
+                <li><strong>Compras:</strong> Controla el inventario de tus compras y mantiene tu stock actualizado.</li>
+                <li><strong>Distribuidores:</strong> Conoce y gestiona los distribuidores de tus productos.</li>
+                <li><strong>Lote:</strong> Organiza tus productos por lotes, facilitando la administración de stock.</li>
+            </ul>
+        </div>
+
         <div class="dashboard-buttons">
             <a href="/producto/list"><i class="bi bi-box-seam"></i> Productos</a>
             <a href="/ventas/list"><i class="bi bi-cart-fill"></i> Ventas</a>
             <a href="/compras/list"><i class="bi bi-bag-fill"></i> Compras</a>
             <a href="/distribuidor/list"><i class="bi bi-truck"></i> Distribuidores</a>
-
+            <a href="/lote/list"><i class="bi bi-archive"></i> Lote</a> <!-- Nuevo botón -->
         </div>
     </div>
 
-    <!-- SweetAlert2 Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (succesMessage) {
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: "{{ success_message[0] }}",
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
-            };
+        document.addEventListener("DOMContentLoaded", function () {
+            // SweetAlert2 para mostrar el mensaje
+            Swal.fire({
+                position: 'bottom-end',  // Posición en la esquina inferior derecha
+                icon: 'success',         // Tipo de notificación (puede ser 'success', 'error', etc.)
+                title: "{{ messages[0] }}",  // Mensaje de la notificación
+                showConfirmButton: false,  // No mostrar el botón de confirmar
+                timer: 10000,           // Duración de la notificación en milisegundos
+                toast: true,            // Estilo de notificación tipo 'toast'
+                background: '#008000',  // Fondo de la notificación
+                color: '#fff',          // Color del texto
+                padding: '10px',        // Espaciado dentro de la notificación
+                margin: '20px'          // Distancia desde el borde inferior
+            });
         });
+       if (window.history && window.history.pushState) {
+            window.history.pushState('forward', null, './');
+            window.history.forward();
+
+            window.addEventListener('popstate', function() {
+                window.history.pushState('forward', null, './');
+                window.history.forward();
+            });
+        }
     </script>
+    {% endif %}
+    {% endwith %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

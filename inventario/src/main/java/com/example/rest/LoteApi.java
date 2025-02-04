@@ -191,11 +191,13 @@ public class LoteApi {
             map.put("msg", "Ok");
             map.put("data", fs.showLote(fs.getLote()));
             if (fs.getLote().getId() == null) {
-                map.put("data", "No existe familia con ese id");
+                map.put("data", "No existe lote con ese codigoLote");
                 return Response.status(Status.BAD_REQUEST).entity(map).build();
             }
         } catch (Exception e) {
             System.out.println("Error en search codigoLote" + e);
+            return Response.status(Status.BAD_REQUEST).entity(map).build();
+
         }
         return Response.ok(map).build();
 

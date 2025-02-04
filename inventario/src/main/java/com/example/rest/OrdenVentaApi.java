@@ -67,6 +67,19 @@ public class OrdenVentaApi {
         try {
             OrdenVentaServicies ocs = new OrdenVentaServicies();
             // Guardar la orden de venta
+            if (!ocs.isFechaVentaValida(ordenVenta.getFechaVenta())) {
+                res.put("msg", "Error");
+                res.put("data",
+                        "La fecha de venta no puede ser mayor que la fecha actual o tiene un formato inválido.");
+                return Response.status(Status.BAD_REQUEST).entity(res).build();
+            }
+
+            if (ordenVenta.getLoteList() == null || ordenVenta.getLoteList().length == 0) {
+                res.put("msg", "Error");
+                res.put("data", "La lista de productos no puede estar vacía.");
+                return Response.status(Status.BAD_REQUEST).entity(res).build();
+            }
+
             ocs.save(ordenVenta);
 
             // Actualizar los lotes asociados

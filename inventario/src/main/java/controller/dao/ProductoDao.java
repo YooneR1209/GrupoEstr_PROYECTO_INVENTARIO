@@ -1,7 +1,6 @@
 package controller.dao;
 
 import models.Lote;
-import models.OrdenCompra;
 import models.Producto;
 
 import com.google.gson.Gson;
@@ -106,7 +105,7 @@ public class ProductoDao extends AdapterDao<Producto> {
         LinkedList<Producto> list = listAll();
 
         if (list.isEmpty()) {
-            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+            return true;
         }
 
         Producto[] producto = list.toArray();
@@ -120,6 +119,82 @@ public class ProductoDao extends AdapterDao<Producto> {
         }
 
         return true; // Si no encuentra coincidencias, retorna true
+    }
+
+    Boolean tieneLotes(Integer id) {
+        LoteServicies ls = new LoteServicies();
+        Lote[] listaL = ls.listAll().toArray();
+
+        for (int i = 0; i < listaL.length; i++) {
+            if (listaL[i].getId_Producto() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public LinkedList<Producto> buscar_Nombre(String texto) {
+        LinkedList<Producto> resultados = new LinkedList<>();
+
+        try {
+            getlistAll();
+
+            if (listAll != null && !listAll.isEmpty()) {
+                listAll.mergeSort("nombre", 0);
+                Producto[] arrayListAll = listAll.toArray();
+                int derecha = 0;
+                int izquierda = arrayListAll.length - 1;
+
+                while (derecha <= izquierda) {
+                    int mid = (derecha + izquierda) / 2;
+                    Producto midProducto = arrayListAll[mid];
+                    String nombre = midProducto.getNombre().toLowerCase();
+                    if (nombre.startsWith(texto.toLowerCase())) {
+                        int izqL = mid;
+                        int derL = mid;
+
+                        while (izqL >= 0
+                                && arrayListAll[izqL].getNombre().toLowerCase().startsWith(texto.toLowerCase())) {
+                            resultados.addF(arrayListAll[izqL--]);
+                        }
+
+                        while (derL < arrayListAll.length
+                                && arrayListAll[derL].getNombre().toLowerCase().startsWith(texto.toLowerCase())) {
+                            if (derL != mid) {
+                                resultados.add(arrayListAll[derL]);
+                            }
+                            derL++;
+                        }
+                        break;
+                    } else if (nombre.compareTo(texto.toLowerCase()) < 0) {
+                        derecha = mid + 1;
+                    } else {
+                        izquierda = mid - 1;
+                    }
+                }
+            }
+
+            if (!resultados.isEmpty()) {
+                return resultados.mergeSort("nombre", 0);
+            } else {
+                return resultados;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error durante la búsqueda: " + e.getMessage());
+        }
+        return resultados;
+    }
+
+    public LinkedList<Producto> order(String attribute, Integer type) {
+        try {
+            getlistAll();
+            System.out.println("Lista antes de ordenar " + listAll.toString());
+            return this.listAll.mergeSort(attribute, type);
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

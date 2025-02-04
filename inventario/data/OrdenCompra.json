@@ -1,1 +1,40 @@
-[{"id":1,"nro_OrdenCompra":"E1002HS","fechaCompra":"2024-12-31","cedula_Distribuidor":"1111111111","loteList":[{"codigoLote":"1555S2","cantidad":2,"precioCompra":15.0,"precioVenta":20.5,"fechaVencimiento":"2025-01-05","fechaCreacion":"2024-12-01","descripcionLote":"Promoción Navidad","id_Producto":1},{"codigoLote":"23ILP00","cantidad":4,"precioCompra":12.3,"precioVenta":15.0,"fechaVencimiento":"2024-12-12","fechaCreacion":"2025-02-22","descripcionLote":"Atún sorteo Enero","id_Producto":2}],"totalCompra":79.2},{"id":2,"nro_OrdenCompra":"E1002HN","fechaCompra":"2024-12-31","cedula_Distribuidor":"1111111111","loteList":[{"codigoLote":"223g5","cantidad":5,"precioCompra":15.0,"precioVenta":20.5,"fechaVencimiento":"2025-01-05","fechaCreacion":"2024-12-01","descripcionLote":"Promoción Navidad","id_Producto":1},{"codigoLote":"POP5848","cantidad":2,"precioCompra":12.3,"precioVenta":15.0,"fechaVencimiento":"2024-12-12","fechaCreacion":"2025-02-22","descripcionLote":"Atún sorteo Enero","id_Producto":2}],"totalCompra":99.6},{"id":3,"fechaCompra":"2025-01-30","loteList":[{"codigoLote":"1E112Z","cantidad":2,"precioCompra":0.0,"precioVenta":0.0}],"totalCompra":80.0}]
+[
+  {
+    "id": 1,
+    "nro_OrdenCompra": "IE1110255",
+    "fechaCompra": "2025-02-02",
+    "cedula_Distribuidor": "1111111111",
+    "loteList": [
+      {
+        "codigoLote": "4000-hu-32",
+        "cantidad": 10,
+        "precioCompra": 50.0,
+        "precioVenta": 15.0,
+        "fechaVencimiento": "2025-02-21",
+        "fechaCreacion": "2025-01-30",
+        "descripcionLote": "Tallarincito",
+        "id_Producto": 1
+      }
+    ],
+    "totalCompra": 500.0
+  },
+  {
+    "id": 2,
+    "nro_OrdenCompra": "E1002Hs111",
+    "fechaCompra": "2025-02-03",
+    "cedula_Distribuidor": "1111111111",
+    "loteList": [
+      {
+        "codigoLote": "e11114",
+        "cantidad": 10,
+        "precioCompra": 14.0,
+        "precioVenta": 32.0,
+        "fechaVencimiento": "2025-02-07",
+        "fechaCreacion": "2025-01-28",
+        "descripcionLote": "Atunes con sorteo",
+        "id_Producto": 2
+      }
+    ],
+    "totalCompra": 140.0
+  }
+]

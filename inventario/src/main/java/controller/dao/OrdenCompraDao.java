@@ -130,7 +130,7 @@ public class OrdenCompraDao extends AdapterDao<OrdenCompra> {
         LinkedList<OrdenCompra> list = listAll();
 
         if (list.isEmpty()) {
-            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+            return true;
         }
 
         OrdenCompra[] ordenes = list.toArray();

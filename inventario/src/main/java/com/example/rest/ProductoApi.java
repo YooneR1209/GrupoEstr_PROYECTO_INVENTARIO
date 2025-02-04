@@ -1,5 +1,7 @@
 package com.example.rest;
 
+import controller.dao.LoteServicies;
+import controller.dao.OrdenVentaServicies;
 import controller.dao.ProductoServicies;
 
 import java.util.HashMap;
@@ -110,12 +112,6 @@ public class ProductoApi {
             ps.getProducto().setMarca(map.get("marca").toString());
             ps.getProducto().setDescripcion(map.get("descripcion").toString());
 
-            if (!ps.isUnique(ps.getProducto().getNombre(), ps.getProducto().getMarca())) {
-                res.put("msg", "Error");
-                res.put("data", "Ya existe un producto registrado con éste nombre y marca.");
-                return Response.status(Status.BAD_REQUEST).entity(res).build();
-            }
-
             ps.update();
 
             res.put("msg", "Ok");
@@ -150,6 +146,13 @@ public class ProductoApi {
 
         try {
             ProductoServicies fs = new ProductoServicies();
+
+            if (fs.tieneLotes(id)) {
+                res.put("msg", "Error");
+                res.put("data", "No se puede eliminar éste producto ya que cuenta con lotes");
+                return Response.status(Status.BAD_REQUEST).entity(res).build();
+
+            }
 
             boolean ProductoDeleted = fs.delete(id); // Intentamos eliminar el Producto
 
@@ -210,6 +213,44 @@ public class ProductoApi {
 
         }
         return Response.ok(map).header("Access-Control-Allow-Origin", "*").build();
+    }
+
+    @Path("/list/search/nombre/{texto}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProductoNombre(@PathParam("texto") String texto) {
+        HashMap map = new HashMap<>();
+        ProductoServicies fs = new ProductoServicies();
+
+        map.put("msg", "Ok");
+        map.put("data", fs.buscar_Nombre(texto).toArray());
+
+        if (fs.buscar_Nombre(texto).isEmpty()) {
+            map.put("data", new Object[] {});
+        }
+
+        return Response.ok(map).build();
+    }
+
+    @Path("/list/order/{attribute}/{type}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap map = new HashMap<>();
+        ProductoServicies ps = new ProductoServicies();
+        try {
+            map.put("msg", "Ok");
+            map.put("data", ps.order(attribute, type).toArray());
+        } catch (Exception e) {
+            System.out.println("Error en order Producto" + e);
+        }
+
+        if (ps.order(attribute, type).isEmpty()) {
+            map.put("data", new Object[] {});
+            return Response.status(Status.BAD_REQUEST).entity(map).build();
+        }
+
+        return Response.ok(map).build();
     }
 
 }

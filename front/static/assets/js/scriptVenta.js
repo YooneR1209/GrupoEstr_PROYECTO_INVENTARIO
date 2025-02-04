@@ -70,24 +70,57 @@ function calcularMontoLote(loteId) {
     const montoTotalSpan = loteDiv.querySelector(".monto-total");
 
     const cantidad = parseFloat(cantidadInput.value) || 0;
-    const precio = parseFloat(precioText.textContent) || 0;
+    const cantidadDisponible = parseFloat(cantidadInput.getAttribute("data-cantidad")) || 0;
 
+    // Validar que la cantidad no sea negativa
+    if (cantidad < 0) {
+        alert("La cantidad no puede ser negativa.");
+        cantidadInput.value = 0;
+        return;
+    }
+
+    // Validar que la cantidad no supere la cantidad disponible
+    if (cantidad > cantidadDisponible) {
+        alert(`La cantidad no puede ser mayor a ${cantidadDisponible}.`);
+        cantidadInput.value = cantidadDisponible; // Restablecer al máximo permitido
+        return;
+    }
+
+    const precio = parseFloat(precioText.textContent) || 0;
     const montoTotal = cantidad * precio;
     montoTotalSpan.textContent = montoTotal.toFixed(2); // Mostrar el monto total con 2 decimales
 
     calculateTotal(); // Actualizar el monto total general
 }
-
 async function buscarLoteManual(loteId) {
     const loteDiv = document.getElementById(`lote_${loteId}`);
     const codigoLoteInput = loteDiv.querySelector("input[name='codigoLote']");
-    const codigoLote = codigoLoteInput.value;
+    const codigoLote = codigoLoteInput.value.trim(); // Eliminar espacios en blanco
 
     if (codigoLote) {
+        // Verificar si el código del lote ya existe en la lista
+        const loteElements = document.querySelectorAll("#loteContainer > div");
+        let loteExistente = false;
+
+        loteElements.forEach((loteElement) => {
+            const existingCodigoLote = loteElement.querySelector("input[name='codigoLote']").value.trim();
+            if (existingCodigoLote === codigoLote && loteElement.id !== `lote_${loteId}`) {
+                loteExistente = true;
+            }
+        });
+
+        if (loteExistente) {
+            alert('El lote ya existe en la lista. La cantidad será sumada al lote existente.');
+        }
+
+        // Buscar el lote en el servidor
         const lote = await buscarLotePorCodigo(codigoLote);
         if (lote) {
             const precioText = loteDiv.querySelector(".precio-text");
             precioText.textContent = lote.precioVenta.toFixed(2); // Mostrar el precio de venta
+
+            const cantidadInput = loteDiv.querySelector("input[name='cantidad']");
+            cantidadInput.setAttribute("data-cantidad", lote.cantidad); // Almacenar la cantidad disponible
 
             const infoLoteDiv = loteDiv.querySelector(".info-lote");
             infoLoteDiv.innerHTML = `
@@ -97,6 +130,7 @@ async function buscarLoteManual(loteId) {
                 <p><strong>Descripción del Lote:</strong> ${lote.descripcionLote}</p>
                 <p><strong>Fecha de Elaboración:</strong> ${lote.fechaCreacion}</p>
                 <p><strong>Fecha de Vencimiento:</strong> ${lote.fechaVencimiento}</p>
+                <p><strong>Cantidad Disponible:</strong> ${lote.cantidad}</p>
             `;
 
             calcularMontoLote(loteId); // Calcular el monto total después de actualizar el precio

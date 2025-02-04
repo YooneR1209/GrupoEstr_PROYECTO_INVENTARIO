@@ -130,7 +130,7 @@ public class OrdenVentaDao extends AdapterDao<OrdenVenta> {
         LinkedList<OrdenVenta> list = listAll();
 
         if (list.isEmpty()) {
-            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+            return true;
         }
 
         OrdenVenta[] ordenes = list.toArray();
@@ -144,7 +144,7 @@ public class OrdenVentaDao extends AdapterDao<OrdenVenta> {
         return true; // Si no encuentra coincidencias, retorna true
     }
 
-    public boolean isFechaCompraValida(String fechaCompra) {
+    public boolean isFechaVentaValida(String fechaCompra) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

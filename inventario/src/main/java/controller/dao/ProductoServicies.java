@@ -5,6 +5,7 @@ import java.util.HashMap;
 import controller.tda.list.LinkedList;
 import controller.tda.list.ListEmptyException;
 import models.Lote;
+import models.OrdenVenta;
 import models.Producto;
 
 public class ProductoServicies {
@@ -87,6 +88,18 @@ public class ProductoServicies {
 
     public Boolean delete(int index) throws Exception { // Elimina un objeto Producto por su índice
         return obj.delete(index); // Invoca el método delete() de la clase ProductoDao y envía el índice
+    }
+
+    public Boolean tieneLotes(Integer id) {
+        return obj.tieneLotes(id);
+    }
+
+    public LinkedList<Producto> buscar_Nombre(String texto) {
+        return obj.buscar_Nombre(texto);
+    }
+
+    public LinkedList<Producto> order(String attribute, Integer type) {
+        return obj.order(attribute, type);
     }
 
 }

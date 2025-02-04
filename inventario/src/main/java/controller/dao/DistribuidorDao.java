@@ -107,7 +107,7 @@ public class DistribuidorDao extends AdapterDao<Distribuidor> {
         LinkedList<Distribuidor> list = listAll();
 
         if (list.isEmpty()) {
-            throw new ListEmptyException("La lista de órdenes de compra está vacía.");
+            return true;
         }
 
         Distribuidor[] ordenes = list.toArray();

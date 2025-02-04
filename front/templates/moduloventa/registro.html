@@ -3,21 +3,17 @@
 
 <title>Ingresar Venta</title>
 
-
 <main class="main">
   <!-- Page Title -->
-
   <div class="page-title">
     <h1>Ingresar Venta</h1>
   </div>
 
-
   <section class="section">
     <div id="mensaje" class="hidden"></div>
     <div class="div-compra">
-
+      <!-- Formulario principal -->
       <form method="POST" action="/venta/save" class="form-compra" id="ordenVentaForm">
-
         <!-- Fecha de Compra -->
         <div class="elementos-compra">
           <label for="fechaVenta" class="form-label">
@@ -26,40 +22,38 @@
           <input type="date" class="form-control" id="fechaVenta" name="fechaVenta" required>
         </div>
 
-
-        <form id="ordenVentaForm">
-          <!-- Campos para lotes dinámicos -->
+        <!-- Campos para lotes dinámicos -->
+        <div class="elementos-compra">
           <label for="loteContainer" class="form-label">
             <i class="bi bi-box"></i> Productos
           </label>
           <div id="loteContainer"></div>
-
           <button class="boton-lote" type="button" onclick="addLote()">Añadir Producto</button><br><br>
+        </div>
 
-          <!-- El monto total aparecerá aquí -->
+        <!-- Monto Total -->
+        <div class="elementos-compra">
+          <label>Monto Total:</label>
+          <span class="total-final" id="totalFinal">0.00</span>
           <input type="hidden" name="totalC" id="totalC">
+        </div>
 
-          <div class="lote-row">
-            <label>Monto Total:</label>
-            <span class="total-final" id="totalFinal">0.00</span>
-          </div>
-
-          <!-- Buttons -->
-          <div class="div-botones-compra">
-            <button class="btn btn-success boton" type="submit">
-              <i class="bi bi-check-circle"></i> Registrar
-            </button>
-            <a href="/ventas/list" class="btn btn-danger boton">
-              <i class="bi bi-x-circle"></i> Cancelar
-            </a>
-          </div>
-        </form>
-
+        <!-- Botones -->
+        <div class="div-botones-compra">
+          <button class="btn btn-success boton" type="submit">
+            <i class="bi bi-check-circle"></i> Registrar
+          </button>
+          <a href="/ventas/list" class="btn btn-danger boton">
+            <i class="bi bi-x-circle"></i> Cancelar
+          </a>
+        </div>
       </form>
     </div>
   </section>
 </main>
 
+<!-- Enlaces a Bootstrap Icons y el script de JavaScript -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
 <script src="../../static/assets/js/scriptVenta.js"></script>
+
 {% endblock %}

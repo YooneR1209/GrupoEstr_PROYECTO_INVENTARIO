@@ -24,10 +24,14 @@
 
 <div class="col-lg-6" style="margin-left: 5%; margin-bottom: 20px;">
     <label>Buscar por nro_OrdenVenta</label>
-    <input id="textoBusqueda" placeholder="Ingresa un nro Venta" class="form-control"
-        style="width: 220px; display: inline-block; padding-left: 10px; padding-right: 10px;" />
+    <input type="number" id="textoBusqueda" placeholder="Ingresa un nro Venta" class="form-control" min="0"
+        max="99999999" style="width: 220px; display: inline-block; padding-left: 10px; padding-right: 10px;" />
     <a id="btnBuscar" class="btn btn-success">Buscar</a>
+    <a href="/ventas/list" class="btn btn-secondary" title="Reiniciar lista">
+        <i class="bi bi-arrow-counterclockwise"></i>
+    </a>
 </div>
+
 
 <section class="section">
     <div class="row justify-content-center">

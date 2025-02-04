@@ -357,6 +357,28 @@ def view_order_ordenVenta(atributo, tipo):
         )
 
 
+@router.route("/producto/order/<atributo>/<tipo>")
+def view_order_producto(atributo, tipo):
+    url = f"http://localhost:8080/myapp/producto/list/order/{atributo}/{tipo}"
+    r = requests.get(url)
+    print("url: " + url)
+    if r.status_code == 200:
+        data1 = r.json()
+        print(data1)
+        return render_template(
+            "moduloproducto/producto.html",
+            lista_producto=data1["data"],
+            atributo_actual=atributo,
+            tipo_actual=tipo,
+        )
+    else:
+        return render_template(
+            "moduloproducto/producto.html",
+            lista_producto=[],
+            message="No se pudo obtener los productos ordenados",
+        )
+
+
 @router.route("/ordenVenta/search/nro_OrdenVenta/<texto>")
 def view_buscar_ordenVenta(texto):
     url = f"http://localhost:8080/myapp/ordenVenta/list/search/nro_OrdenVenta/{texto}"  # Usar f-string para incluir el texto
@@ -397,6 +419,26 @@ def view_buscar_ordenCompra(texto):
         )
 
 
+@router.route("/producto/search/nombre/<texto>")
+def view_buscar_producto(texto):
+    url = f"http://localhost:8080/myapp/producto/list/search/nombre/{texto}"  # Usar f-string para incluir el texto
+    r = requests.get(url)
+    data1 = r.json()
+    print(f"Response JSON: {data1}")
+    if r.status_code == 200:
+        if isinstance(data1["data"], dict):  # Verificar si es un diccionario
+            lista = [data1["data"]]  # Convertir a lista
+        else:
+            lista = data1["data"]  # Usar la lista directamente
+        return render_template("moduloproducto/producto.html", lista_producto=lista)
+    else:
+        return render_template(
+            "moduloproducto/producto.html",
+            lista_producto=[],
+            message="No existe el elemento",
+        )
+
+
 @router.route("/lote/update", methods=["POST"])
 def update_lote():
     headers = {"Content-Type": "application/json"}
@@ -421,7 +463,7 @@ def update_lote():
 
     if r_lote.status_code == 200:
 
-        flash("Registro guardado correctamente", category="info")
+        flash("Registro actualizado correctamente", category="info")
         return redirect("/lote/list")
     else:
         flash(r_lote.json().get("data", "Error al guardar la lote"), category="error")
@@ -585,7 +627,7 @@ def update_producto():
 
     if r_producto.status_code == 200:
 
-        flash("Registro guardado correctamente", category="info")
+        flash("Registro actualizado correctamente", category="info")
         return redirect("/producto/list")
     else:
         flash(

@@ -70,6 +70,8 @@ public class OrdenCompraApi {
         try {
             OrdenCompraServicies ocs = new OrdenCompraServicies();
 
+            System.out.println("Recibimos la peticion de compraApi.");
+
             // Validar si la fecha de compra es válida
             if (!ocs.isFechaCompraValida(ordenCompra.getFechaCompra())) {
                 res.put("msg", "Error");

@@ -44,10 +44,6 @@ public class OrdenVentaServicies {
         return obj.isUnique(nroOrdenVenta);
     }
 
-    public boolean isFechaCompraValida(String fechaCompra) {
-        return obj.isFechaCompraValida(fechaCompra);
-    }
-
     public OrdenVenta buscar_nro_OrdenVenta(String texto) {
         return obj.buscar_nro_OrdenVenta(texto);
     }
@@ -56,4 +52,7 @@ public class OrdenVentaServicies {
         return obj.order(attribute, type);
     }
 
+    public boolean isFechaVentaValida(String fechaCompra) {
+        return obj.isFechaVentaValida(fechaCompra);
+    }
 }
